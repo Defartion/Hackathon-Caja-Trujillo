@@ -6,12 +6,15 @@ Ejecutar:  uvicorn cuotaflex.api.main:app --reload
 """
 from __future__ import annotations
 
+import importlib
+import pkgutil
 from datetime import date
 from itertools import count
 
 import numpy as np
 import pandas as pd
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from ..agente import AgenteAsesor
@@ -20,6 +23,9 @@ from ..datos import RUBROS, simular_ventas
 
 BASE = "/fineract-provider/api/v1"
 app = FastAPI(title="CuotaFlex · API compatible con Fineract", version="0.1.0")
+# Frontends locales: asesor 5173, cliente 5174, tablero 5175
+app.add_middleware(CORSMiddleware, allow_origin_regex=r"http://(localhost|127\.0\.0\.1):51\d\d",
+                   allow_methods=["*"], allow_headers=["*"])
 DB: dict[str, dict] = {"clients": {}, "loans": {}}
 _ids = count(1)
 agente = AgenteAsesor(metodo_pronostico="perfil")
@@ -182,3 +188,16 @@ def aplazar(lid: int, command: str, a: AplazamientoIn):
 @app.get("/motor/parametros")
 def parametros():
     return cargar_parametros()
+
+
+def _registrar_routers() -> None:
+    """Incluye todo `router` definido en cuotaflex.api.routers.* (un archivo por lote)."""
+    from . import routers
+
+    for mod in pkgutil.iter_modules(routers.__path__):
+        m = importlib.import_module(f"{routers.__name__}.{mod.name}")
+        if hasattr(m, "router"):
+            app.include_router(m.router)
+
+
+_registrar_routers()

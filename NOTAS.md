@@ -11,7 +11,7 @@
 - Completo: atraso > 30 días 16.3% → 7.3%, default 8.5% → 3.4%, margen/cartera 16.5% → 22.7%, cartera -14%.
 - Solo cronograma: atraso 16.3% → 14.3%, default 8.5% → 7.7%.
 
-## Pendientes
+## Pendientes (detalle por fase en docs/fases/ROADMAP.md)
 - [ ] Calibrar el umbral de estacionalidad: en calzado y comercio, el cronograma por sí solo empeora un poco.
 - [ ] App web del asesor y del cliente, más el tablero de simulación en vivo.
 - [ ] Confirmar la fecha de entrega del concepto y las herramientas de IA permitidas (cajathon@cajatrujillo.com.pe).
