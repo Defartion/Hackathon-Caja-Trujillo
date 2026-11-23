@@ -206,7 +206,26 @@ def confirmar_aplazamiento(
 
 @router.get("/el-nino")
 def estado_el_nino() -> dict:
-    return _alerta_el_nino.copy()
+    """Alerta de El Niño para la app del cliente, según el ENFEN (fase 2 · lote C: integraciones/enfen.py).
+
+    Mismo formato de la fase 1: {"activo", "desde", "fuente"}. `activo` solo es verdadero con "Alerta de
+    El Niño Costero". Con "Vigilancia de El Niño Costero" se agrega `aviso` (preventivo, sin alivio).
+    En modo demo (ENFEN_MODO=demo), el interruptor de esta app (POST /cliente/el-nino) sigue fijando la alerta.
+    """
+    from ...integraciones import enfen  # import local: el lote C solo modifica esta función
+
+    if enfen.modo() == "demo":
+        enfen.sincronizar_interruptor(_alerta_el_nino)
+    try:
+        estado = enfen.estado_actual()
+    except enfen.EnfenNoDisponible:  # sin internet ni caché: no se habilita el alivio
+        return {"activo": False, "desde": None, "fuente": "enfen"}
+    salida = {"activo": estado.activo,
+              "desde": estado.desde.isoformat() if estado.activo and estado.desde else None,
+              "fuente": "demo" if estado.modo == "demo" else "enfen"}
+    if estado.vigilancia:
+        salida["aviso"] = "Vigilancia de El Niño Costero: aviso preventivo, todavía sin alivio."
+    return salida
 
 
 @router.post("/el-nino")
