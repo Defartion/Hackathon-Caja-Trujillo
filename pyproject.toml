@@ -1,0 +1,11 @@
+[project]
+name = "cuotaflex"
+version = "0.1.0"
+description = "Motor de cuotas que se adaptan al flujo del negocio · Cajathón 2026 (NEG-01)"
+requires-python = ">=3.10"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

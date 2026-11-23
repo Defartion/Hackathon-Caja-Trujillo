@@ -1,0 +1,39 @@
+# Parámetros de negocio del motor CuotaFlex (Cajathón 2026 · NEG-01)
+# Todo valor referencial: debe calibrarse con políticas reales de Caja Trujillo.
+
+credito:
+  tea_base: 0.45            # TEA referencial microempresa
+  plazos_meses: [12, 18, 24]
+  costo_fondeo_tea: 0.08    # costo de fondeo de la Caja
+  costo_operativo_pct: 0.06 # gasto operativo anual sobre saldo promedio
+  recuperacion_default: 0.30 # % del saldo que se recupera tras castigo
+
+flexibilidad:
+  max_aplazamientos: 2          # BRAC: hasta 2 cuotas por crédito
+  cuota_minima_pct: 0.35        # piso de cualquier cuota vs. la cuota fija
+  cuota_maxima_mult: 1.80       # techo de cualquier cuota vs. la cuota fija (evita cuotas globo)
+  recargo_spread_tea: 0.02      # Sonata: +2 pp por opción flexible
+  max_meses_reducidos_anio: 4   # producto estacional: meses con cuota bajo la fija por año
+  tolerancia_reduccion: 0.05    # una cuota < (1-tol)*fija cuenta como reducida
+  requisito_dias_atraso_max: 8  # para ser elegible a flexibilidad (historial)
+  pierde_flex_con_atraso_dias: 30
+
+capacidad_pago:
+  ratio_cuota_excedente_max: 0.70  # cuota <= 70% del excedente mensual (ingreso*margen - gasto familiar)
+  cuantil_conservador: 0.25         # se diseña contra el escenario p25 de ingresos
+  ratio_deuda_total_max: 0.80       # (cuota nueva + otras cuotas) / excedente  -> sobreendeudamiento
+
+el_nino:
+  rubros_expuestos: [agricultura, pesca, comercio_campana]
+  meses_alivio: 3                   # cuotas al mínimo mientras dure la alerta (máx.)
+  probabilidad_anual: 0.15          # probabilidad de alerta ENFEN usada en simulación
+  caida_ingresos: {agricultura: 0.45, pesca: 0.55, comercio_campana: 0.20}
+
+simulacion:
+  semilla: 2026
+  n_clientes: 600
+  n_escenarios: 200
+  dias_mora: 30
+  meses_default: 3         # 3 cuotas impagas consecutivas -> default
+  colchon_meses: 0.5       # ahorro inicial en meses de excedente
+  fuga_caja_mensual: 0.15  # % del sobrante que se gasta/reinvierte cada mes (el microempresario no ahorra perfecto)
