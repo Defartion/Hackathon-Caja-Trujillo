@@ -1,0 +1,46 @@
+---
+config:
+  fontFamily: "Inter, Arial, sans-serif"
+  theme: base
+  themeVariables:
+    fontFamily: "Inter, Arial, sans-serif"
+    fontSize: "18px"
+    primaryColor: "#FFFFFF"
+    primaryTextColor: "#1F2328"
+    primaryBorderColor: "#57606A"
+    lineColor: "#57606A"
+    edgeLabelBackground: "#FFFFFF"
+---
+%% Fuente de docs/concepto/img/flujo-agente.png (CuotaFlex · Cajathón 2026 · NEG-01)
+%% Refleja src/cuotaflex/agente.py y politica.py con los valores de config/parametros.yaml.
+%% Se lee en "S": fila superior de izquierda a derecha y fila inferior de derecha a izquierda.
+%% Regenerar desde docs/concepto/img/:
+%%   npx -y @mermaid-js/mermaid-cli -i flujo-agente.mmd -o flujo-agente.png -b white -s 2 -w 1500
+block-beta
+  columns 5
+  eleg["1 · Elegibilidad<br/>atraso máximo ≤ 8 días<br/>deuda total ≤ 80% del excedente"]
+  space
+  pron["2 · Pronóstico de ventas<br/>cuantiles p10 · p25 · p50 · p90"]
+  space
+  prod["3 · Producto<br/>fija · fija con 2 aplazamientos<br/>· estacional (+ cláusula El Niño)"]
+  space:5
+  expl["6 · Explicación y bitácora<br/>para el asesor y el cliente;<br/>la propuesta va a Fineract"]
+  space
+  valid["5 · Validación<br/>valor presente · piso · techo<br/>· meses reducidos"]
+  space
+  crono["4 · Cronograma<br/>MILP si es estacional:<br/>cuota ≤ 70% del excedente p25"]
+  space:5
+  space:4
+  replan["Si no cabe en p25: replanificar<br/>ampliar plazo 12 → 18 → 24, luego<br/>reducir monto 10% (hasta 3 veces)"]
+  eleg --> pron
+  pron --> prod
+  prod --> crono
+  crono -- "cabe" --> valid
+  valid --> expl
+  crono -- "no cabe" --> replan
+  replan --> crono
+
+  classDef paso stroke:#0B5CAD,stroke-width:2px,fill:#FFFFFF,color:#1F2328
+  classDef replan stroke:#B7791F,stroke-width:2px,fill:#FDF6EA,color:#1F2328
+  class eleg,pron,prod,crono,valid,expl paso
+  class replan replan
