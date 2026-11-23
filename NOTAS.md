@@ -13,6 +13,11 @@
 
 ## Pendientes (detalle por fase en docs/fases/ROADMAP.md)
 - [ ] Calibrar el umbral de estacionalidad: en calzado y comercio, el cronograma por sí solo empeora un poco.
-- [ ] App web del asesor y del cliente, más el tablero de simulación en vivo.
+- [x] Fase 1 integrada: app del asesor (5173), app del cliente (5174), tablero (5175) y Concept Solution (docs/concepto/).
 - [ ] Confirmar la fecha de entrega del concepto y las herramientas de IA permitidas (cajathon@cajatrujillo.com.pe).
-- [ ] Documento de concepto en el formato oficial (base: docs/CONCEPTO.md).
+- [x] Concept Solution final en docs/concepto/ (exportado a PDF).
+
+## Integración fase 1 (23 nov)
+- 42 pruebas pasan; las 3 apps compilan.
+- Prueba de punta a punta: el asesor registra, aprueba y desembolsa → el cliente ve el préstamo y la alerta El Niño → el tablero corre el escenario Base Estándar en ~9 s.
+- Sin conflictos de fusión ni errores en consola.
