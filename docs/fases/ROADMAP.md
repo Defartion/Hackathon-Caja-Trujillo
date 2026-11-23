@@ -7,7 +7,7 @@ toca solo sus propios archivos, así que se pueden fusionar en cualquier orden s
 |---|---|---|
 | **0 · Base** (hecha) | Motor, API compatible con Fineract, simulación, pruebas, concepto preliminar | — |
 | **1 · Demo funcional y concepto** (integrada ✅) | Que el jurado pueda *ver y usar* la solución y que el concepto esté listo para entregarse | A App del asesor · B App del cliente · C Tablero de simulación en vivo · D Concept Solution final |
-| 2 · Calidad e integración | Modelo calibrado e integración con sistemas reales | A Calibración y backtesting · B Fineract real (Docker) · C Disparador ENFEN y notificaciones · D Agente con LLM y guardrails |
+| **2 · Calidad e integración** (en curso, ver `docs/fases/fase-2/`) | Modelo calibrado e integración con sistemas reales | A Calibración y backtesting · B Fineract real (Docker) · C Disparador ENFEN y notificaciones · D Agente con LLM y guardrails |
 | 3 · Final (3 y 4 de diciembre) | Entregable de la final pulido y desplegado | A Persistencia, roles y despliegue · B Pitch y guion de demo · C QA de punta a punta y datos de demo · D Video de respaldo y ensayo |
 
 Los lotes de las fases 2 y 3 se detallan al cerrar la fase anterior.
