@@ -1,0 +1,61 @@
+---
+config:
+  fontFamily: "Inter, Arial, sans-serif"
+  theme: base
+  themeVariables:
+    fontFamily: "Inter, Arial, sans-serif"
+    fontSize: "18px"
+    primaryColor: "#FFFFFF"
+    primaryTextColor: "#1F2328"
+    primaryBorderColor: "#57606A"
+    lineColor: "#57606A"
+    clusterBkg: "#F7F7F8"
+    clusterBorder: "#D0D7DE"
+    edgeLabelBackground: "#FFFFFF"
+  flowchart:
+    curve: basis
+    nodeSpacing: 22
+    rankSpacing: 46
+    wrappingWidth: 320
+---
+%% Fuente de docs/concepto/img/arquitectura.png (CuotaFlex · Cajathón 2026 · NEG-01)
+%% Regenerar desde docs/concepto/img/:
+%%   npx -y @mermaid-js/mermaid-cli -i arquitectura.mmd -o arquitectura.png -b white -s 2 -w 1500
+flowchart TB
+  subgraph canales["Canales (fase 1)"]
+    direction TB
+    asesor["App del asesor<br/>ficha, propuesta, bitácora"]
+    cliente["App del cliente<br/>cronograma, aplazamiento, avisos"]
+    tablero["Tablero de simulación<br/>mora y margen en vivo"]
+  end
+
+  subgraph integracion["Integración"]
+    direction LR
+    enfen["ENFEN<br/>Alerta de El Niño costero"]
+    api["API CuotaFlex<br/>compatible con Fineract"]
+    core[("Core bancario<br/>Apache Fineract")]
+    enfen -. "disparador:<br/>alivio automático" .-> api
+    api -- "cronograma variable<br/>antes de aprobar" --> core
+  end
+
+  subgraph motor["Agente asesor (motor de la fase 0)"]
+    direction LR
+    pron["Pronóstico<br/>probabilístico<br/>p10 · p25 · p50 · p90"]
+    pol["Políticas de riesgo<br/>elegibilidad,<br/>sobreendeudamiento"]
+    opt["Optimizador MILP<br/>CVXPY + HiGHS"]
+    val["Validación y<br/>explicación<br/>bitácora auditable"]
+    pron --> pol --> opt --> val
+  end
+
+  sim["Simulación Monte Carlo<br/>cuota fija vs. CuotaFlex<br/>con las mismas trayectorias"]
+
+  canales -- "solicitudes y consultas" --> integracion
+  integracion <-- "propuesta" --> motor
+  motor --> sim
+
+  classDef modulo stroke:#0B5CAD,stroke-width:2px,fill:#FFFFFF,color:#1F2328
+  classDef central stroke:#1F2328,stroke-width:2px,fill:#FFFFFF,color:#1F2328
+  classDef alerta stroke:#B7791F,stroke-width:2px,fill:#FDF6EA,color:#1F2328
+  class pron,pol,opt,val modulo
+  class api,core central
+  class enfen alerta
