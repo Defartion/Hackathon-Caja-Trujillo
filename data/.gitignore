@@ -1,0 +1,4 @@
+# Archivos que genera la API en ejecución (fase 2 · lote C)
+enfen_cache.json
+enfen_cache.tmp
+outbox.jsonl
