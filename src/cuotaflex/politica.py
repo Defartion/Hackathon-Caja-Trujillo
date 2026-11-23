@@ -59,3 +59,12 @@ def validar_cronograma(principal: float, tem: float, cuotas, excedente_p50, par:
         "carga_mediana_ok": bool(np.median(cuotas / np.maximum(excedente_p50, 1)) <= capp["ratio_cuota_excedente_max"]),
     }
     return {"valido": all(chequeos.values()), "chequeos": chequeos}
+
+
+def recargo_producto(par: dict, producto: str) -> float:
+    """Recargo de TEA por modalidad. `recargo.<producto>` manda si está definido;
+    si no, se usa la clave histórica `flexibilidad.recargo_spread_tea` (la que mueve el tablero)."""
+    if producto == "fija":
+        return 0.0
+    especifico = (par.get("recargo") or {}).get(producto)
+    return float(especifico) if especifico is not None else float(par["flexibilidad"]["recargo_spread_tea"])

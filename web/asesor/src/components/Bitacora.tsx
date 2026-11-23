@@ -32,6 +32,24 @@ function describir(p: PasoBitacora): { titulo: string; detalle: ReactNode; clase
         clase: v.elegible_flex ? "ok" : "mal",
       };
     }
+    case "seleccion": {
+      const cand = (v.candidatos as Record<string, { default: number; mora30: number; vpn: number }>) ?? {};
+      return {
+        titulo: `Selección por simulación: ${PRODUCTOS[String(v.elegido)] ?? v.elegido}`,
+        detalle: (
+          <div>
+            {Object.entries(cand).map(([prod, m]) => (
+              <div key={prod} style={{ fontWeight: prod === v.elegido ? 600 : 400 }}>
+                {prod === v.elegido ? "★ " : ""}
+                {PRODUCTOS[prod] ?? prod}: default {fmtPct(m.default)} · atraso {fmtPct(m.mora30)} · VPN {fmtS0(m.vpn)}
+              </div>
+            ))}
+            <div>Criterio: {String(v.criterio ?? "menor default sin perder rentabilidad")}</div>
+          </div>
+        ),
+        clase: "ok",
+      };
+    }
     case "producto":
       return { titulo: `Producto elegido: ${PRODUCTOS[String(v.producto)] ?? v.producto}`, detalle: null, clase: "" };
     case "cronograma": {

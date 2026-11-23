@@ -49,6 +49,7 @@ class PrestamoIn(BaseModel):
     numberOfRepayments: int = 12
     tea: float | None = None
     mesPrimeraCuota: int = Field(date.today().month % 12, ge=0, le=11, description="0=ene .. 11=dic")
+    productoPreferido: str | None = Field(None, description="fija | aplazamiento | estacional (si es elegible)")
 
 
 class AplazamientoIn(BaseModel):
@@ -89,7 +90,7 @@ def crear_prestamo(p: PrestamoIn):
     cli = {"cliente_id": f"API{c['id']}", **{k: c[k] for k in ("rubro", "ventas_medias", "margen", "gasto_familiar",
             "otras_cuotas", "dias_atraso_max", "ajuste_asesor")},
            "principal": p.principal, "plazo": p.numberOfRepayments, "tea": p.tea or par["credito"]["tea_base"],
-           "mes_desembolso": p.mesPrimeraCuota}
+           "mes_desembolso": p.mesPrimeraCuota, "producto_preferido": p.productoPreferido}
     hist = c["historial_ventas"]
     if not hist or len(hist) < 12:
         rng = np.random.default_rng(c["id"])

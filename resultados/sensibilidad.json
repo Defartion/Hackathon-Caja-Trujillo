@@ -1,0 +1,125 @@
+{
+  "fuga_caja_mensual": [
+    {
+      "valor": 0.0,
+      "default_fija": 2.69,
+      "default_flex": 0.88,
+      "mora_fija": 6.17,
+      "mora_flex": 2.48,
+      "margen_fija": 20.66,
+      "margen_flex": 26.48
+    },
+    {
+      "valor": 0.1,
+      "default_fija": 3.57,
+      "default_flex": 1.23,
+      "mora_fija": 8.34,
+      "mora_flex": 3.42,
+      "margen_fija": 20.21,
+      "margen_flex": 26.33
+    },
+    {
+      "valor": 0.15,
+      "default_fija": 4.3,
+      "default_flex": 1.58,
+      "mora_fija": 10.14,
+      "mora_flex": 4.48,
+      "margen_fija": 19.85,
+      "margen_flex": 26.16
+    },
+    {
+      "valor": 0.2,
+      "default_fija": 5.41,
+      "default_flex": 2.13,
+      "mora_fija": 12.72,
+      "mora_flex": 5.97,
+      "margen_fija": 19.35,
+      "margen_flex": 25.91
+    },
+    {
+      "valor": 0.3,
+      "default_fija": 8.14,
+      "default_flex": 3.79,
+      "mora_fija": 18.77,
+      "mora_flex": 10.22,
+      "margen_fija": 18.08,
+      "margen_flex": 25.13
+    },
+    {
+      "valor": 0.4,
+      "default_fija": 11.63,
+      "default_flex": 5.87,
+      "mora_fija": 25.98,
+      "mora_flex": 15.62,
+      "margen_fija": 16.32,
+      "margen_flex": 24.11
+    }
+  ],
+  "probabilidad_nino": [
+    {
+      "valor": 0.0,
+      "default_fija": 2.78,
+      "default_flex": 0.79,
+      "mora_fija": 8.08,
+      "mora_flex": 3.14,
+      "margen_fija": 20.76,
+      "margen_flex": 26.33
+    },
+    {
+      "valor": 0.15,
+      "default_fija": 4.3,
+      "default_flex": 1.58,
+      "mora_fija": 10.14,
+      "mora_flex": 4.48,
+      "margen_fija": 19.85,
+      "margen_flex": 26.16
+    },
+    {
+      "valor": 0.5,
+      "default_fija": 6.95,
+      "default_flex": 2.86,
+      "mora_fija": 13.49,
+      "mora_flex": 6.74,
+      "margen_fija": 18.28,
+      "margen_flex": 25.87
+    },
+    {
+      "valor": 1.0,
+      "default_fija": 8.31,
+      "default_flex": 3.58,
+      "mora_fija": 15.28,
+      "mora_flex": 7.84,
+      "margen_fija": 17.49,
+      "margen_flex": 25.66
+    }
+  ],
+  "factor_volatilidad": [
+    {
+      "valor": 1.0,
+      "default_fija": 4.3,
+      "default_flex": 1.58,
+      "mora_fija": 10.14,
+      "mora_flex": 4.48,
+      "margen_fija": 19.85,
+      "margen_flex": 26.16
+    },
+    {
+      "valor": 1.5,
+      "default_fija": 8.77,
+      "default_flex": 4.13,
+      "mora_fija": 17.49,
+      "mora_flex": 9.44,
+      "margen_fija": 16.74,
+      "margen_flex": 24.62
+    },
+    {
+      "valor": 2.0,
+      "default_fija": 15.07,
+      "default_flex": 9.04,
+      "mora_fija": 25.75,
+      "mora_flex": 16.9,
+      "margen_fija": 12.17,
+      "margen_flex": 21.33
+    }
+  ]
+}

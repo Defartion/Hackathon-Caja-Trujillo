@@ -35,6 +35,11 @@ RUBROS = {
 }
 
 
+# Valores de la fase 1 (si config no define cartera_sintetica se reproduce la cartera original)
+CARTERA_DEFECTO = {"cuota_excedente_min": 0.35, "cuota_excedente_max": 0.60,
+                   "prob_atrasos": [.40, .22, .15, .11, .08, .04]}
+
+
 def indice_estacionalidad(rubro: str) -> float:
     """Coeficiente de variación del perfil estacional (0 = plano)."""
     p = PERFILES[rubro]
@@ -42,9 +47,11 @@ def indice_estacionalidad(rubro: str) -> float:
 
 
 def simular_ventas(rubro: str, escala: float, n_meses: int, rng, mes_inicio: int = 0,
-                   n_tray: int | None = None) -> np.ndarray:
-    """Ventas mensuales con estacionalidad + choque AR(1) log-normal."""
-    sigma = RUBROS[rubro][2]
+                   n_tray: int | None = None, factor_sigma: float = 1.0) -> np.ndarray:
+    """Ventas mensuales con estacionalidad + choque AR(1) log-normal.
+
+    factor_sigma > 1 simula un futuro más volátil que el historial (error de pronóstico)."""
+    sigma = RUBROS[rubro][2] * factor_sigma
     forma = (n_tray, n_meses) if n_tray else (n_meses,)
     eps = rng.normal(0, sigma, size=forma)
     z = np.zeros(forma)
@@ -56,11 +63,12 @@ def simular_ventas(rubro: str, escala: float, n_meses: int, rng, mes_inicio: int
 
 
 def generar_cartera(n: int | None = None, semilla: int | None = None,
-                    meses_historia: int = 24) -> tuple[pd.DataFrame, pd.DataFrame]:
+                    meses_historia: int = 24, par: dict | None = None) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Devuelve (clientes, historial_ventas largo: cliente_id, mes, ventas)."""
-    par = cargar_parametros()
+    par = par or cargar_parametros()
     n = n or par["simulacion"]["n_clientes"]
     rng = np.random.default_rng(semilla if semilla is not None else par["simulacion"]["semilla"])
+    cs = {**CARTERA_DEFECTO, **par.get("cartera_sintetica", {})}
     nombres = list(RUBROS)
     pesos = np.array([RUBROS[r][0] for r in nombres])
     rubros = rng.choice(nombres, size=n, p=pesos / pesos.sum())
@@ -74,11 +82,11 @@ def generar_cartera(n: int | None = None, semilla: int | None = None,
         excedente = escala * margen - gasto_fam
         otras_cuotas = excedente * rng.choice([0, 0, 0.1, 0.2, 0.35], p=[.4, .2, .2, .12, .08])
         # historial de pagos: mayoría puntual, cola con atrasos
-        dias_atraso_max = int(rng.choice([0, 3, 8, 15, 35, 70], p=[.40, .22, .15, .11, .08, .04]))
+        dias_atraso_max = int(rng.choice([0, 3, 8, 15, 35, 70], p=cs["prob_atrasos"]))
         n_previos = int(rng.integers(0, 6))
         plazo = int(rng.choice(par["credito"]["plazos_meses"]))
         tea = par["credito"]["tea_base"] + (0.06 if dias_atraso_max > 15 else 0) + rng.uniform(-0.05, 0.05)
-        cuota_obj = (excedente - otras_cuotas) * rng.uniform(0.35, 0.60)
+        cuota_obj = (excedente - otras_cuotas) * rng.uniform(cs["cuota_excedente_min"], cs["cuota_excedente_max"])
         principal = round(cuota_francesa(1, tea_a_tem(tea), plazo) ** -1 * cuota_obj, -2)
         cid = f"C{i:05d}"
         filas.append({

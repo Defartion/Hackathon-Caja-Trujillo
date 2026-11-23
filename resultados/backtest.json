@@ -1,0 +1,106 @@
+{
+  "global": {
+    "perfil (sigma x1.3)": {
+      "MAPE": 0.1648,
+      "pinball_p10": 0.0317,
+      "pinball_p25": 0.0606,
+      "pinball_p50": 0.0809,
+      "pinball_p90": 0.0426,
+      "cobertura_10_90": 0.7947,
+      "sobre_p25": 0.7646,
+      "pinball_medio": 0.054
+    },
+    "perfil (sigma x1.5)": {
+      "MAPE": 0.1635,
+      "pinball_p10": 0.032,
+      "pinball_p25": 0.0609,
+      "pinball_p50": 0.0807,
+      "pinball_p90": 0.0443,
+      "cobertura_10_90": 0.8601,
+      "sobre_p25": 0.8058,
+      "pinball_medio": 0.0545
+    },
+    "perfil (sigma x1.0)": {
+      "MAPE": 0.1669,
+      "pinball_p10": 0.0343,
+      "pinball_p25": 0.0623,
+      "pinball_p50": 0.0814,
+      "pinball_p90": 0.0423,
+      "cobertura_10_90": 0.6771,
+      "sobre_p25": 0.7015,
+      "pinball_medio": 0.0551
+    },
+    "mixto 0.3 (sigma x1.3)": {
+      "MAPE": 0.1714,
+      "pinball_p10": 0.033,
+      "pinball_p25": 0.0624,
+      "pinball_p50": 0.0838,
+      "pinball_p90": 0.0443,
+      "cobertura_10_90": 0.8117,
+      "sobre_p25": 0.7725,
+      "pinball_medio": 0.0558
+    },
+    "mixto 0.5 (sigma x1.3)": {
+      "MAPE": 0.181,
+      "pinball_p10": 0.0354,
+      "pinball_p25": 0.0657,
+      "pinball_p50": 0.0883,
+      "pinball_p90": 0.0465,
+      "cobertura_10_90": 0.8008,
+      "sobre_p25": 0.7682,
+      "pinball_medio": 0.059
+    },
+    "mixto 0.5 (sigma x1.0)": {
+      "MAPE": 0.1821,
+      "pinball_p10": 0.0356,
+      "pinball_p25": 0.0662,
+      "pinball_p50": 0.0885,
+      "pinball_p90": 0.0465,
+      "cobertura_10_90": 0.7529,
+      "sobre_p25": 0.7378,
+      "pinball_medio": 0.0592
+    },
+    "statsforecast": {
+      "MAPE": 0.2175,
+      "pinball_p10": 0.0451,
+      "pinball_p25": 0.0799,
+      "pinball_p50": 0.1058,
+      "pinball_p90": 0.0577,
+      "cobertura_10_90": 0.7474,
+      "sobre_p25": 0.75,
+      "pinball_medio": 0.0721
+    }
+  },
+  "por_rubro_mejor": {
+    "agricultura": {
+      "ape": 0.2269,
+      "cob_10_90": 0.7884,
+      "sobre_p25": 0.7659
+    },
+    "bodega": {
+      "ape": 0.0814,
+      "cob_10_90": 0.8159,
+      "sobre_p25": 0.7818
+    },
+    "calzado": {
+      "ape": 0.1738,
+      "cob_10_90": 0.8226,
+      "sobre_p25": 0.8078
+    },
+    "comercio_campana": {
+      "ape": 0.1638,
+      "cob_10_90": 0.7774,
+      "sobre_p25": 0.7255
+    },
+    "pesca": {
+      "ape": 0.2641,
+      "cob_10_90": 0.8253,
+      "sobre_p25": 0.797
+    },
+    "servicios": {
+      "ape": 0.1091,
+      "cob_10_90": 0.7668,
+      "sobre_p25": 0.7535
+    }
+  }
+}
