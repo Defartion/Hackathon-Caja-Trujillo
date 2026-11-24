@@ -24,7 +24,7 @@ router = APIRouter(prefix="/motor", tags=["asesor"])
 N_ESCENARIOS = 300
 MESES_HIST = 24
 _CACHE_CARTERA: dict[tuple[int, int], list[dict]] = {}
-_agente = AgenteAsesor(metodo_pronostico="mixto")
+_agente = AgenteAsesor()  # método de pronóstico según config (pronostico.metodo)
 
 
 def _nativo(x):
@@ -125,7 +125,7 @@ def propuesta(sol: ClienteSolicitud):
     historial = pd.DataFrame({"cliente_id": cli["cliente_id"], "t": range(-len(hist), 0), "ventas": hist})
 
     prop = _agente.proponer(cli, historial)
-    q = pronosticar(pd.DataFrame([{**cli, "plazo": prop["plazo"]}]), historial, metodo="mixto")[cli["cliente_id"]]
+    q = pronosticar(pd.DataFrame([{**cli, "plazo": prop["plazo"]}]), historial)[cli["cliente_id"]]
     ratio = par["capacidad_pago"]["ratio_cuota_excedente_max"]
     capacidad = [round(max(f["excedente_p25"], 0) * ratio, 2) for f in prop["cronograma"]]
 

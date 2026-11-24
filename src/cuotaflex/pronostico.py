@@ -44,9 +44,20 @@ def _statsforecast(series: dict[str, np.ndarray], h: int) -> dict[str, tuple[np.
     return out
 
 
-def pronosticar(clientes: pd.DataFrame, historial: pd.DataFrame, metodo: str = "mixto",
-                peso_modelo: float = 0.5) -> dict[str, np.ndarray]:
-    """{cliente_id: array (4, plazo) con cuantiles de ventas mensuales}."""
+def pronosticar(clientes: pd.DataFrame, historial: pd.DataFrame, metodo: str | None = None,
+                peso_modelo: float | None = None, factor_sigma: float | None = None) -> dict[str, np.ndarray]:
+    """{cliente_id: array (4, plazo) con cuantiles de ventas mensuales}.
+
+    peso_modelo y factor_sigma toman por defecto `pronostico.*` de config (calibrados por backtesting).
+    factor_sigma ensancha la dispersión del perfil: el sigma de residuos dentro de muestra subestima
+    la incertidumbre fuera de muestra.
+    """
+    from .config import cargar_parametros
+
+    cfg = cargar_parametros().get("pronostico", {})
+    metodo = metodo or cfg.get("metodo", "mixto")
+    peso_modelo = cfg.get("peso_modelo", 0.5) if peso_modelo is None else peso_modelo
+    factor_sigma = cfg.get("factor_sigma", 1.0) if factor_sigma is None else factor_sigma
     hist_por_cli = {k: g.sort_values("t")["ventas"].to_numpy() for k, g in historial.groupby("cliente_id")}
     h = int(clientes["plazo"].max())
     modelo = {}
@@ -61,6 +72,7 @@ def pronosticar(clientes: pd.DataFrame, historial: pd.DataFrame, metodo: str = "
         cid, plazo = cli["cliente_id"], cli["plazo"]
         hist = hist_por_cli[cid]
         base, sig_log = _perfil(cli, hist, plazo)
+        sig_log *= factor_sigma
         q_perfil = base * np.exp(np.outer(z, np.ones(plazo)) * sig_log - sig_log**2 / 2)
         if cid in modelo and metodo != "perfil":
             media, sig = modelo[cid][0][:plazo], modelo[cid][1][:plazo]

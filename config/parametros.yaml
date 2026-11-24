@@ -37,3 +37,22 @@ simulacion:
   meses_default: 3         # 3 cuotas impagas consecutivas -> default
   colchon_meses: 0.5       # ahorro inicial en meses de excedente
   fuga_caja_mensual: 0.15  # % del sobrante que se gasta/reinvierte cada mes (el microempresario no ahorra perfecto)
+
+cartera_sintetica:              # calibrada en fase 2 contra la mora SBS de cajas municipales (ver resultados/calibracion.md)
+  cuota_excedente_min: 0.30     # cuota fija solicitada como % del excedente libre
+  cuota_excedente_max: 0.42
+  prob_atrasos: [0.40, 0.22, 0.15, 0.11, 0.08, 0.04]   # días de atraso máx. 0/3/8/15/35/70
+
+seleccion:
+  modo: simulacion              # simulacion | regla (umbral de estacionalidad de la fase 1)
+  n_escenarios: 200
+  max_perdida_vpn_pct: 5        # el producto elegido no puede bajar el VPN más de 5% vs. la cuota fija
+
+recargo:                        # recargo de TEA por modalidad; null = usa flexibilidad.recargo_spread_tea
+  estacional: null
+  aplazamiento: null
+
+pronostico:                     # elegido por backtesting (resultados/backtest.md)
+  metodo: perfil                # perfil | statsforecast | mixto
+  peso_modelo: 0.3              # peso de statsforecast cuando metodo = mixto
+  factor_sigma: 1.3             # calibra la cobertura p10–p90 a ~80% fuera de muestra

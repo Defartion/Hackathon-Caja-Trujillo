@@ -119,6 +119,7 @@ def demo_seed(producto: Literal["estacional", "aplazamiento"] = "estacional"):
     client_id = cliente["clientId"]
     prestamo = api.crear_prestamo(api.PrestamoIn(
         clientId=client_id, principal=6000, numberOfRepayments=12, mesPrimeraCuota=mes,
+        productoPreferido=producto,
     ))
     loan_id = prestamo["loanId"]
     with _bloqueo:

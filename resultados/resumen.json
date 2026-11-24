@@ -1,130 +1,130 @@
 {
   "completo": {
     "cuotaflex": {
-      "mora30_pct": 7.28,
-      "default_pct": 3.42,
-      "margen_neto_total": 882599.0,
-      "cartera": 3886300.0,
-      "margen_sobre_cartera_pct": 22.71
+      "mora30_pct": 4.82,
+      "default_pct": 2.05,
+      "margen_neto_total": 733475.0,
+      "cartera": 2854600.0,
+      "margen_sobre_cartera_pct": 25.69
     },
     "fija": {
-      "mora30_pct": 16.26,
-      "default_pct": 8.53,
-      "margen_neto_total": 742204.0,
-      "cartera": 4512100.0,
-      "margen_sobre_cartera_pct": 16.45
+      "mora30_pct": 10.36,
+      "default_pct": 4.76,
+      "margen_neto_total": 655866.0,
+      "cartera": 3409600.0,
+      "margen_sobre_cartera_pct": 19.24
     },
     "delta": {
-      "mora30_relativa_pct": -55.2,
-      "default_relativo_pct": -59.9,
-      "margen_neto_dif": 140395.0
+      "mora30_relativa_pct": -53.5,
+      "default_relativo_pct": -56.9,
+      "margen_neto_dif": 77609.0
     },
     "por_rubro": {
       "agricultura": {
-        "mora30_fija": 44.3,
-        "mora30_cuotaflex": 20.1,
-        "vpn_fija": 449.0,
-        "vpn_cuotaflex": 1105.0
+        "mora30_fija": 30.4,
+        "mora30_cuotaflex": 14.3,
+        "vpn_fija": 751.0,
+        "vpn_cuotaflex": 1042.0
       },
       "bodega": {
         "mora30_fija": 0.0,
         "mora30_cuotaflex": 0.0,
-        "vpn_fija": 1018.0,
-        "vpn_cuotaflex": 1063.0
+        "vpn_fija": 763.0,
+        "vpn_cuotaflex": 795.0
       },
       "calzado": {
-        "mora30_fija": 8.0,
-        "mora30_cuotaflex": 3.3,
-        "vpn_fija": 2132.0,
-        "vpn_cuotaflex": 2047.0
+        "mora30_fija": 3.2,
+        "mora30_cuotaflex": 0.9,
+        "vpn_fija": 1702.0,
+        "vpn_cuotaflex": 1643.0
       },
       "comercio_campana": {
-        "mora30_fija": 6.8,
-        "mora30_cuotaflex": 2.2,
-        "vpn_fija": 1741.0,
-        "vpn_cuotaflex": 1807.0
+        "mora30_fija": 2.0,
+        "mora30_cuotaflex": 0.4,
+        "vpn_fija": 1380.0,
+        "vpn_cuotaflex": 1489.0
       },
       "pesca": {
-        "mora30_fija": 46.4,
-        "mora30_cuotaflex": 22.6,
-        "vpn_fija": 453.0,
-        "vpn_cuotaflex": 1217.0
+        "mora30_fija": 32.7,
+        "mora30_cuotaflex": 17.0,
+        "vpn_fija": 851.0,
+        "vpn_cuotaflex": 1235.0
       },
       "servicios": {
-        "mora30_fija": 0.2,
-        "mora30_cuotaflex": 0.1,
-        "vpn_fija": 1587.0,
-        "vpn_cuotaflex": 1671.0
+        "mora30_fija": 0.0,
+        "mora30_cuotaflex": 0.0,
+        "vpn_fija": 1195.0,
+        "vpn_cuotaflex": 1266.0
       }
     },
     "mix_productos": {
-      "estacional": 292,
-      "aplazamiento": 165,
-      "fija": 143
+      "aplazamiento": 343,
+      "fija": 150,
+      "estacional": 107
     }
   },
   "solo_cronograma": {
     "cuotaflex": {
-      "mora30_pct": 14.33,
-      "default_pct": 7.69,
-      "margen_neto_total": 771660.0,
-      "cartera": 4512100.0,
-      "margen_sobre_cartera_pct": 17.1
+      "mora30_pct": 7.47,
+      "default_pct": 3.45,
+      "margen_neto_total": 732531.0,
+      "cartera": 3409600.0,
+      "margen_sobre_cartera_pct": 21.48
     },
     "fija": {
-      "mora30_pct": 16.26,
-      "default_pct": 8.53,
-      "margen_neto_total": 742204.0,
-      "cartera": 4512100.0,
-      "margen_sobre_cartera_pct": 16.45
+      "mora30_pct": 10.36,
+      "default_pct": 4.76,
+      "margen_neto_total": 655866.0,
+      "cartera": 3409600.0,
+      "margen_sobre_cartera_pct": 19.24
     },
     "delta": {
-      "mora30_relativa_pct": -11.9,
-      "default_relativo_pct": -9.8,
-      "margen_neto_dif": 29456.0
+      "mora30_relativa_pct": -27.9,
+      "default_relativo_pct": -27.5,
+      "margen_neto_dif": 76665.0
     },
     "por_rubro": {
       "agricultura": {
-        "mora30_fija": 44.3,
-        "mora30_cuotaflex": 35.3,
-        "vpn_fija": 449.0,
-        "vpn_cuotaflex": 613.0
+        "mora30_fija": 30.4,
+        "mora30_cuotaflex": 22.0,
+        "vpn_fija": 751.0,
+        "vpn_cuotaflex": 990.0
       },
       "bodega": {
         "mora30_fija": 0.0,
         "mora30_cuotaflex": 0.0,
-        "vpn_fija": 1018.0,
-        "vpn_cuotaflex": 1066.0
+        "vpn_fija": 763.0,
+        "vpn_cuotaflex": 799.0
       },
       "calzado": {
-        "mora30_fija": 8.0,
-        "mora30_cuotaflex": 9.9,
-        "vpn_fija": 2132.0,
-        "vpn_cuotaflex": 2001.0
+        "mora30_fija": 3.2,
+        "mora30_cuotaflex": 1.8,
+        "vpn_fija": 1702.0,
+        "vpn_cuotaflex": 1793.0
       },
       "comercio_campana": {
-        "mora30_fija": 6.8,
-        "mora30_cuotaflex": 8.2,
-        "vpn_fija": 1741.0,
-        "vpn_cuotaflex": 1675.0
+        "mora30_fija": 2.0,
+        "mora30_cuotaflex": 1.0,
+        "vpn_fija": 1380.0,
+        "vpn_cuotaflex": 1468.0
       },
       "pesca": {
-        "mora30_fija": 46.4,
-        "mora30_cuotaflex": 40.3,
-        "vpn_fija": 453.0,
-        "vpn_cuotaflex": 713.0
+        "mora30_fija": 32.7,
+        "mora30_cuotaflex": 25.2,
+        "vpn_fija": 851.0,
+        "vpn_cuotaflex": 1172.0
       },
       "servicios": {
-        "mora30_fija": 0.2,
-        "mora30_cuotaflex": 0.1,
-        "vpn_fija": 1587.0,
-        "vpn_cuotaflex": 1668.0
+        "mora30_fija": 0.0,
+        "mora30_cuotaflex": 0.0,
+        "vpn_fija": 1195.0,
+        "vpn_cuotaflex": 1255.0
       }
     },
     "mix_productos": {
-      "estacional": 292,
-      "aplazamiento": 165,
-      "fija": 143
+      "aplazamiento": 362,
+      "fija": 144,
+      "estacional": 94
     }
   }
 }

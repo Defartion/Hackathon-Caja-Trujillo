@@ -94,7 +94,7 @@ def comparar_cartera(n_clientes: int | None = None, n_escenarios: int | None = N
     sim = par["simulacion"]
     n_esc = n_escenarios or sim["n_escenarios"]
     semilla = sim["semilla"] if semilla is None else semilla
-    clientes, hist = generar_cartera(n_clientes, semilla)
+    clientes, hist = generar_cartera(n_clientes, semilla, par=par)
     h = max(par["credito"]["plazos_meses"])
     q = pronosticar(clientes.assign(plazo=h), hist, metodo=metodo_pronostico)
     agente = AgenteAsesor(par, metodo_pronostico, replanificar)
@@ -112,7 +112,8 @@ def comparar_cartera(n_clientes: int | None = None, n_escenarios: int | None = N
                 c = np.array([f["cuota"] for f in prop["cronograma"]])
                 tem, plazo, principal = tea_a_tem(prop["tea"]), prop["plazo"], prop["principal_aprobado"]
                 aplz, alivio = prop["aplazamientos_disponibles"], prop["clausula_el_nino"]
-            ventas = simular_ventas(cli["rubro"], cli["ventas_medias"], h, rng, cli["mes_desembolso"], n_esc)[:, :plazo]
+            ventas = simular_ventas(cli["rubro"], cli["ventas_medias"], h, rng, cli["mes_desembolso"], n_esc,
+                                    sim.get("factor_volatilidad", 1.0))[:, :plazo]
             nino = _trayectorias_el_nino(n_esc, h, rng, par)[:, :plazo]
             ccli = {**cli, "principal": principal}
             if c is None:
