@@ -6,7 +6,7 @@ Instala Python 3.10 o posterior, Node.js, curl y las dependencias. Desde la raí
 
 ```bash
 python3 -m venv .venv
-.venv/bin/python -m pip install -r requirements.txt -r requirements-fase3-b.txt
+.venv/bin/python -m pip install -r requirements.txt -r requirements-dev.txt
 .venv/bin/python -m playwright install chromium
 
 export VITE_API_URL=http://127.0.0.1:8000
@@ -19,7 +19,7 @@ En PowerShell desde la raíz del repositorio:
 
 ```powershell
 py -3.12 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt -r requirements-fase3-b.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt -r requirements-dev.txt
 .\.venv\Scripts\python.exe -m playwright install chromium
 
 $env:VITE_API_URL = 'http://127.0.0.1:8000'
