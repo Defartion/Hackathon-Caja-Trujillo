@@ -133,45 +133,18 @@ sistemas reales: core bancario, alertas oficiales e IA generativa.
 
 ---
 
-## Fase 3 · Preparación de la final (30 nov – 2 dic)
+## Fase 3 · Preparación de la final (24 nov – 1 dic)
 
-**Objetivo:** llegar a la final con una demo estable, desplegada y ensayada, y con el pitch listo.
-La final evalúa impacto (35%), funcionamiento y demo (35%), innovación (20%) y presentación (10%).
+**Objetivo:** demo estable, desplegada y ensayada, con el pitch listo. Instrucciones detalladas en `docs/fases/fase-3/`.
 
-### Lote A · Persistencia, roles y despliegue
-1. Base de datos (SQLite o Postgres con SQLModel) en lugar de la memoria: clientes, préstamos, pagos, aplazamientos, alertas y simulaciones.
-2. Acceso simple por rol: asesor y cliente con un PIN de demo, más un panel de supervisor para el tablero.
-3. Contenedores Docker para la API y las tres apps. Despliegue en Railway u otra plataforma, con una URL pública por app.
-4. Variables de entorno documentadas. Script `reset_demo.sh` que deja los datos de demo limpios en un comando.
+| Lote | Responsable | Entregable |
+|---|---|---|
+| A · Persistencia, roles y despliegue | Sebastian | SQLite por instantánea, PIN por rol, espejo automático en Fineract, Docker Compose, URLs públicas y `reset_demo` |
+| B · QA y casos estrella | Joaquin | 3 casos estrella reproducibles (agricultora, pescador, bodeguero), pruebas de punta a punta con Playwright, carga ligera, modo sin conexión y Fineract en Windows |
+| C · Plan de la final | Stefano | Diseño del módulo en vivo (pago a cosecha o % de ventas), plan por horas, lista de verificación, contingencias, verificador del entorno, video de respaldo y declaración de propiedad intelectual |
+| D · Pitch | Andre | Concepto v2 con cifras de la fase 2, pitch de 10 a 12 láminas, guion de 5–7 y de 3 minutos, 20 o más preguntas y resumen impreso con QR |
 
-### Lote B · Pitch y guion de la demo
-1. **Presentación (10 a 12 láminas):** problema con un caso real de la región, solución, demo, impacto, tecnología, riesgos, modelo de negocio para la Caja y equipo.
-2. **Guion de 5 a 7 minutos**, cronometrado, con transiciones entre las tres apps.
-3. **Banco de preguntas:** unas 20 preguntas probables del jurado con su respuesta.
-   - ¿Y si el pronóstico falla?
-   - ¿Esto aumenta el sobreendeudamiento?
-   - ¿Cómo lo ve la SBS?
-   - ¿Por qué no basta un tablero?
-   - ¿Cuánto cuesta implementarlo?
-4. Resumen de una página impreso para el jurado.
-
-### Lote C · QA de punta a punta y datos de la demo
-1. Pruebas de punta a punta con Playwright para las tres apps y el flujo cruzado asesor → cliente → tablero.
-2. **Tres casos estrella con semilla fija:**
-   - Un agricultor con cuota estacional que baja su riesgo.
-   - Un pescador cubierto por la alerta El Niño.
-   - Un bodeguero al que el agente le reduce el monto por sobreendeudamiento.
-3. Pruebas de carga ligera (10 usuarios simultáneos) y de tiempos de respuesta.
-4. **Modo sin conexión:** la demo funciona en una laptop con la red caída (API local, mock del core y plantillas sin LLM).
-
-### Lote D · Plan de los dos días de la final y contingencias
-1. **Definir qué se construye en vivo durante la final**, porque según las bases el motor y el módulo se desarrollan en el evento y lo construido pasa a la Caja si ganamos. Propuesta: el **módulo de pago a cosecha o por porcentaje de ventas** (cobro vinculado a las ventas registradas por Yape), que extiende la idea de Shopify Capital.
-2. Cronograma por horas de los dos días, con un responsable por bloque y puntos de control.
-3. **Video de respaldo** de 3 minutos con la demo completa, por si fallan la red o la proyección.
-4. Lista de verificación del día: laptops, cargadores, adaptador HDMI, punto de acceso móvil, cuentas con sesión iniciada, `.env` y repositorio clonado en dos máquinas.
-5. Declaración final de la tecnología existente y de lo construido durante el evento.
-
-**Integración (`integracion/fase-3`):** ensayo general completo, dos veces, con el cronómetro corriendo.
+**Integración (`integracion/fase-3`):** ensayo general completo, dos veces, con el cronómetro corriendo, sobre la versión desplegada y en modo sin conexión.
 **Criterio de salida:** demo desplegada, pitch ensayado, video de respaldo listo y plan de los dos días aprobado por el equipo.
 
 ---
