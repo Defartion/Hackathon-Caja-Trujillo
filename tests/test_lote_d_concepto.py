@@ -1,15 +1,11 @@
-"""Pruebas del Lote D (fase 1): Concept Solution.
-
-Comprueban que las cifras del concepto coinciden con resultados/resumen.json, que el documento
-sigue los componentes oficiales, que los diagramas tienen PNG y fuente, y que el script de
-figuras corre. No tocan el motor.
-"""
+"""Comprueba el concepto original y la versión calibrada de la fase 3."""
 import importlib.util
 import json
 from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 
 import pytest
+from pypdf import PdfReader
 
 RAIZ = Path(__file__).resolve().parents[1]
 CONCEPTO = RAIZ / "docs" / "concepto"
@@ -17,6 +13,7 @@ CONCEPTO = RAIZ / "docs" / "concepto"
 # Las cifras calibradas de la fase 2 están en resultados/resumen.json y resultados/CAMBIOS_FASE2.md.
 RESUMEN = json.loads((RAIZ / "resultados" / "fase1" / "resumen.json").read_text(encoding="utf-8"))
 COMPLETO, SOLO = RESUMEN["completo"], RESUMEN["solo_cronograma"]
+ACTUAL = json.loads((RAIZ / "resultados" / "resumen.json").read_text(encoding="utf-8"))
 PNG = b"\x89PNG\r\n\x1a\n"
 
 
@@ -134,13 +131,71 @@ def test_diagramas_con_png_y_fuente():
     assert (img / "cronograma-ejemplo.png").read_bytes()[:8] == PNG
 
 
-@pytest.mark.skip(reason="La figura 1 del concepto entregado se generó con el motor de la fase 1; el motor calibrado "
-                         "de la fase 2 elige otro ejemplo. Se regenera al actualizar concepto y pitch (fase 3, lote B).")
-def test_ejemplo_de_la_figura_1_coincide_con_el_texto(ejemplo):
+def test_ejemplo_de_la_figura_1_coincide_con_el_texto_v2(ejemplo):
     assert ejemplo["exceso_estacional"] < ejemplo["exceso_fija"]
-    leyenda = _texto("CONCEPT_SOLUTION.md").split("*Figura 1.")[1].split("*")[0]
+    leyenda = _texto("v2/CONCEPT_SOLUTION.md").split("*Figura 1.")[1].split("*")[0]
+    assert ejemplo["cliente_id"] in leyenda
+    assert f"S/ {ejemplo['principal_aprobado']:,.0f} a {ejemplo['plazo']} meses" in leyenda
     assert f"en {ejemplo['meses_exceso_fija']} meses (S/ {ejemplo['exceso_fija']:,.0f} en total)" in leyenda
     assert f"en {ejemplo['meses_exceso_estacional']} (S/ {ejemplo['exceso_estacional']:,.0f})" in leyenda
+
+    original = (CONCEPTO / "img" / "cronograma-ejemplo.png").read_bytes()
+    regenerada = (CONCEPTO / "v2" / "img" / "cronograma-ejemplo.png").read_bytes()
+    assert regenerada.startswith(PNG)
+    assert regenerada != original
+
+
+@pytest.mark.parametrize("nombre", ["CONCEPT_SOLUTION.md", "one-pager.md"])
+def test_cifras_v2_coinciden_con_resumen_vigente(nombre):
+    doc = _texto(f"v2/{nombre}")
+    completo, solo = ACTUAL["completo"], ACTUAL["solo_cronograma"]
+    indicadores = {
+        "mora30_pct": "| Créditos con atraso > 30 días",
+        "default_pct": "| Default",
+        "margen_sobre_cartera_pct": "| Margen neto / cartera",
+    }
+    for clave, indicador in indicadores.items():
+        fila = _fila(doc, indicador)
+        valores = [completo["fija"][clave], completo["cuotaflex"][clave], solo["cuotaflex"][clave]]
+        celdas = [celda.strip().replace("**", "").split(" ")[0] for celda in fila.strip("|").split("|")[1:]]
+        assert celdas == [_pct(valor) for valor in valores], fila
+
+    fila = _fila(doc, "| Cartera colocada")
+    carteras = [completo["fija"]["cartera"], completo["cuotaflex"]["cartera"], solo["cuotaflex"]["cartera"]]
+    for celda, valor in zip(fila.strip("|").split("|")[1:], carteras, strict=True):
+        millones = _redondeo(Decimal(str(valor)) / 1_000_000, 2)
+        assert f"S/ {millones} M" in celda
+
+    caida = abs(_redondeo(100 * (completo["cuotaflex"]["cartera"] / completo["fija"]["cartera"] - 1), 0))
+    assert f"{caida}%" in doc
+    assert "SBS" in doc and "simulación" in doc
+
+
+def test_impacto_absoluto_y_relativo_v2():
+    doc = _texto("v2/CONCEPT_SOLUTION.md")
+    completo, solo = ACTUAL["completo"], ACTUAL["solo_cronograma"]
+    for clave, etiqueta in (
+        ("mora30_relativa_pct", "| Créditos con atraso > 30 días"),
+        ("default_relativo_pct", "| Default"),
+    ):
+        fila = _fila(doc, etiqueta)
+        assert _delta(completo["delta"][clave]) in fila
+        assert _delta(solo["delta"][clave]) in fila
+    total = _fila(doc, "| Margen neto total")
+    assert _miles(completo["fija"]["margen_neto_total"]) in total
+    for modo in (completo, solo):
+        assert _miles(modo["cuotaflex"]["margen_neto_total"]) in total
+        assert f"+{_miles(modo['delta']['margen_neto_dif'])}" in total
+
+
+def test_exportacion_pdf_del_concepto_v2():
+    ruta = CONCEPTO / "v2" / "export" / "CuotaFlex-Solution-Concept-v2.pdf"
+    pdf = PdfReader(ruta)
+    texto = " ".join(pagina.extract_text() for pagina in pdf.pages)
+    assert "Versión 2" in texto
+    assert "Figura 1." in texto
+    for modo in ("fija", "cuotaflex"):
+        assert _pct(ACTUAL["completo"][modo]["default_pct"]) in texto
 
 
 def test_script_de_figuras_genera_el_png(figuras, tmp_path):
