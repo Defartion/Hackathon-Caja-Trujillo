@@ -254,6 +254,7 @@ def test_espejo_estacional_en_fineract_real(api_cuotaflex, monkeypatch, tmp_path
         origen = api_cuotaflex.post(f"{api.BASE}/loans", json={
             "clientId": cliente_simulado.json()["clientId"], "principal": 6000,
             "numberOfRepayments": 12, "mesPrimeraCuota": mes,
+            "productoPreferido": "estacional",  # Pide la modalidad estacional para probar su espejo.
         })
         assert origen.status_code == 200, origen.text
         assert origen.json()["producto"] == "estacional"
