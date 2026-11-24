@@ -11,6 +11,7 @@ import {
 } from './api';
 import type { Escenario, ParametroEditable, TamanoId } from './api';
 import { redondearAPaso } from './formato';
+import EstadoEnfen from './components/EstadoEnfen';
 import GraficoDispersion from './components/GraficoDispersion';
 import GraficoHistograma from './components/GraficoHistograma';
 import GraficoProductos from './components/GraficoProductos';
@@ -176,6 +177,7 @@ export default function App() {
         <div className={`estado-api ${estadoError ? 'error' : ''}`} role="status">
           {estado}
         </div>
+        <EstadoEnfen />
       </header>
 
       <div className="cuerpo">

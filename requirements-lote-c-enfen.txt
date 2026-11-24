@@ -1,0 +1,2 @@
+# Fase 2 · Lote C (ENFEN y notificaciones): se consolida en requirements.txt al cerrar la fase
+pypdf>=5.0           # texto de los comunicados oficiales del ENFEN (integraciones/enfen.py)
