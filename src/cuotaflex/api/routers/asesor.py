@@ -11,6 +11,8 @@ import hashlib
 import numpy as np
 import pandas as pd
 from fastapi import APIRouter, HTTPException
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 from ...agente import AgenteAsesor
@@ -62,6 +64,8 @@ class ClienteSolicitud(BaseModel):
     tea: float = Field(gt=0, lt=2)
     mes_desembolso: int = Field(0, ge=0, le=11)
     historial_ventas: list[float] | None = None
+    producto_preferido: Literal["fija", "aplazamiento", "estacional"] | None = Field(
+        None, description="Modalidad que pide el asesor; se respeta si el cliente es elegible")
 
 
 @router.get("/cartera-demo")

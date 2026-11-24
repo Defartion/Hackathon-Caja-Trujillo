@@ -24,7 +24,9 @@ def limpiar_config_llm(monkeypatch):
 @pytest.fixture
 def solicitud():
     return {"cliente_id": "SINTETICO-D", "rubro": "bodega", "ventas_medias": 7000, "margen": 0.35,
-            "gasto_familiar": 1000, "principal": 6000, "plazo": 12, "tea": 0.45}
+            "gasto_familiar": 1000, "principal": 6000, "plazo": 12, "tea": 0.45,
+            # Desde la fase 2 el agente elige el producto por simulación; estas pruebas necesitan aplazamiento.
+            "producto_preferido": "aplazamiento"}
 
 
 @pytest.fixture

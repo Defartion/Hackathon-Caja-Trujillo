@@ -9,7 +9,7 @@ from __future__ import annotations
 import unicodedata
 from datetime import date
 
-FIRMA = "Caja Trujillo"
+FIRMA = "CuotaFlex"  # marca de la solución: no se firma a nombre de la Caja
 LARGO_SMS = 160
 LARGO_NOMBRE = 12
 

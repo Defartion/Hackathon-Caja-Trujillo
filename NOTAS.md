@@ -21,3 +21,15 @@
 - 42 pruebas pasan; las 3 apps compilan.
 - Prueba de punta a punta: el asesor registra, aprueba y desembolsa → el cliente ve el préstamo y la alerta El Niño → el tablero corre el escenario Base Estándar en ~9 s.
 - Sin conflictos de fusión ni errores en consola.
+
+## Integración fase 2 (24 nov)
+- Lotes: A calibración y selección por simulación · B espejo en Apache Fineract · C ENFEN y notificaciones · D agente con herramientas y salvaguardas.
+- 111 pruebas pasan, 2 omitidas a propósito (Fineract real y la figura del concepto de la fase 1). Las 3 apps compilan.
+- De punta a punta: el chat del agente responde con cifras verificadas, la alerta del ENFEN llega a la app del cliente y al tablero, y el tablero en tamaño Estándar tarda unos 12 s.
+- Ajustes de integración: `producto_preferido` también en `/motor/propuesta` (lo usan las pruebas del lote D), firma de los SMS = "CuotaFlex" y pypdf consolidado en requirements.txt.
+- Cifras vigentes: resultados/CAMBIOS_FASE2.md. El concepto entregado conserva las de la fase 1 (resultados/fase1/).
+
+## Pendientes para la fase 3
+- [ ] Probar el lanzador de Fineract en Windows (lote B) o documentar WSL.
+- [ ] Probar el agente con un proveedor de IA real cuando la organización confirme que se permite (lote D). Hoy `agente.explicar()` usa la plantilla (usar_llm=False).
+- [ ] Actualizar el concepto, el pitch y la figura 1 con las cifras de la fase 2.
