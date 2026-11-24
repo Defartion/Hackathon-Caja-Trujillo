@@ -10,8 +10,6 @@ Plan del agente para cada solicitud:
 """
 from __future__ import annotations
 
-import os
-
 import numpy as np
 import pandas as pd
 
@@ -87,41 +85,6 @@ class AgenteAsesor:
         return prop
 
     def explicar(self, prop: dict, eleg: dict) -> str:
-        texto = _explicacion_plantilla(prop, eleg)
-        if os.getenv("ANTHROPIC_API_KEY") and os.getenv("CUOTAFLEX_LLM", "0") == "1":
-            try:
-                return _explicacion_llm(prop, texto)
-            except Exception:
-                pass
-        return texto
+        from .explicador import explicar
 
-
-def _explicacion_plantilla(p: dict, eleg: dict) -> str:
-    crono = p["cronograma"]
-    alta = max(crono, key=lambda f: f["cuota"])
-    baja = min(crono, key=lambda f: f["cuota"])
-    partes = [f"Producto recomendado: {p['descripcion_producto']}."]
-    if eleg["motivos"]:
-        partes.append("No accede a flexibilidad por: " + "; ".join(eleg["motivos"]) + ".")
-    if p["producto"] == "estacional":
-        partes.append(f"La cuota sube a S/ {alta['cuota']:,.2f} en {alta['mes']} (temporada alta) y baja a "
-                      f"S/ {baja['cuota']:,.2f} en {baja['mes']} (temporada baja); la cuota fija equivalente sería "
-                      f"S/ {p['cuota_fija_referencia']:,.2f}.")
-    if p["producto"] == "aplazamiento":
-        partes.append(f"Puede pagar solo la cuota mínima hasta {p['aplazamientos_disponibles']} veces si mantiene sus pagos al día.")
-    if p["principal_aprobado"] < p["principal_solicitado"]:
-        partes.append(f"Se sugiere S/ {p['principal_aprobado']:,.0f} en lugar de S/ {p['principal_solicitado']:,.0f} para no sobreendeudar al cliente.")
-    if p["clausula_el_nino"]:
-        partes.append("Incluye alivio automático si el ENFEN declara alerta de El Niño costero.")
-    partes.append("Cronograma diseñado contra el escenario conservador (p25) de ingresos.")
-    return " ".join(partes)
-
-
-def _explicacion_llm(p: dict, borrador: str) -> str:
-    import anthropic  # dependencia opcional
-
-    msg = anthropic.Anthropic().messages.create(
-        model=os.getenv("CUOTAFLEX_MODELO", "claude-haiku-5-5"), max_tokens=300,
-        messages=[{"role": "user", "content": "Reescribe para un microempresario peruano, claro y en 4 frases, "
-                   "sin inventar cifras:\n" + borrador}])
-    return msg.content[0].text
+        return explicar(prop, eleg, usar_llm=False)["texto"]

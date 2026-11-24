@@ -1,0 +1,2 @@
+# Los adaptadores HTTP usan la misma dependencia que el API base.
+httpx>=0.27

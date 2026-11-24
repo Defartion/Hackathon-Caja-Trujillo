@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api, Cliente, RespuestaPropuesta } from "../api";
 import Bitacora from "../components/Bitacora";
+import ChatAgente from "../components/ChatAgente";
 import Comparativa from "../components/Comparativa";
 import GraficoCuotas from "../components/GraficoCuotas";
 import GraficoVentas from "../components/GraficoVentas";
@@ -101,6 +102,7 @@ export default function Ficha() {
 
       {resp && p && cliente && (
         <div style={{ opacity: cargando ? 0.55 : 1, transition: "opacity .2s" }} className="rejilla">
+          <ChatAgente key={JSON.stringify([cliente.cliente_id, cliente.principal, cliente.plazo, cliente.ajuste_asesor])} cliente={cliente} deshabilitado={cargando} />
           <div className="rejilla r-ficha">
             <div className="tarjeta">
               <h2>Ventas: histórico y pronóstico con incertidumbre</h2>
