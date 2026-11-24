@@ -1,0 +1,2 @@
+# Suite de navegador. Instala Chromium con: python -m playwright install chromium
+playwright>=1.48,<2
