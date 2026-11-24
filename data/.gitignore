@@ -2,3 +2,5 @@
 enfen_cache.json
 enfen_cache.tmp
 outbox.jsonl
+cuotaflex.db
+cuotaflex.db-*

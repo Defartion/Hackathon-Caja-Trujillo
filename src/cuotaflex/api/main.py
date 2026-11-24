@@ -7,27 +7,84 @@ Ejecutar:  uvicorn cuotaflex.api.main:app --reload
 from __future__ import annotations
 
 import importlib
+import os
 import pkgutil
+import threading
 from datetime import date
 from itertools import count
 
 import numpy as np
 import pandas as pd
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
 from ..agente import AgenteAsesor
 from ..config import cargar_parametros, cuota_francesa, desglose_cronograma, tea_a_tem
 from ..datos import RUBROS, simular_ventas
+from .. import persistencia
 
 BASE = "/fineract-provider/api/v1"
 app = FastAPI(title="CuotaFlex · API compatible con Fineract", version="0.1.0")
-# Frontends locales: asesor 5173, cliente 5174, tablero 5175
-app.add_middleware(CORSMiddleware, allow_origin_regex=r"http://(localhost|127\.0\.0\.1):51\d\d",
-                   allow_methods=["*"], allow_headers=["*"])
 DB: dict[str, dict] = {"clients": {}, "loans": {}}
 _ids = count(1)
+_candado_db = threading.Lock()
+_ESCRITURAS = {"POST", "PUT", "PATCH", "DELETE"}
+
+
+def siguiente_id() -> int:
+    """Próximo ID sin consumirlo (para la instantánea)."""
+    global _ids
+    n = next(_ids)
+    _ids = count(n)
+    return n
+
+
+def guardar_instantanea() -> None:
+    if persistencia.activa():
+        with _candado_db:
+            persistencia.guardar(DB, siguiente_id())
+
+
+def cargar_instantanea() -> None:
+    global _ids
+    if persistencia.activa():
+        with _candado_db:
+            _ids = count(persistencia.cargar(DB))
+
+
+@app.middleware("http")
+async def _persistir(request: Request, call_next):
+    """Fase 3: tras cada escritura exitosa se guarda la instantánea en SQLite y, si se desembolsó un
+    préstamo, se programa su espejo en Fineract (solo con CORE_ESPEJO=1)."""
+    respuesta = await call_next(request)
+    if request.method in _ESCRITURAS and respuesta.status_code < 300:
+        guardar_instantanea()
+        if request.query_params.get("command") == "disburse":
+            from .routers import espejo_automatico
+
+            espejo_automatico.programar(request.url.path)
+    return respuesta
+
+
+@app.middleware("http")
+async def _autorizar(request: Request, call_next):
+    """Fase 3: con CUOTAFLEX_AUTH=1 cada prefijo exige un rol (ver routers/auth.py)."""
+    from .routers import auth
+
+    if not auth.activa() or request.method == "OPTIONS":
+        return await call_next(request)
+    roles = auth.permiso_requerido(request.url.path, request.method)
+    if roles == set():
+        return await call_next(request)
+    encabezado = request.headers.get("authorization", "")
+    rol = auth.verificar_token(encabezado[7:]) if encabezado.lower().startswith("bearer ") else None
+    if rol is None:
+        return JSONResponse({"detail": "Inicia sesión con el PIN de tu rol."}, status_code=401)
+    if roles is not None and rol not in roles:
+        return JSONResponse({"detail": f"El rol {rol} no tiene acceso a esta sección."}, status_code=403)
+    return await call_next(request)
 agente = AgenteAsesor(metodo_pronostico="perfil")
 
 
@@ -202,3 +259,10 @@ def _registrar_routers() -> None:
 
 
 _registrar_routers()
+
+# CORS al final = middleware más externo: también las respuestas 401/403 llevan sus encabezados.
+# Frontends locales: asesor 5173, cliente 5174, tablero 5175; los desplegados van en CUOTAFLEX_ORIGENES.
+app.add_middleware(CORSMiddleware, allow_origin_regex=r"http://(localhost|127\.0\.0\.1):51\d\d",
+                   allow_origins=[o.strip() for o in os.getenv("CUOTAFLEX_ORIGENES", "").split(",") if o.strip()],
+                   allow_methods=["*"], allow_headers=["*"])
+cargar_instantanea()
