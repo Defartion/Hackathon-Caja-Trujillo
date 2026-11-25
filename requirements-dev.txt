@@ -1,3 +1,9 @@
 -r requirements.txt
+# Desarrollo, pruebas y análisis (no se instalan en producción)
+pytest>=8
+statsforecast>=1.7   # pronóstico "mixto"/"statsforecast" y scripts/backtest.py (el método por defecto, "perfil", no lo necesita)
+matplotlib>=3.8      # figuras del Concept Solution y de sensibilidad
 # Pruebas de navegador (tests/e2e). Instala Chromium con: python -m playwright install chromium
 playwright>=1.48,<2
+# sdv>=1.12          # ampliar cartera sintética (cuotaflex.datos.ampliar_con_sdv)
+# chronos-forecasting # pronóstico probabilístico alternativo
