@@ -83,7 +83,7 @@ def revisar_python(version: tuple[int, ...] | None = None, ejecutable: str | Non
     version = version or tuple(sys.version_info[:3])
     ejecutable = ejecutable or sys.executable
     texto = ".".join(map(str, version))
-    en_venv = ".venv" in Path(ejecutable).parts
+    en_venv = ".venv" in re.split(r"[\\/]", ejecutable)  # separa rutas de Windows y de Linux/Mac por igual
     lugar = "entorno .venv del proyecto" if en_venv else ejecutable
     if not cumple(version, PYTHON_MINIMO):
         return Resultado("Python", FALLA, f"Python {texto} ({lugar})",
