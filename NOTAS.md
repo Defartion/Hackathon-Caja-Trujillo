@@ -33,3 +33,11 @@
 - [ ] Probar el lanzador de Fineract en Windows (lote B) o documentar WSL.
 - [ ] Probar el agente con un proveedor de IA real cuando la organización confirme que se permite (lote D). Hoy `agente.explicar()` usa la plantilla (usar_llm=False).
 - [ ] Actualizar el concepto, el pitch y la figura 1 con las cifras de la fase 2.
+
+## Integración fase 3 (25 nov) · integrada en `main`
+- Integrados: A (persistencia, PIN por rol, espejo automático, Docker), B (casos estrella E001–E003, pruebas e2e, carga, sin conexión), C (plan de los dos días, módulo en vivo, verificador del entorno, video y propiedad intelectual) y D (pitch, concepto v2, preguntas).
+- Pruebas: pasan 134 (6 omitidas: Fineract real y las 5 e2e, que se corren con `pytest -m e2e`). Las 5 e2e pasan aparte y las 3 apps compilan.
+- Playwright pasó a `requirements-dev.txt` (no entra a la imagen Docker de la API).
+- Lote C integrado el 25 nov por la web de GitHub (PR #6), porque la conexión git de la sesión de Claude daba 503. Revisado antes con el ZIP de la rama: 158 pruebas pasan. Corrección aplicada: detección de `.venv` portable en `scripts/verificar_entorno.py`.
+- Pendiente de Stefano: subir el video de respaldo al Drive y pegar el enlace en `docs/final/VIDEO.md`.
+- Pendientes: probar `docker compose up --build` en una laptop, desplegar y llenar `deploy/URLS.md`, y, si se publica la demo, regenerar el QR del resumen impreso con su URL (hoy apunta al repo, que ya es público, así que funciona).

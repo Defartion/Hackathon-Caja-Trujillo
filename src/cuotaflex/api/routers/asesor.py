@@ -70,6 +70,9 @@ class ClienteSolicitud(BaseModel):
 
 @router.get("/cartera-demo")
 def cartera_demo(n: int = 20, semilla: int = 7):
+    """Devuelve tres casos estrella seguidos de n solicitudes de la cartera sintética."""
+    from ...demo.casos_estrella import casos_estrella
+
     if not 1 <= n <= 100:
         raise HTTPException(422, "n debe estar entre 1 y 100")
     clave = (n, semilla)
@@ -82,7 +85,7 @@ def cartera_demo(n: int = 20, semilla: int = 7):
             c["indice_estacionalidad"] = round(indice_estacionalidad(c["rubro"]), 3)
             filas.append(_nativo(c))
         _CACHE_CARTERA[clave] = filas
-    return _CACHE_CARTERA[clave]
+    return casos_estrella() + _CACHE_CARTERA[clave]
 
 
 def _semilla(cli: dict) -> int:

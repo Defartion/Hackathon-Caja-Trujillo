@@ -1,0 +1,27 @@
+# CuotaFlex completo: API + app del asesor + app del cliente + tablero.
+#   docker compose up --build          -> http://localhost:5173 (asesor) · 5174 (cliente) · 5175 (tablero) · 8000 (API)
+# Variables en .env (copiar de .env.example). Fineract real: ver infra/fineract/ y CORE_ESPEJO.
+services:
+  api:
+    build: .
+    env_file: [{path: .env, required: false}]
+    environment:
+      CUOTAFLEX_ORIGENES: ${CUOTAFLEX_ORIGENES:-http://localhost:5173,http://localhost:5174,http://localhost:5175}
+    ports: ["8000:8000"]
+    volumes: ["datos:/app/data"]
+    restart: unless-stopped
+    extra_hosts: ["host.docker.internal:host-gateway"]   # para llegar a Fineract en el host
+  asesor:
+    build: {context: ., dockerfile: web/asesor/Dockerfile, args: {VITE_API_URL: "${PUBLIC_API_URL:-http://localhost:8000}"}}
+    ports: ["5173:80"]
+    depends_on: [api]
+  cliente:
+    build: {context: ., dockerfile: web/cliente/Dockerfile, args: {VITE_API_URL: "${PUBLIC_API_URL:-http://localhost:8000}"}}
+    ports: ["5174:80"]
+    depends_on: [api]
+  tablero:
+    build: {context: ., dockerfile: web/tablero/Dockerfile, args: {VITE_API_URL: "${PUBLIC_API_URL:-http://localhost:8000}"}}
+    ports: ["5175:80"]
+    depends_on: [api]
+volumes:
+  datos:

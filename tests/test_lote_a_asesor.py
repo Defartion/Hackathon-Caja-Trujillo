@@ -14,7 +14,7 @@ def test_cartera_demo():
     r = c.get("/motor/cartera-demo?n=8&semilla=3")
     assert r.status_code == 200
     filas = r.json()
-    assert len(filas) == 8
+    assert len(filas) == 3 + 8  # Los casos estrella no se descuentan de n.
     assert all(len(f["historial_ventas"]) == 24 for f in filas)
     assert all("indice_estacionalidad" in f for f in filas)
     assert c.get("/motor/cartera-demo?n=500").status_code == 422
