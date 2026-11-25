@@ -123,7 +123,22 @@ export const api = {
     post<unknown>(`${BASE}/loans/${id}/schedule?command=addVariations`, { cuotas }),
   comando: (id: number, command: "approve" | "disburse") =>
     post<{ status: { value: string } }>(`${BASE}/loans/${id}?command=${command}`),
+  prestamos: () => pedir<PrestamoListado[]>("/motor/prestamos"),
 };
+
+export interface PrestamoListado {
+  id: number;
+  clientId: number;
+  cliente: string;
+  rubro: string | null;
+  estado: string;
+  principal: number;
+  plazo: number;
+  producto: string | null;
+  cuota_min: number;
+  cuota_max: number;
+  aplazamientos_restantes: number;
+}
 
 export interface Prestamo {
   id: number;

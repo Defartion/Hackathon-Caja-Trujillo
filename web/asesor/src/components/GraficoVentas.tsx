@@ -29,7 +29,7 @@ export default function GraficoVentas({ historial, pronostico, mesInicio }: Prop
           }
         />
         <Legend wrapperStyle={{ fontSize: 12 }} />
-        <Area dataKey="banda" name="Rango p10–p90" stroke="none" fill="#0B5CAD" fillOpacity={0.14} />
+        <Area dataKey="banda" name="Rango probable" stroke="none" fill="#0B5CAD" fillOpacity={0.14} />
         <Line dataKey="historico" name="Ventas históricas" stroke="#1F2328" dot={false} strokeWidth={2} />
         <Line dataKey="p50" name="Pronóstico (p50)" stroke="#0B5CAD" strokeDasharray="5 4" dot={false} strokeWidth={2} />
       </ComposedChart>

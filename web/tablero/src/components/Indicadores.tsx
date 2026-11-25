@@ -56,7 +56,7 @@ export default function Indicadores({ resumen }: { resumen: Resumen }) {
         delta={deltaPct(f.mora30_pct, c.mora30_pct, true)}
       />
       <Tarjeta
-        etiqueta="Default (3 cuotas impagas)"
+        etiqueta="Incumplimiento (3 cuotas impagas)"
         fija={pct1(f.default_pct)}
         flex={pct1(c.default_pct)}
         delta={deltaPct(f.default_pct, c.default_pct, true)}

@@ -36,7 +36,7 @@ export default function GraficoCuotas({ fija, flex, capacidad, mesInicio }: Prop
             <Cell key={i} fill={excede(f.flex, f.capacidad) ? "#B7791F" : "#0B5CAD"} />
           ))}
         </Bar>
-        <Line dataKey="capacidad" name="Capacidad de pago (p25)" stroke="#C8102E" strokeWidth={2} dot={false} type="stepAfter" />
+        <Line dataKey="capacidad" name="Capacidad de pago (mes flojo)" stroke="#C8102E" strokeWidth={2} dot={false} type="stepAfter" />
       </ComposedChart>
     </ResponsiveContainer>
   );

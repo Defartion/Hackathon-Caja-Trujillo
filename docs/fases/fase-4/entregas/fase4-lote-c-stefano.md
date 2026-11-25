@@ -1,5 +1,10 @@
 # CuotaFlex · Fase 4 · Lote C — para Stefano
 
+> **Actualización (25 nov):** el Asesor ya tiene un menú lateral (`web/asesor/src/Lateral.tsx`). "Nueva solicitud" y
+> "Comité de créditos" ya aparecen en el menú marcados como *pronto*. Para activarlas: agrega tus rutas `/nueva` y
+> `/comite` en `App.tsx` y quita `pronto: true` de esas dos opciones en `OPCIONES_ASESOR` (`Lateral.tsx`). Ya no hace
+> falta el botón "Nueva solicitud" en `Bandeja.tsx` ni un enlace en la cabecera: el menú los reemplaza.
+
 Hola Stefano. Aquí está tu parte de la **fase 4: ajustar CuotaFlex a las preguntas frecuentes del NEG-01**, publicadas por la organización el 24 de noviembre en la plataforma (Desafíos → NEG-01 → Preguntas frecuentes). **Léelas primero, son 5 minutos.**
 
 ## Por qué hay una fase 4

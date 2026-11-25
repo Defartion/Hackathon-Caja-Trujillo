@@ -451,3 +451,12 @@ h1 + .feedback { margin-block-start: .85rem; }
 @media (prefers-reduced-motion: reduce) {
   .loading svg { animation: none; }
 }
+
+/* Menú secundario (☰) */
+.menu-cli { position: relative; }
+.menu-cli__boton { inline-size: 2.5rem; block-size: 2.5rem; display: grid; place-items: center; border: 1px solid var(--cf-gris-200); border-radius: var(--cf-radio); background: var(--cf-blanco); color: var(--cf-gris-900); cursor: pointer; }
+.menu-cli__panel { position: absolute; inset-inline-end: 0; inset-block-start: calc(100% + .4rem); min-inline-size: 13rem; background: var(--cf-blanco); border: 1px solid var(--cf-gris-200); border-radius: var(--cf-radio); box-shadow: 0 10px 30px rgba(0,0,0,.12); padding: .4rem; z-index: 30; display: flex; flex-direction: column; }
+.menu-cli__titulo { font-size: .8rem; font-weight: 700; color: var(--cf-gris-600); padding: .5rem .6rem; }
+.menu-cli__op { display: flex; align-items: center; gap: .6rem; padding: .7rem .6rem; border-radius: calc(var(--cf-radio) - 2px); background: none; border: none; font: inherit; font-weight: 600; color: var(--cf-gris-900); text-decoration: none; cursor: pointer; text-align: start; }
+.menu-cli__op:hover { background: var(--cf-gris-100, #F3F4F6); }
+.menu-cli__vacio { padding: .5rem .6rem; font-size: .85rem; color: var(--cf-gris-600); }

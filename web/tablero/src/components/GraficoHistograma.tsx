@@ -122,7 +122,7 @@ export default function GraficoHistograma({ h }: { h: HistogramaVpn }) {
     <table className="tabla">
       <thead>
         <tr>
-          <th>VPN por crédito</th>
+          <th>Ganancia por crédito (VPN)</th>
           <th className="num">Fija</th>
           <th className="num">CuotaFlex</th>
         </tr>
@@ -145,8 +145,8 @@ export default function GraficoHistograma({ h }: { h: HistogramaVpn }) {
 
   return (
     <TarjetaGrafico
-      titulo="VPN por crédito"
-      subtitulo="Cantidad de créditos según su valor presente neto; a la izquierda de VPN = 0 el crédito pierde dinero"
+      titulo="Ganancia por crédito (VPN)"
+      subtitulo="Cuántos créditos ganan o pierden dinero para la Caja; a la izquierda de VPN = 0, el crédito pierde"
       grafico={grafico}
       tabla={tabla}
     />
