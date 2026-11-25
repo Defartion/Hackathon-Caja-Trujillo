@@ -1,12 +1,14 @@
 # URLs de la demo desplegada
 
-> Pendiente: completar tras el primer despliegue (ver deploy/README.md).
+Vercel (plan Hobby, gratuito). Proyecto `cuotaflex`, rama de producción `main`: cada push a `main` vuelve a desplegar.
 
 | Servicio | URL | Notas |
 |---|---|---|
-| API (docs) | | `/docs` |
-| App del asesor | | PIN asesor |
-| App del cliente | | PIN cliente; probar desde un celular |
-| Tablero | | PIN supervisor |
+| API (docs) | https://cuotaflex.vercel.app/api/docs | |
+| App del asesor | https://cuotaflex.vercel.app/asesor/ | PIN asesor |
+| App del cliente | https://cuotaflex.vercel.app/cliente/?loanId=2 | PIN cliente; préstamos de demo: 2 y 4 |
+| Tablero | https://cuotaflex.vercel.app/tablero/ | PIN supervisor; usar tamaño "Rápido" |
 
-Fecha del despliegue: · Commit desplegado:
+Los PIN **no** están en el repo (es público): están en las variables de entorno del proyecto en Vercel. Pídeselos a Sebastian.
+
+Fecha del despliegue: 2026-11-25.
