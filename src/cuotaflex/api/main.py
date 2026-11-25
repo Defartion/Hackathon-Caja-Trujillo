@@ -75,7 +75,11 @@ async def _autorizar(request: Request, call_next):
 
     if not auth.activa() or request.method == "OPTIONS":
         return await call_next(request)
-    roles = auth.permiso_requerido(request.url.path, request.method)
+    ruta = request.url.path
+    prefijo = request.scope.get("root_path", "")  # p. ej. "/api" cuando la API se monta en server.py
+    if prefijo and ruta.startswith(prefijo):
+        ruta = ruta[len(prefijo):] or "/"
+    roles = auth.permiso_requerido(ruta, request.method)
     if roles == set():
         return await call_next(request)
     encabezado = request.headers.get("authorization", "")
