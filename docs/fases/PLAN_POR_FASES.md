@@ -149,6 +149,26 @@ sistemas reales: core bancario, alertas oficiales e IA generativa.
 
 ---
 
+## Fase 4 · Ajuste a las preguntas frecuentes del NEG-01 (25 – 30 nov)
+
+El 24 de noviembre la organización publicó 10 preguntas frecuentes que definen qué se evalúa:
+- estimación del **ciclo económico** (sector y zona con fuentes públicas, sin historial de pagos);
+- un **plan nuevo por etapas** con Cuota/UN ≤ factor del producto en cada etapa;
+- **costos de la Caja** (TED base 360, seguros, prelación, pendientes sin capitalizar y TCEA);
+- una **vista para el comité**;
+- la **comparación con la cuota fija en escenarios adversos**.
+
+No se mide la mora de una cartera real. Instrucciones en `docs/fases/fase-4/` y contratos en `CONTRATOS.md`.
+
+| Lote | Responsable | Entregable |
+|---|---|---|
+| A · Motor financiero y plan | Sebastian | Constructor con Cuota/UN ≤ factor como restricción dura, prelación y pendientes, TCEA, comparación con la cuota fija, estrés y cifras para el pitch |
+| B · Modelo del ciclo | Joaquin | Catálogo sector × zona con fuentes públicas, estimador con la captura del asesor, escenarios adversos y validación |
+| C · Asesor y comité | Stefano | Nueva solicitud en 3 pasos y vista imprimible para el comité con validación del Asesor de Riesgos |
+| D · Concepto, pitch y agente | Andre | **Concepto v3 subido antes del 26 nov**, pitch v2 y agente que explica el plan con un LLM externo |
+
+---
+
 ## Durante la final (3 y 4 dic)
 
 | Bloque | Qué se hace |

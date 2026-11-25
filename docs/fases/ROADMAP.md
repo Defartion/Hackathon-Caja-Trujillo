@@ -9,6 +9,7 @@ toca solo sus propios archivos, así que se pueden fusionar en cualquier orden s
 | **1 · Demo funcional y concepto** (integrada ✅) | Que el jurado pueda *ver y usar* la solución y que el concepto esté listo para entregarse | A App del asesor · B App del cliente · C Tablero de simulación en vivo · D Concept Solution final |
 | **2 · Calidad e integración** (integrada ✅) | Modelo calibrado e integración con sistemas reales | A Calibración y backtesting · B Fineract real (Docker) · C Disparador ENFEN y notificaciones · D Agente con LLM y guardrails |
 | **3 · Preparación de la final** (integrada ✅) | Demo estable, desplegada y ensayada, con el pitch listo | A Persistencia, roles y despliegue · B QA de punta a punta, casos estrella y modo sin conexión · C Plan de los dos días, módulo en vivo y video · D Pitch, concepto v2 y banco de preguntas |
+| **4 · Ajuste a las FAQ del NEG-01** (en curso, ver `docs/fases/fase-4/`) | Ciclo con fuentes públicas, plan por etapas con Cuota/UN ≤ factor, costos de la Caja y vista para el comité | A Motor financiero y plan por etapas · B Modelo del ciclo económico · C Flujo del asesor y vista del comité · D Concepto v3, pitch v2 y agente para el comité |
 
 Los lotes de las fases 2 y 3 se detallan al cerrar la fase anterior.
 
