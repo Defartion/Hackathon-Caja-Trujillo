@@ -12,6 +12,8 @@ recorrido completo **asesor → agente (chat) → core → cliente → alerta de
 | Datos | 100% sintéticos; ningún dato personal. El ENFEN es real: Comunicado Oficial N° 20-2026 (13 nov 2026) |
 
 El video **no va en el repositorio** (pesa mucho): se sube al Drive del equipo y se copia al USB de respaldo.
+En [`evidencias/`](evidencias/) quedan cuatro fotogramas de muestra: riesgo simulado del asesor, chat del agente,
+alerta del ENFEN en la app del cliente y cartera completa en el tablero.
 
 ## Guion (lo que se ve y lo que dicen los subtítulos)
 
