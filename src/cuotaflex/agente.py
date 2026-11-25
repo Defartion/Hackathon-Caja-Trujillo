@@ -73,7 +73,7 @@ class AgenteAsesor:
         candidatos = [producto]
         preferido = cli.get("producto_preferido")
         if preferido in PRODUCTOS and (eleg["elegible_flex"] or preferido == "fija"):
-            candidatos = [preferido]  # el asesor fija la modalidad (p. ej. a pedido del cliente)
+            producto, candidatos = preferido, [preferido]  # el asesor fija la modalidad (p. ej. a pedido del cliente)
             bitacora.append({"paso": "producto_preferido", "producto": preferido})
         elif eleg["elegible_flex"] and par.get("seleccion", {}).get("modo", "regla") == "simulacion":
             candidatos = ["fija", "aplazamiento", "estacional"]

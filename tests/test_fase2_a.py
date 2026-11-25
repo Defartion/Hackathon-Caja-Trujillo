@@ -88,3 +88,16 @@ def test_escenarios_desde_pronostico_respetan_cuantiles():
     assert abs(np.median(v) - 100) < 2
     cob = np.mean((v >= 80) & (v <= 125))
     assert 0.75 < cob < 0.85
+
+
+def test_producto_preferido_distinto_al_recomendado():
+    """Regresión: pedir una modalidad distinta a la que recomendaría el agente no debe fallar."""
+    clientes, hist = generar_cartera(40, semilla=21)
+    ag = AgenteAsesor()
+    for c in clientes.to_dict("records"):
+        for pref in ("fija", "aplazamiento", "estacional"):
+            p = ag.proponer({**c, "producto_preferido": pref}, hist)
+            pasos = [b["paso"] for b in p["bitacora"]]
+            if "producto_preferido" in pasos:          # elegible (o pidió fija): se respeta
+                assert p["producto"] == pref
+            assert len(p["cronograma"]) == p["plazo"]
