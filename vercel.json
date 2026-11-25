@@ -5,5 +5,11 @@
       "excludeFiles": "{web/**,docs/**,tests/**,resultados/**,evaluacion/**,infra/**,notebooks/**,scripts/**,deploy/**,**/__pycache__/**}",
       "maxDuration": 120
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/(asesor|cliente|tablero)/(.*)",
+      "destination": "/$1/index.html"
+    }
+  ]
 }
