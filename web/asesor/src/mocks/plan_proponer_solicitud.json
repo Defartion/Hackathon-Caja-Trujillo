@@ -1,0 +1,26 @@
+{
+  "monto": 7000,
+  "tea": 0.45,
+  "fecha_desembolso": "2026-12-01",
+  "plazo_meses": 24,
+  "producto": {
+    "nombre": "Microempresa agro",
+    "factor": 0.85,
+    "tope_tea": 0.83,
+    "max_meses_gracia": 4,
+    "permite_solo_interes": true
+  },
+  "seguros": {
+    "desgravamen": {
+      "activo": true,
+      "tasa_mensual": 0.00077
+    },
+    "multirriesgo": {
+      "activo": false,
+      "tasa_mensual": 0.0003,
+      "valor_asegurable": 0
+    }
+  },
+  "ciclo": "<respuesta de POST /ciclo/estimar>",
+  "comparar_cuota_fija": true
+}
