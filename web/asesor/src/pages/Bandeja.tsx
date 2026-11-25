@@ -45,6 +45,9 @@ export default function Bandeja() {
           Buscar código
           <input value={busca} onChange={(e) => setBusca(e.target.value)} placeholder="C00012" />
         </label>
+        <button className="btn btn-primario" onClick={() => nav("/nueva")}>
+          Nueva solicitud
+        </button>
       </div>
       <table>
         <thead>
