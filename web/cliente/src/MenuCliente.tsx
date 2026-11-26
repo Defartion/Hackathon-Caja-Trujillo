@@ -1,15 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { LogOut, Menu, Repeat, X } from 'lucide-react'
-
-const CLAVE_TOKEN = 'cuotaflex_token.cliente'
-
-function haySesion() {
-  try {
-    return !!sessionStorage.getItem(CLAVE_TOKEN)
-  } catch {
-    return false
-  }
-}
+import { cerrarSesion, iniciales, usuarioSesion } from './sesion'
 
 /** Menú secundario (☰): lo que no se usa a diario. Lo frecuente sigue en la barra inferior. */
 export default function MenuCliente({ prestamoId }: { prestamoId: number | null }) {
@@ -29,17 +20,9 @@ export default function MenuCliente({ prestamoId }: { prestamoId: number | null 
     }
   }, [abierto])
 
-  const salir = () => {
-    try {
-      sessionStorage.removeItem(CLAVE_TOKEN)
-    } catch {
-      /* sin almacenamiento */
-    }
-    window.location.reload()
-  }
-
   const enDespliegue = import.meta.env.BASE_URL !== '/'
-  const sesion = haySesion()
+  const usuario = usuarioSesion('cliente')
+  const sesion = usuario !== null
 
   return (
     <div className="menu-cli" ref={caja}>
@@ -54,8 +37,14 @@ export default function MenuCliente({ prestamoId }: { prestamoId: number | null 
       </button>
       {abierto && (
         <div className="menu-cli__panel" role="menu">
+          {usuario?.nombre && (
+            <div className="menu-cli__usuario">
+              <span className="menu-cli__avatar" aria-hidden="true">{iniciales(usuario.nombre)}</span>
+              <span><b>{usuario.nombre}</b><span>Cuenta de cliente</span></span>
+            </div>
+          )}
           <div className="menu-cli__titulo">
-            Mi crédito{prestamoId !== null ? ` · N° ${prestamoId}` : ''}
+            {prestamoId !== null ? `Mi crédito N° ${prestamoId}` : 'Mi crédito'}
           </div>
           {enDespliegue && (
             <a className="menu-cli__op" role="menuitem" href="/">
@@ -63,7 +52,7 @@ export default function MenuCliente({ prestamoId }: { prestamoId: number | null 
             </a>
           )}
           {sesion && (
-            <button type="button" className="menu-cli__op" role="menuitem" onClick={salir}>
+            <button type="button" className="menu-cli__op" role="menuitem" onClick={() => cerrarSesion('cliente')}>
               <LogOut size={18} aria-hidden="true" /> Salir
             </button>
           )}

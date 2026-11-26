@@ -58,7 +58,7 @@ export default function GraficoPlan({ filas, factor, alto = 270, ancho }: Props)
         interval={0}
         tick={<TickMes periodos={etiquetas} />}
         tickLine={false}
-        axisLine={{ stroke: "#C9CED4" }}
+        axisLine={{ stroke: "#CDD3DD" }}
         height={34}
       />
       <YAxis domain={dominio} ticks={ticks} tickFormatter={formatoEje(ticks)} width={56} fontSize={11} tickLine={false} axisLine={false} stroke={COLOR.eje} />

@@ -20,7 +20,7 @@ export function TickMes(props: { x?: number; y?: number; payload?: { value: numb
         {MESES[mes]}
       </text>
       {conAnio && (
-        <text textAnchor="middle" fontSize={10} fill="#8C959F" dy={25}>
+        <text textAnchor="middle" fontSize={10} fill="#5A6478" dy={25}>
           {anio}
         </text>
       )}

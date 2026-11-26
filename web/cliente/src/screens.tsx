@@ -33,6 +33,30 @@ function TemporadaBadge({ temporada }: { temporada: Temporada }) {
   return <span className={`season season--${temporada}`}>{nombreTemporada[temporada]}</span>
 }
 
+/** Las próximas cuotas como barras: se ve de un vistazo que el monto sigue la temporada del negocio. */
+function RitmoCuotas({ cronograma }: { cronograma: Cuota[] }) {
+  const proximas = cronograma.filter(item => item.estado !== 'pagada').slice(0, 12)
+  if (proximas.length < 2) return null
+  const mayor = Math.max(...proximas.map(item => item.cuota), 1)
+  const iguales = proximas.every(item => Math.abs(item.cuota - proximas[0].cuota) < 1)
+  return (
+    <div className="due-card__ritmo">
+      <div className="due-card__ritmo-barras" aria-hidden="true">
+        {proximas.map((item, i) => (
+          <span
+            key={item.numero}
+            className={i === 0 ? 'actual' : undefined}
+            style={{ '--h': Math.max(item.cuota / mayor, 0.08), '--i': i } as React.CSSProperties}
+          />
+        ))}
+      </div>
+      <p>{iguales
+        ? `Tus próximas ${proximas.length} cuotas son del mismo monto.`
+        : `Tus próximas ${proximas.length} cuotas suben y bajan con tu temporada.`}</p>
+    </div>
+  )
+}
+
 interface InicioProps {
   prestamo: Prestamo
   bloqueado: boolean
@@ -86,6 +110,7 @@ export function Inicio({
             <span className="due-card__number">Cuota {cuota.numero} de {prestamo.totalCuotas}</span>
           </div>
           <p className="due-card__amount">{soles(cuota.monto)}</p>
+          <RitmoCuotas cronograma={prestamo.cronograma} />
           <div className="due-card__footer">
             <span>{mesCompleto(cuota.mes)}</span>
             <TemporadaBadge temporada={cuota.temporada} />

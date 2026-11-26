@@ -68,7 +68,7 @@ export default function Prestamos() {
     <div className="tarjeta">
       <div className="fila" style={{ marginBottom: 12 }}>
         <div>
-          <h1 style={{ fontSize: 20 }}>Préstamos registrados</h1>
+          <h1>Préstamos registrados</h1>
           <div className="ayuda">
             {pendientes.length > 0
               ? `Tienes ${pendientes.length} ${pendientes.length === 1 ? "préstamo pendiente" : "préstamos pendientes"} de aprobar o desembolsar.`

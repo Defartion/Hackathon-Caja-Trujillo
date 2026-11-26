@@ -1,5 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import Marca from "./marca";
+import { cerrarSesion, iniciales, usuarioSesion } from "./sesion";
 
 const ICONOS: Record<string, string> = {
   bandeja: "M3 13h5l2 3h4l2-3h5M5 5h14l2 8v6H3v-6z",
@@ -10,6 +12,8 @@ const ICONOS: Record<string, string> = {
   alerta: "M12 3l10 18H2zM12 10v5M12 18v.5",
   avisos: "M4 5h16v11H8l-4 4z",
   reiniciar: "M4 12a8 8 0 1 0 3-6.2M4 4v4h4",
+  salir: "M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 16l4-4-4-4M14 12H4",
+  rol: "M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3",
 };
 
 export function Icono({ nombre }: { nombre: string }) {
@@ -40,29 +44,11 @@ export const OPCIONES_ASESOR: Opcion[] = [
   { ruta: "/comite", texto: "Comité de créditos", icono: "comite", ayuda: "Validar e imprimir expedientes" },
 ];
 
-const CLAVE_TOKEN = "cuotaflex_token.asesor";
-
-function haySesion() {
-  try {
-    return !!sessionStorage.getItem(CLAVE_TOKEN);
-  } catch {
-    return false;
-  }
-}
-
 export default function Lateral({ rol, opciones, children }: { rol: string; opciones: Opcion[]; children: ReactNode }) {
   const [abierto, setAbierto] = useState(false);
   const { pathname } = useLocation();
   useEffect(() => setAbierto(false), [pathname]);
-
-  const salir = () => {
-    try {
-      sessionStorage.removeItem(CLAVE_TOKEN);
-    } catch {
-      /* sin almacenamiento */
-    }
-    window.location.reload();
-  };
+  const usuario = usuarioSesion("asesor");
 
   const activa = (o: Opcion) =>
     o.ruta === "/" ? pathname === "/" || (o.incluye ?? []).some((r) => pathname.startsWith(r)) : pathname.startsWith(o.ruta);
@@ -73,17 +59,13 @@ export default function Lateral({ rol, opciones, children }: { rol: string; opci
         <button type="button" className="btn-menu" aria-label="Abrir menú" aria-expanded={abierto} onClick={() => setAbierto(!abierto)}>
           ☰
         </button>
-        <div className="marca">
-          Cuota<span>Flex</span>
-        </div>
-        <span className="rol-mini">{rol}</span>
+        <Marca tam={28} />
+        <span className="rol-mini">{usuario?.nombre ?? rol}</span>
       </header>
 
       <aside className="lateral" aria-label="Menú principal">
         <div className="lateral-cab">
-          <div className="marca">
-            Cuota<span>Flex</span>
-          </div>
+          <Marca />
           <div className="rol">{rol}</div>
         </div>
         <nav>
@@ -115,14 +97,25 @@ export default function Lateral({ rol, opciones, children }: { rol: string; opci
           </ul>
         </nav>
         <div className="lateral-pie">
+          {usuario && (
+            <div className="usuario">
+              <span className={`usuario__avatar ${usuario.nombre ? "" : "pin"}`} aria-hidden="true">
+                {iniciales(usuario.nombre)}
+              </span>
+              <span className="usuario__datos">
+                <b>{usuario.nombre ?? "Sesión con PIN"}</b>
+                <span>{rol}</span>
+              </span>
+            </div>
+          )}
           {import.meta.env.BASE_URL !== "/" && (
             <a className="opcion-sec" href="/">
-              Cambiar de rol
+              <Icono nombre="rol" /> Cambiar de rol
             </a>
           )}
-          {haySesion() && (
-            <button type="button" className="opcion-sec" onClick={salir}>
-              Salir
+          {usuario && (
+            <button type="button" className="opcion-sec" onClick={() => cerrarSesion("asesor")}>
+              <Icono nombre="salir" /> Salir
             </button>
           )}
           <div className="nota-pie">Datos 100% sintéticos</div>

@@ -72,7 +72,7 @@ export default function Bandeja() {
     <div className="tarjeta">
       <div className="fila" style={{ marginBottom: 12 }}>
         <div>
-          <h1 style={{ fontSize: 20 }}>Bandeja de solicitudes</h1>
+          <h1>Bandeja de solicitudes</h1>
           <div className="ayuda">Toca una solicitud para ver la propuesta del agente y registrarla.</div>
         </div>
         <div className="espacio" />

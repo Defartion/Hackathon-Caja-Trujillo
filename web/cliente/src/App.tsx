@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import MenuCliente from './MenuCliente'
+import Marca from './marca'
+import { usuarioSesion } from './sesion'
 import {
   CalendarDays, CheckCircle2, CircleHelp, FlaskConical, House, LoaderCircle,
   TriangleAlert, WalletCards,
@@ -109,6 +111,7 @@ export default function App() {
   const ocupada = useRef(false)
   const contenido = useRef<HTMLElement>(null)
   const demo = new URLSearchParams(window.location.search).get('demo') === '1'
+  const [cuenta] = useState(() => usuarioSesion('cliente')?.nombre?.trim().split(/\s+/)[0] ?? null)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -295,10 +298,7 @@ export default function App() {
   return (
     <div className={`app-shell ${listo ? 'app-shell--nav' : ''}`}>
       <header className="app-header">
-        <div className="brand">
-          <span className="brand__symbol"><WalletCards aria-hidden="true" size={22} /></span>
-          <span>Cuota<span className="brand__accent">Flex</span></span>
-        </div>
+        <Marca tam={32} />
         <MenuCliente prestamoId={id} />
       </header>
       <main ref={contenido} tabIndex={-1} className="main-content">
@@ -331,7 +331,7 @@ export default function App() {
         {!cargando && !desactualizado && !prestamo && (
           <section className="empty-state">
             <div className="empty-state__icon"><WalletCards size={28} aria-hidden="true" /></div>
-            <h1>Hola, qué gusto verte</h1>
+            <h1>{cuenta ? `Hola, ${cuenta}` : 'Hola, qué gusto verte'}</h1>
             <p>Crea un crédito de demo para consultar sus cuotas y probar cómo funciona CuotaFlex.</p>
           </section>
         )}

@@ -68,7 +68,7 @@ export default function GraficoRubros({ resumen }: { resumen: Resumen }) {
           ticks={ticks}
           tickFormatter={(v: number) => `${v}%`}
         />
-        <Tooltip content={<Tip />} cursor={{ fill: '#F0F1F3' }} />
+        <Tooltip content={<Tip />} cursor={{ fill: '#EEF1F5' }} />
         <Legend verticalAlign="top" height={28} iconType="square" iconSize={10} />
         <Bar dataKey="fija" name="Fija" fill={COLOR_FIJA} maxBarSize={24} radius={[4, 4, 0, 0]} isAnimationActive={false} />
         <Bar dataKey="flex" name="CuotaFlex" fill={COLOR_FLEX} maxBarSize={24} radius={[4, 4, 0, 0]} isAnimationActive={false} />

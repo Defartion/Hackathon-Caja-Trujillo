@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { pedir } from '../api';
+import { cerrarSesion, iniciales, usuarioSesion } from '../sesion';
 
 export type Vista = 'simular' | 'alerta' | 'avisos';
 
@@ -19,15 +20,6 @@ const OPCIONES: { id: Vista; texto: string; ayuda: string }[] = [
   { id: 'avisos', texto: 'Avisos a clientes', ayuda: 'Recordatorios de pago' },
 ];
 
-const CLAVE_TOKEN = 'cuotaflex_token.supervisor';
-
-function haySesion() {
-  try {
-    return !!sessionStorage.getItem(CLAVE_TOKEN);
-  } catch {
-    return false;
-  }
-}
 
 /** Menú del supervisor: lo que puede hacer este rol, a la izquierda. */
 export default function NavSupervisor({ vista, onVista }: { vista: Vista; onVista: (v: Vista) => void }) {
@@ -46,14 +38,7 @@ export default function NavSupervisor({ vista, onVista }: { vista: Vista; onVist
     }
   };
 
-  const salir = () => {
-    try {
-      sessionStorage.removeItem(CLAVE_TOKEN);
-    } catch {
-      /* sin almacenamiento */
-    }
-    window.location.reload();
-  };
+  const usuario = usuarioSesion('supervisor');
 
   return (
     <nav className="nav-sup" aria-label="Menú del supervisor">
@@ -74,6 +59,17 @@ export default function NavSupervisor({ vista, onVista }: { vista: Vista; onVist
         ))}
       </ul>
       <div className="nav-pie">
+        {usuario && (
+          <div className="nav-usuario">
+            <span className={`nav-usuario__avatar ${usuario.nombre ? '' : 'pin'}`} aria-hidden="true">
+              {iniciales(usuario.nombre)}
+            </span>
+            <span className="nav-usuario__datos">
+              <b>{usuario.nombre ?? 'Sesión con PIN'}</b>
+              <span>Supervisor</span>
+            </span>
+          </div>
+        )}
         {confirmar ? (
           <div className="confirmar">
             <span>¿Borrar lo registrado y volver a los datos de demo?</span>
@@ -97,8 +93,8 @@ export default function NavSupervisor({ vista, onVista }: { vista: Vista; onVist
             Cambiar de rol
           </a>
         )}
-        {haySesion() && (
-          <button type="button" className="nav-sec" onClick={salir}>
+        {usuario && (
+          <button type="button" className="nav-sec" onClick={() => cerrarSesion('supervisor')}>
             Salir
           </button>
         )}

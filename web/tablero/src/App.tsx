@@ -24,6 +24,7 @@ import AlertaNino from './components/AlertaNino';
 import Avisos from './components/Avisos';
 import NavSupervisor from './components/NavSupervisor';
 import type { Vista } from './components/NavSupervisor';
+import Marca from './marca';
 
 const MAX_HISTORIAL = 5;
 
@@ -181,9 +182,7 @@ export default function App() {
   return (
     <div className="app">
       <header className="cabecera">
-        <div className="marca">
-          Cuota<b>Flex</b>
-        </div>
+        <Marca tam={32} />
         <div className="cab-sep" aria-hidden="true" />
         <div>
           <div className="titulo-tablero">Tablero de simulación</div>

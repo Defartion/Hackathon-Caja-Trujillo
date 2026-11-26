@@ -103,7 +103,7 @@ export default function Ficha() {
           <Link to="/" className="volver">
             ← Bandeja
           </Link>
-          <h1 style={{ fontSize: 20 }}>Solicitud {base.cliente_id}</h1>
+          <h1>Solicitud {base.cliente_id}</h1>
           <span className={`etiqueta ${est.clase}`}>Estacionalidad {est.texto.toLowerCase()}</span>
         </div>
         <div className="datos">

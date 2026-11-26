@@ -282,7 +282,7 @@ const CSS = `
 .enfen { position: relative; flex: none; }
 .enfen-distintivo {
   display: flex; align-items: center; gap: 6px; border: 1px solid var(--cf-gris-200);
-  border-radius: 999px; padding: 2px 12px 2px 2px; background: #fff;
+  border-radius: 999px; padding: 3px 14px 3px 4px; background: #fff;
 }
 .enfen-boton {
   display: flex; align-items: center; gap: 8px; background: none; border: none; color: inherit;
@@ -302,14 +302,14 @@ const CSS = `
 .enfen-etiqueta { font-size: 13px; font-weight: 700; white-space: nowrap; }
 .enfen-detalle { font-size: 11.5px; opacity: 0.9; white-space: nowrap; }
 .enfen-chip {
-  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
-  border: 1px solid currentColor; border-radius: 999px; padding: 1px 6px; background: rgba(255, 255, 255, 0.65);
+  font-size: 11px; font-weight: 700;
+  border: 1px solid currentColor; border-radius: 999px; padding: 0 7px; background: rgba(255, 255, 255, 0.7);
 }
 .enfen-fuente { font-size: 12px; font-weight: 600; color: inherit; white-space: nowrap; }
 .enfen-panel {
   position: absolute; right: 0; top: calc(100% + 8px); z-index: 40; width: min(600px, 92vw);
-  background: #fff; color: var(--cf-gris-900); border: 1px solid var(--cf-gris-200);
-  border-radius: var(--cf-radio); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16); padding: 14px 16px;
+  background: #fff; color: var(--cf-tinta); border: 1px solid var(--cf-gris-200);
+  border-radius: var(--cf-radio-lg); box-shadow: var(--cf-sombra-3); padding: 16px 18px;
 }
 .enfen-panel-cab { display: flex; align-items: center; justify-content: space-between; }
 .enfen-panel-cab h2 { margin: 0; font-size: 15px; }
@@ -321,11 +321,11 @@ const CSS = `
 .enfen-aviso.alivio { color: #8E0B20; font-weight: 600; }
 .enfen-aviso.error { color: var(--cf-rojo-osc); font-weight: 600; }
 .enfen-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
-.enfen-kpis > div { border: 1px solid var(--cf-gris-200); border-radius: 8px; padding: 8px 10px; }
+.enfen-kpis > div { background: var(--cf-gris-100); border-radius: 10px; padding: 9px 11px; }
 .enfen-kpis span { display: block; font-size: 11.5px; color: var(--cf-gris-600); }
 .enfen-kpis b { font-size: 18px; }
 .enfen-kpis small { display: block; font-size: 11.5px; font-weight: 500; color: var(--cf-gris-600); }
-.enfen-tabla { max-height: 260px; overflow-y: auto; border: 1px solid var(--cf-gris-200); border-radius: 8px; }
+.enfen-tabla { max-height: 260px; overflow-y: auto; border: 1px solid var(--cf-gris-200); border-radius: 10px; }
 .enfen-tabla table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
 .enfen-tabla th {
   position: sticky; top: 0; background: var(--cf-fondo); text-align: left; font-weight: 700;
