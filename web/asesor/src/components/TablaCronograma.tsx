@@ -2,8 +2,8 @@ import { useState } from "react";
 import { FilaCronograma } from "../api";
 import { fmtS } from "../formato";
 
-export default function TablaCronograma({ filas, capacidad }: { filas: FilaCronograma[]; capacidad: number[] }) {
-  const [abierta, setAbierta] = useState(false);
+export default function TablaCronograma({ filas, capacidad, abiertaInicial = true }: { filas: FilaCronograma[]; capacidad: number[]; abiertaInicial?: boolean }) {
+  const [abierta, setAbierta] = useState(abiertaInicial);
   return (
     <div className="tarjeta">
       <div className="fila">
@@ -23,7 +23,7 @@ export default function TablaCronograma({ filas, capacidad }: { filas: FilaCrono
               <th className="num">Interés</th>
               <th className="num">Capital</th>
               <th className="num">Saldo</th>
-              <th className="num">Capacidad p25</th>
+              <th className="num">Capacidad (mes flojo)</th>
             </tr>
           </thead>
           <tbody>

@@ -1,0 +1,118 @@
+[
+  {
+    "cliente_id": "E001",
+    "sector": "agricultura",
+    "actividad": "arroz",
+    "zona": {
+      "departamento": "La Libertad",
+      "provincia": "Chepén",
+      "distrito": null
+    },
+    "fecha_inicio": "2026-12-01",
+    "meses": 24,
+    "captura": {
+      "ventas_mes_alto": 16800,
+      "ventas_mes_normal": 7000,
+      "ventas_mes_bajo": 1750,
+      "meses_altos": [
+        6,
+        7
+      ],
+      "meses_bajos": [
+        1,
+        2,
+        3
+      ],
+      "costo_ventas_pct": 0.58,
+      "gastos_operativos": 600,
+      "gastos_tributarios": 80,
+      "carga_familiar": 1100,
+      "otras_deudas_cuota": 0,
+      "evidencias": [
+        {
+          "tipo": "yape",
+          "meses": 6,
+          "monto_promedio_mensual": 4100
+        }
+      ]
+    }
+  },
+  {
+    "cliente_id": "E002",
+    "sector": "pesca",
+    "actividad": "pesca artesanal",
+    "zona": {
+      "departamento": "La Libertad",
+      "provincia": "Pacasmayo",
+      "distrito": null
+    },
+    "fecha_inicio": "2027-04-30",
+    "meses": 12,
+    "captura": {
+      "ventas_mes_alto": 13500,
+      "ventas_mes_normal": 9500,
+      "ventas_mes_bajo": 2800,
+      "meses_altos": [
+        1,
+        2,
+        3
+      ],
+      "meses_bajos": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "costo_ventas_pct": 0.58,
+      "gastos_operativos": 390,
+      "gastos_tributarios": 90,
+      "carga_familiar": 900,
+      "otras_deudas_cuota": 0,
+      "evidencias": [
+        {
+          "tipo": "boletas",
+          "meses": 3,
+          "monto_promedio_mensual": 4100
+        }
+      ]
+    }
+  },
+  {
+    "cliente_id": "E003",
+    "sector": "comercio",
+    "actividad": "bodega",
+    "zona": {
+      "departamento": "La Libertad",
+      "provincia": "Trujillo",
+      "distrito": null
+    },
+    "fecha_inicio": "2026-12-01",
+    "meses": 12,
+    "captura": {
+      "ventas_mes_alto": 7200,
+      "ventas_mes_normal": 6000,
+      "ventas_mes_bajo": 5100,
+      "meses_altos": [
+        7,
+        12
+      ],
+      "meses_bajos": [
+        2,
+        3
+      ],
+      "costo_ventas_pct": 0.7,
+      "gastos_operativos": 330,
+      "gastos_tributarios": 70,
+      "carga_familiar": 800,
+      "otras_deudas_cuota": 380,
+      "evidencias": [
+        {
+          "tipo": "yape",
+          "meses": 3,
+          "monto_promedio_mensual": 3100
+        }
+      ]
+    }
+  }
+]

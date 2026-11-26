@@ -120,7 +120,13 @@ export default function EstadoEnfen() {
   useEffect(() => {
     void cargarEstado();
     const id = setInterval(() => void cargarEstado(), INTERVALO_MS);
-    return () => clearInterval(id);
+    // La vista "Alerta El Niño" avisa cuando cambia el estado para no esperar al siguiente sondeo.
+    const alCambiar = () => void cargarEstado();
+    window.addEventListener('cuotaflex-enfen', alCambiar);
+    return () => {
+      clearInterval(id);
+      window.removeEventListener('cuotaflex-enfen', alCambiar);
+    };
   }, [cargarEstado]);
 
   useEffect(() => {

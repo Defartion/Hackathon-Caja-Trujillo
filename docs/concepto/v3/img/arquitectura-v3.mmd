@@ -1,0 +1,61 @@
+---
+config:
+  fontFamily: "Inter, Arial, sans-serif"
+  theme: base
+  themeVariables:
+    fontFamily: "Inter, Arial, sans-serif"
+    fontSize: "18px"
+    primaryColor: "#FFFFFF"
+    primaryTextColor: "#1F2328"
+    primaryBorderColor: "#57606A"
+    lineColor: "#57606A"
+    clusterBkg: "#F7F7F8"
+    clusterBorder: "#D0D7DE"
+    edgeLabelBackground: "#FFFFFF"
+  flowchart:
+    curve: basis
+    nodeSpacing: 22
+    rankSpacing: 46
+    wrappingWidth: 360
+    subGraphTitleMargin:
+      top: 4
+      bottom: 16
+---
+%% Fuente de docs/concepto/v3/img/arquitectura-v3.png (CuotaFlex · concepto v3 · NEG-01)
+%% Sigue docs/fases/fase-4/CONTRATOS.md: /ciclo/estimar (lote B) y /plan/proponer (lote A).
+%% Regenerar desde docs/concepto/v3/img/:
+%%   npx -y @mermaid-js/mermaid-cli -i arquitectura-v3.mmd -o arquitectura-v3.png -b white -s 2 -w 1500
+flowchart TB
+  subgraph entradas["Entradas (sin datos internos ni historial de pagos)"]
+    direction TB
+    captura["Asesor de Negocios en campo<br/>ventas por temporada, costos, gastos,<br/>carga familiar y evidencias"]
+    fuentes["Fuentes públicas del sector y la zona<br/>MIDAGRI · BCRP · INEI · PRODUCE<br/>SENAMHI · ENFEN · SENASA · ANA<br/>y calendarios comerciales"]
+  end
+
+  subgraph motor["CuotaFlex · API"]
+    direction LR
+    ciclo["Modelo de ciclo<br/>etapas cima, normal y valle<br/>UN p10 · p50 · p90 por mes"]
+    plan["Constructor del plan<br/>Cuota/UN ≤ factor en cada etapa<br/>TED 360 · seguros · prelación · TCEA"]
+    estres["Escenarios adversos<br/>El Niño · retraso de cosecha<br/>veda · caída de precios"]
+    ciclo --> plan --> estres
+  end
+
+  subgraph decision["Decisión del crédito nuevo"]
+    direction TB
+    vista["Vista del comité<br/>ciclo, cuotas, Cuota/UN por etapa,<br/>supuestos y estrés frente a la cuota fija"]
+    agente["Agente explicador<br/>LLM externo en la demo;<br/>cada cifra se verifica"]
+    roles["Asesor de Riesgos valida<br/>y el comité aprueba"]
+  end
+
+  core[("Core de la Caja<br/>Fineract en la demo, opcional")]
+
+  entradas -- "POST /ciclo/estimar" --> motor
+  motor -- "POST /plan/proponer<br/>plan, cuota fija y estrés" --> decision
+  decision -. "plan fijo desde el desembolso" .-> core
+
+  classDef modulo stroke:#0B5CAD,stroke-width:2px,fill:#FFFFFF,color:#1F2328
+  classDef central stroke:#1F2328,stroke-width:2px,fill:#FFFFFF,color:#1F2328
+  classDef alerta stroke:#B7791F,stroke-width:2px,fill:#FDF6EA,color:#1F2328
+  class ciclo,plan,agente modulo
+  class vista,roles,core central
+  class estres alerta

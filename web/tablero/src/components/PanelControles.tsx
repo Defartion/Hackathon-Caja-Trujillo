@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { TAMANOS } from '../api';
 import type { Escenario, ParametroEditable, TamanoId } from '../api';
 import Deslizador from './Deslizador';
@@ -25,14 +26,17 @@ export default function PanelControles(p: Props) {
   const grupos: string[] = [];
   for (const x of p.parametros) if (!grupos.includes(x.grupo)) grupos.push(x.grupo);
   const activo = p.escenarios.find((e) => e.id === p.escenarioActivo);
+  const [avanzado, setAvanzado] = useState(false);
+  const abierto = avanzado || p.personalizado;
 
   return (
     <aside className="panel" aria-label="Controles de la simulación">
       <div className="panel-scroll">
         <section className="seccion">
           <div className="seccion-cab">
-            <h2 className="seccion-titulo">Escenarios</h2>
+            <h2 className="seccion-titulo">1. Elige un escenario</h2>
           </div>
+          <p className="esc-ayuda">Cada botón simula la cartera al instante.</p>
           <div className="escenarios">
             {p.escenarios.map((e) => (
               <button
@@ -57,6 +61,24 @@ export default function PanelControles(p: Props) {
         </section>
 
         <section className="seccion">
+          <button
+            type="button"
+            className="avanzado-toggle"
+            aria-expanded={abierto}
+            onClick={() => setAvanzado(!abierto)}
+          >
+            <span>2. Ajustes avanzados (opcional)</span>
+            <span aria-hidden="true">{abierto ? '▾' : '▸'}</span>
+          </button>
+          {!abierto && (
+            <p className="esc-ayuda">
+              Cambia reglas de flexibilidad, capacidad de pago, modo y tamaño de la simulación.
+            </p>
+          )}
+        </section>
+
+        {abierto && (
+        <section className="seccion">
           <div className="seccion-cab">
             <h2 className="seccion-titulo">Parámetros</h2>
             <button type="button" className="btn-texto" disabled={p.corriendo} onClick={p.onRestablecer}>
@@ -80,9 +102,9 @@ export default function PanelControles(p: Props) {
             </div>
           ))}
         </section>
-      </div>
-
-      <div className="panel-fijo">
+        )}
+        {abierto && (
+          <section className="seccion avanzado-ejecucion">
         <div>
           <div className="etiqueta-ctrl" id="lbl-modo">
             Modo
@@ -135,8 +157,13 @@ export default function PanelControles(p: Props) {
           </div>
         </div>
 
+          </section>
+        )}
+      </div>
+
+      <div className="panel-fijo">
         <button type="button" className="btn-simular" disabled={p.corriendo} onClick={p.onSimular}>
-          {p.corriendo ? `Simulando… ${p.segundos.toFixed(1)} s` : 'Simular'}
+          {p.corriendo ? `Simulando… ${p.segundos.toFixed(1)} s` : p.personalizado ? 'Simular con mis ajustes' : 'Volver a simular'}
           {p.corriendo && <span className="progreso" style={{ width: `${p.progreso}%` }} />}
         </button>
       </div>

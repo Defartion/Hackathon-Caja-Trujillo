@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import MenuCliente from './MenuCliente'
 import {
   CalendarDays, CheckCircle2, CircleHelp, FlaskConical, House, LoaderCircle,
   TriangleAlert, WalletCards,
@@ -294,7 +295,7 @@ export default function App() {
           <span className="brand__symbol"><WalletCards aria-hidden="true" size={22} /></span>
           <span>Cuota<span className="brand__accent">Flex</span></span>
         </div>
-        <span className="app-header__label">Mi crédito</span>
+        <MenuCliente prestamoId={id} />
       </header>
       <main ref={contenido} tabIndex={-1} className="main-content">
         {error && (

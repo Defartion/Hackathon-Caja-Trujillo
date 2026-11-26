@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CuotaFlex · Elige tu rol</title>
+<style>
+  :root { --rojo: #C8102E; --rojo-osc: #8E0B20; --g9: #1F2328; --g6: #57606A; --g2: #E5E7EB; --fondo: #F7F7F8; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Inter", system-ui, sans-serif; color: var(--g9); background: var(--fondo); min-height: 100vh; display: flex; flex-direction: column; }
+  header { background: #fff; border-bottom: 3px solid var(--rojo); padding: 14px 24px; }
+  .marca { font-weight: 800; font-size: 20px; letter-spacing: -0.3px; }
+  .marca span { color: var(--rojo); }
+  main { flex: 1; width: 100%; max-width: 980px; margin: 0 auto; padding: 40px 20px; }
+  h1 { font-size: 26px; margin: 0 0 6px; }
+  p.sub { color: var(--g6); margin: 0 0 28px; font-size: 15px; }
+  .roles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  a.rol { display: flex; flex-direction: column; gap: 10px; background: #fff; border: 1px solid var(--g2); border-radius: 12px; padding: 20px; text-decoration: none; color: inherit; transition: border-color .15s, box-shadow .15s, transform .15s; }
+  a.rol:hover, a.rol:focus-visible { border-color: var(--rojo); box-shadow: 0 6px 20px rgba(200, 16, 46, .12); transform: translateY(-2px); outline: none; }
+  .icono { width: 44px; height: 44px; border-radius: 10px; background: #FDE8EB; color: var(--rojo); display: flex; align-items: center; justify-content: center; }
+  .rol h2 { margin: 0; font-size: 18px; }
+  .rol ul { margin: 0; padding-left: 18px; color: var(--g6); font-size: 14px; line-height: 1.6; }
+  .rol .ir { margin-top: auto; font-weight: 700; color: var(--rojo); }
+  .nota { margin-top: 28px; font-size: 13px; color: var(--g6); }
+  footer { text-align: center; color: var(--g6); font-size: 12px; padding: 16px; }
+  @media (max-width: 760px) { .roles { grid-template-columns: 1fr; } main { padding: 24px 14px; } h1 { font-size: 22px; } }
+</style>
+</head>
+<body>
+<header><div class="marca">Cuota<span>Flex</span></div></header>
+<main>
+  <h1>¿Cómo quieres entrar?</h1>
+  <p class="sub">Cuotas que se adaptan al flujo del negocio. Elige tu rol: cada uno ve solo lo que necesita.</p>
+  <div class="roles">
+    <a class="rol" href="/asesor/">
+      <div class="icono"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 20v-2a4 4 0 0 0-8 0v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg></div>
+      <h2>Asesor de negocios</h2>
+      <ul>
+        <li>Revisa las solicitudes</li>
+        <li>Ve y ajusta la propuesta del agente</li>
+        <li>Registra, aprueba y desembolsa</li>
+      </ul>
+      <span class="ir">Entrar como asesor →</span>
+    </a>
+    <a class="rol" href="/cliente/?loanId=2">
+      <div class="icono"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 2h10v20H7zM11 18h2"/></svg></div>
+      <h2>Cliente</h2>
+      <ul>
+        <li>Mira tu próxima cuota</li>
+        <li>Consulta tu cronograma</li>
+        <li>Pide un aplazamiento o alivio</li>
+      </ul>
+      <span class="ir">Entrar como cliente →</span>
+    </a>
+    <a class="rol" href="/tablero/">
+      <div class="icono"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div>
+      <h2>Supervisor</h2>
+      <ul>
+        <li>Simula la cartera: fija vs. CuotaFlex</li>
+        <li>Compara escenarios, incluido El Niño</li>
+        <li>Envía avisos a clientes</li>
+      </ul>
+      <span class="ir">Entrar como supervisor →</span>
+    </a>
+  </div>
+  <p class="nota">Cada rol pide su PIN. La app del cliente está pensada para el celular.</p>
+</main>
+<footer>Datos 100% sintéticos · Cajathón 2026 · Caja Trujillo</footer>
+</body>
+</html>

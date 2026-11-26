@@ -247,6 +247,23 @@ def aplazar(lid: int, command: str, a: AplazamientoIn):
             "incrementoCuotasSiguientes": round(extra, 2), "aplazamientosRestantes": l["aplazamientosRestantes"]}
 
 
+@app.get("/motor/prestamos")
+def listar_prestamos():
+    """Préstamos registrados en el core, del más reciente al más antiguo (para el panel del asesor).
+
+    Va bajo /motor y no bajo /fineract-provider para que el rol cliente no vea la lista completa."""
+    filas = []
+    for l in sorted(DB["loans"].values(), key=lambda x: -x["id"]):
+        c = DB["clients"].get(l["clientId"], {})
+        cuotas = l.get("cuotas") or [0]
+        filas.append({"id": l["id"], "clientId": l["clientId"], "cliente": c.get("nombre", f"Cliente {l['clientId']}"),
+                      "rubro": c.get("rubro"), "estado": l["status"]["value"], "principal": l["principal"],
+                      "plazo": l["numberOfRepayments"], "producto": l.get("producto"),
+                      "cuota_min": float(min(cuotas)), "cuota_max": float(max(cuotas)),
+                      "aplazamientos_restantes": l.get("aplazamientosRestantes", 0)})
+    return filas
+
+
 @app.get("/motor/parametros")
 def parametros():
     return cargar_parametros()

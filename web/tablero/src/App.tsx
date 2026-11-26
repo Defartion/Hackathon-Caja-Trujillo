@@ -20,6 +20,10 @@ import Historial from './components/Historial';
 import type { Corrida } from './components/Historial';
 import Indicadores from './components/Indicadores';
 import PanelControles from './components/PanelControles';
+import AlertaNino from './components/AlertaNino';
+import Avisos from './components/Avisos';
+import NavSupervisor from './components/NavSupervisor';
+import type { Vista } from './components/NavSupervisor';
 
 const MAX_HISTORIAL = 5;
 
@@ -32,8 +36,9 @@ export default function App() {
   const [valores, setValores] = useState<Record<string, number>>({});
   const [activo, setActivo] = useState<string | null>('base');
   const [replanificar, setReplanificar] = useState(true);
-  const [tamano, setTamano] = useState<TamanoId>('estandar');
+  const [tamano, setTamano] = useState<TamanoId>('rapido');
 
+  const [vista, setVista] = useState<Vista>('simular');
   const [corriendo, setCorriendo] = useState(false);
   const [segundos, setSegundos] = useState(0);
   const [progreso, setProgreso] = useState(0);
@@ -64,6 +69,9 @@ export default function App() {
   useEffect(() => {
     void cargar();
   }, [cargar]);
+
+  // Al abrir, corre una vez el escenario base para que el supervisor vea resultados sin pulsar nada.
+  const autoCorrida = useRef(false);
 
   // Temporizador de la simulación en curso.
   useEffect(() => {
@@ -134,6 +142,13 @@ export default function App() {
     void ejecutar(vals, e.id);
   };
 
+  useEffect(() => {
+    if (autoCorrida.current || cargando || parametros.length === 0) return;
+    autoCorrida.current = true;
+    void ejecutar(Object.fromEntries(parametros.map((x) => [x.ruta, x.valor])), 'base');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cargando, parametros]);
+
   const cambiarParametro = (ruta: string, v: number) => {
     setValores((prev) => ({ ...prev, [ruta]: v }));
     setActivo(null);
@@ -180,7 +195,12 @@ export default function App() {
         <EstadoEnfen />
       </header>
 
-      <div className="cuerpo">
+      <div className={`cuerpo ${vista === 'simular' ? '' : 'sin-panel'}`}>
+        <NavSupervisor vista={vista} onVista={setVista} />
+        {vista !== 'simular' ? (
+          <main className="principal">{vista === 'alerta' ? <AlertaNino /> : <Avisos />}</main>
+        ) : (
+        <>
         {parametros.length > 0 ? (
           <PanelControles
             parametros={parametros}
@@ -269,6 +289,8 @@ export default function App() {
             </>
           )}
         </main>
+        </>
+        )}
       </div>
 
       <footer className="pie">

@@ -15,7 +15,8 @@ def servidor(monkeypatch):
 
 
 def test_rutas_de_las_apps_y_la_api(servidor):
-    assert servidor.get("/").headers["location"] == "/asesor/"
+    inicio = servidor.get("/")
+    assert (inicio.status_code == 200 and "Elige tu rol" in inicio.text) or inicio.headers["location"] == "/asesor/"
     assert servidor.get("/tablero").headers["location"] == "/tablero/"
     assert servidor.get("/api/auth/config").status_code == 200
     assert servidor.get("/otra/cosa").status_code == 404
@@ -32,3 +33,14 @@ def test_login_funciona_bajo_el_prefijo_api(servidor, monkeypatch):
     assert servidor.get("/api/motor/cartera-demo?n=2").status_code == 401
     tok = servidor.post("/api/auth/login", json={"rol": "asesor", "pin": "1111"}).json()["token"]
     assert servidor.get("/api/motor/cartera-demo?n=2", headers={"Authorization": f"Bearer {tok}"}).status_code == 200
+
+
+def test_lista_de_prestamos_para_el_asesor():
+    from fastapi.testclient import TestClient
+    from cuotaflex.api import main
+
+    cli = TestClient(main.app)
+    filas = cli.get("/motor/prestamos").json()
+    assert isinstance(filas, list)
+    for f in filas:
+        assert {"id", "cliente", "estado", "principal", "plazo", "cuota_min", "cuota_max"} <= set(f)

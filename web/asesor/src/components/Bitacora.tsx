@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { PasoBitacora } from "../api";
 import { fmtPct, fmtS0 } from "../formato";
 
@@ -41,10 +41,10 @@ function describir(p: PasoBitacora): { titulo: string; detalle: ReactNode; clase
             {Object.entries(cand).map(([prod, m]) => (
               <div key={prod} style={{ fontWeight: prod === v.elegido ? 600 : 400 }}>
                 {prod === v.elegido ? "★ " : ""}
-                {PRODUCTOS[prod] ?? prod}: default {fmtPct(m.default)} · atraso {fmtPct(m.mora30)} · VPN {fmtS0(m.vpn)}
+                {PRODUCTOS[prod] ?? prod}: incumplimiento {fmtPct(m.default)} · atraso {fmtPct(m.mora30)} · ganancia {fmtS0(m.vpn)}
               </div>
             ))}
-            <div>Criterio: {String(v.criterio ?? "menor default sin perder rentabilidad")}</div>
+            <div>Criterio: menor incumplimiento sin perder rentabilidad</div>
           </div>
         ),
         clase: "ok",
@@ -84,20 +84,76 @@ function describir(p: PasoBitacora): { titulo: string; detalle: ReactNode; clase
   }
 }
 
+type Item = { titulo: string; detalle: ReactNode; clase: string; sub?: Item[] };
+
+/** Junta los intentos de cronograma y replanificación en un solo paso que se puede desplegar. */
+function agrupar(pasos: PasoBitacora[]): Item[] {
+  const out: Item[] = [];
+  let grupo: PasoBitacora[] = [];
+  const cerrar = () => {
+    if (grupo.length === 0) return;
+    const crons = grupo.filter((g) => g.paso === "cronograma") as Record<string, unknown>[];
+    const ini = Number(crons[0]?.principal);
+    const fin = Number(crons[crons.length - 1]?.principal);
+    const intentos = grupo.filter((g) => g.paso === "replanificar").length;
+    const ult = describir(grupo[grupo.length - 1]);
+    out.push({
+      titulo:
+        intentos === 0
+          ? `Cronograma a ${crons[0]?.plazo} meses por ${fmtS0(ini)}`
+          : `Ajuste del monto: ${fmtS0(ini)} → ${fmtS0(fin)} (${intentos} ${intentos === 1 ? "intento" : "intentos"})`,
+      detalle: intentos === 0 ? ult.detalle : "Bajó el monto hasta que la cuota entró en la capacidad de pago.",
+      clase: ult.clase,
+      sub: intentos === 0 ? undefined : grupo.map(describir),
+    });
+    grupo = [];
+  };
+  for (const p of pasos) {
+    if (p.paso === "cronograma" || p.paso === "replanificar") grupo.push(p);
+    else {
+      cerrar();
+      out.push(describir(p));
+    }
+  }
+  cerrar();
+  return out;
+}
+
+function Paso({ d }: { d: Item }) {
+  const [abierto, setAbierto] = useState(false);
+  return (
+    <li className={d.clase}>
+      <div className="titulo">{d.titulo}</div>
+      {d.detalle && <div className="detalle">{d.detalle}</div>}
+      {d.sub && (
+        <>
+          <button type="button" className="btn-enlace" style={{ paddingLeft: 0 }} onClick={() => setAbierto(!abierto)}>
+            {abierto ? "Ocultar intentos" : "Ver intentos"}
+          </button>
+          {abierto && (
+            <ol className="linea-tiempo" style={{ marginTop: 8 }}>
+              {d.sub.map((x, i) => (
+                <li key={i} className={x.clase}>
+                  <div className="titulo">{x.titulo}</div>
+                  {x.detalle && <div className="detalle">{x.detalle}</div>}
+                </li>
+              ))}
+            </ol>
+          )}
+        </>
+      )}
+    </li>
+  );
+}
+
 export default function Bitacora({ pasos }: { pasos: PasoBitacora[] }) {
   return (
     <div className="tarjeta">
-      <h2>Bitácora del agente</h2>
+      <h2>Cómo decidió el agente</h2>
       <ol className="linea-tiempo">
-        {pasos.map((p, i) => {
-          const d = describir(p);
-          return (
-            <li key={i} className={d.clase}>
-              <div className="titulo">{d.titulo}</div>
-              {d.detalle && <div className="detalle">{d.detalle}</div>}
-            </li>
-          );
-        })}
+        {agrupar(pasos).map((d, i) => (
+          <Paso key={i} d={d} />
+        ))}
       </ol>
     </div>
   );
