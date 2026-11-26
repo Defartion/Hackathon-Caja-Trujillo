@@ -134,3 +134,17 @@ def test_rapido():
     t = time.time()
     proponer_plan(_sol())
     assert time.time() - t < 2.0
+
+
+def test_los_pendientes_de_la_gracia_se_pagan_despues_sin_capitalizarse():
+    """4 meses sin utilidad y un 5.º flojo: el 5.º ya no es gracia, cubre sus cargos y parte del
+    pendiente; el resto se cancela en el 6.º, antes de amortizar capital."""
+    from cuotaflex.plan.constructor import construir
+    from cuotaflex.plan.costos import Seguros
+
+    un = [-300, -400, -300, -20, 600] + [3000] * 7
+    r = construir(5000, 0.45, date(2027, 6, 30), 12, un, 0.85, Seguros.desde_dict({}), max_gracia=4)
+    assert r["factible"]
+    cuotas = np.asarray(r["cuotas"], dtype=float)
+    assert np.all(cuotas[:4] <= 1e-6)
+    assert cuotas[4] <= 0.85 * 600 - 0.5 + 1e-6

@@ -48,12 +48,15 @@ def _resolver(monto: float, tea: float, desembolso: date, un: list[float], facto
     cap = cp.Variable(n, nonneg=True)      # amortización de capital
     y = cp.Variable(n, nonneg=True)        # pago de cargos (seguros + interés, incluidos pendientes)
     P = cp.Variable(n + 1, nonneg=True)    # cargos pendientes
-    g = cp.Variable(n, boolean=True)       # 1 = periodo con pendientes (gracia)
+    g = cp.Variable(n, boolean=True)       # 1 = periodo de gracia: los cargos pueden quedar pendientes
+    z = cp.Variable(n, boolean=True)       # 1 = periodo que amortiza capital (sin pendientes al cierre)
     cargos = cp.multiply(tasa, K[:-1]) + fijo
     c = y + cap
+    # Los pendientes solo crecen en gracia y se pagan después sin intereses (no se capitalizan); por la
+    # prelación, el capital se amortiza solo cuando ya no quedan pendientes.
     restr = [K[0] == monto, P[0] == 0, K[1:] == K[:-1] - cap, P[1:] == P[:-1] + cargos - y,
-             K >= 0, c <= tope, P[1:] <= M * g, cap <= M * (1 - g), cp.sum(g) <= max_gracia,
-             K[n] == 0, P[n] == 0]
+             K >= 0, c <= tope, P[1:] - P[:-1] <= M * g, cap <= M * (1 - g), cp.sum(g) <= max_gracia,
+             cap <= M * z, P[1:] <= M * (1 - z), K[n] == 0, P[n] == 0]
     escala = max(monto, 1.0)
     penal_estres = 0
     if adversos:

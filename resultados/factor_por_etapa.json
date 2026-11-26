@@ -1,43 +1,43 @@
 {
   "0.65": {
     "clientes": 600,
-    "factibles_pct": 95.2,
+    "factibles_pct": 96.7,
     "fija_viola_pct": 56.3,
     "plan_viola_pct_factibles": 0.0,
-    "fija_viola_pct_en_factibles": 54.1,
+    "fija_viola_pct_en_factibles": 54.8,
     "estres_pct_factibles": {
       "el_nino": {
-        "fija": 65.5,
-        "plan": 48.3,
-        "exceso_fija": 2315.0,
-        "exceso_plan": 1670.0
+        "fija": 66.0,
+        "plan": 49.1,
+        "exceso_fija": 2389.0,
+        "exceso_plan": 1742.0
       },
       "retraso": {
-        "fija": 54.1,
-        "plan": 44.1,
-        "exceso_fija": 647.0,
-        "exceso_plan": 323.0
+        "fija": 54.8,
+        "plan": 45.7,
+        "exceso_fija": 687.0,
+        "exceso_plan": 347.0
       },
       "caida_precios": {
-        "fija": 87.6,
-        "plan": 70.4,
-        "exceso_fija": 1843.0,
-        "exceso_plan": 781.0
+        "fija": 87.8,
+        "plan": 70.7,
+        "exceso_fija": 1888.0,
+        "exceso_plan": 810.0
       }
     },
     "interes_medio": {
       "fija": 2063.0,
-      "plan": 1620.0
+      "plan": 1630.0
     },
     "tcea_media": {
-      "fija": 47.0,
-      "plan": 46.79
+      "fija": 47.01,
+      "plan": 46.78
     },
-    "gracia_media": 1.64,
-    "no_factibles_monto_max_vs_pedido_pct": 83.1,
+    "gracia_media": 1.78,
+    "no_factibles_monto_max_vs_pedido_pct": 85.5,
     "por_rubro": {
       "agricultura": {
-        "factible_pct": 89.8,
+        "factible_pct": 94.5,
         "fija_viola_pct": 100.0
       },
       "bodega": {
@@ -49,11 +49,11 @@
         "fija_viola_pct": 93.9
       },
       "comercio_campana": {
-        "factible_pct": 96.0,
+        "factible_pct": 97.6,
         "fija_viola_pct": 58.4
       },
       "pesca": {
-        "factible_pct": 87.5,
+        "factible_pct": 89.3,
         "fija_viola_pct": 100.0
       },
       "servicios": {
@@ -64,43 +64,43 @@
   },
   "0.85": {
     "clientes": 600,
-    "factibles_pct": 98.8,
+    "factibles_pct": 99.3,
     "fija_viola_pct": 46.3,
     "plan_viola_pct_factibles": 0.0,
-    "fija_viola_pct_en_factibles": 45.7,
+    "fija_viola_pct_en_factibles": 46.0,
     "estres_pct_factibles": {
       "el_nino": {
-        "fija": 62.2,
-        "plan": 39.5,
-        "exceso_fija": 2202.0,
-        "exceso_plan": 1526.0
+        "fija": 62.4,
+        "plan": 39.6,
+        "exceso_fija": 2227.0,
+        "exceso_plan": 1545.0
       },
       "retraso": {
-        "fija": 45.7,
-        "plan": 25.3,
-        "exceso_fija": 587.0,
-        "exceso_plan": 203.0
+        "fija": 46.0,
+        "plan": 26.3,
+        "exceso_fija": 600.0,
+        "exceso_plan": 202.0
       },
       "caida_precios": {
-        "fija": 74.0,
-        "plan": 44.7,
-        "exceso_fija": 1526.0,
-        "exceso_plan": 429.0
+        "fija": 74.2,
+        "plan": 43.3,
+        "exceso_fija": 1543.0,
+        "exceso_plan": 427.0
       }
     },
     "interes_medio": {
-      "fija": 2089.0,
-      "plan": 1419.0
+      "fija": 2092.0,
+      "plan": 1430.0
     },
     "tcea_media": {
-      "fija": 47.02,
-      "plan": 46.76
+      "fija": 47.03,
+      "plan": 46.73
     },
-    "gracia_media": 2.04,
-    "no_factibles_monto_max_vs_pedido_pct": 83.8,
+    "gracia_media": 2.18,
+    "no_factibles_monto_max_vs_pedido_pct": 87.8,
     "por_rubro": {
       "agricultura": {
-        "factible_pct": 96.1,
+        "factible_pct": 97.6,
         "fija_viola_pct": 100.0
       },
       "bodega": {
@@ -112,7 +112,7 @@
         "fija_viola_pct": 72.0
       },
       "comercio_campana": {
-        "factible_pct": 99.2,
+        "factible_pct": 100.0,
         "fija_viola_pct": 28.8
       },
       "pesca": {
