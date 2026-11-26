@@ -3,6 +3,7 @@
 Solo actúa con CUOTAFLEX_AUTH=1; por defecto está apagado para que las pruebas y el desarrollo
 funcionen igual que antes. Variables: PIN_ASESOR, PIN_CLIENTE, PIN_SUPERVISOR, CUOTAFLEX_SECRETO.
 El control por prefijo de ruta se aplica como middleware en api/main.py (`permiso_requerido`).
+Las cuentas con correo y contraseña (routers/cuentas.py) emiten el mismo token, con el nombre de la persona.
 """
 from __future__ import annotations
 
@@ -17,6 +18,8 @@ from typing import Literal
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+
+from ... import cuentas
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -53,23 +56,31 @@ def _b64(b: bytes) -> str:
     return base64.urlsafe_b64encode(b).decode().rstrip("=")
 
 
-def emitir_token(rol: str, ahora: float | None = None) -> str:
-    cuerpo = _b64(json.dumps({"rol": rol, "exp": int((time.time() if ahora is None else ahora) + DURACION_S)}).encode())
+def emitir_token(rol: str, ahora: float | None = None, extra: dict | None = None) -> str:
+    """`extra` agrega datos de la cuenta (id y nombre) para que la app muestre quién entró."""
+    datos = {**(extra or {}), "rol": rol, "exp": int((time.time() if ahora is None else ahora) + DURACION_S)}
+    cuerpo = _b64(json.dumps(datos).encode())
     firma = _b64(hmac.new(_secreto(), cuerpo.encode(), hashlib.sha256).digest())
     return f"{cuerpo}.{firma}"
 
 
-def verificar_token(token: str) -> str | None:
-    """Devuelve el rol si el token es válido y no venció."""
+def datos_token(token: str) -> dict | None:
+    """Contenido del token si es válido y no venció (rol, exp y, con cuenta, id y nombre)."""
     try:
         cuerpo, firma = token.split(".")
         esperada = _b64(hmac.new(_secreto(), cuerpo.encode(), hashlib.sha256).digest())
         if not hmac.compare_digest(firma, esperada):
             return None
         datos = json.loads(base64.urlsafe_b64decode(cuerpo + "=" * (-len(cuerpo) % 4)))
-        return datos["rol"] if datos["exp"] > time.time() and datos["rol"] in ROLES else None
+        return datos if datos["exp"] > time.time() and datos["rol"] in ROLES else None
     except Exception:
         return None
+
+
+def verificar_token(token: str) -> str | None:
+    """Devuelve el rol si el token es válido y no venció."""
+    datos = datos_token(token)
+    return datos["rol"] if datos else None
 
 
 def permiso_requerido(ruta: str, metodo: str) -> set[str] | None:
@@ -91,7 +102,8 @@ class Login(BaseModel):
 
 @router.get("/config")
 def config():
-    return {"auth": activa(), "roles": list(ROLES)}
+    # registro: qué necesita cada rol para crear cuenta ('libre', 'codigo' o 'no'); ver cuotaflex/cuentas.py
+    return {"auth": activa(), "roles": list(ROLES), "registro": cuentas.politica_registro()}
 
 
 @router.post("/login")

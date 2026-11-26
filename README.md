@@ -44,10 +44,11 @@ src/cuotaflex/
   optimizador.py            cronograma óptimo (CVXPY + HiGHS, MILP)
   agente.py                 agente asesor: orquesta, replanifica y explica (LLM opcional)
   simulacion.py             Monte Carlo cuota fija vs. CuotaFlex
+  cuentas.py                cuentas con correo y contraseña (además del PIN por rol)
   api/main.py               API compatible con Fineract (+ aplazamiento)
 scripts/                    simular.py, demo_agente.py
 tests/                      pruebas del motor y de la API
-docs/                       CONCEPTO.md (concept solution), ARQUITECTURA.md
+docs/                       CONCEPTO.md (concept solution), ARQUITECTURA.md, diseno/ (sistema de diseño)
 ```
 
 ## Uso rápido
