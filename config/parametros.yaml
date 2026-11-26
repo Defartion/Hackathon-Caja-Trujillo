@@ -56,3 +56,12 @@ pronostico:                     # elegido por backtesting (resultados/backtest.m
   metodo: perfil                # perfil | statsforecast | mixto
   peso_modelo: 0.3              # peso de statsforecast cuando metodo = mixto
   factor_sigma: 1.3             # calibra la cobertura p10–p90 a ~80% fuera de muestra
+
+productos:                      # fase 4 · FAQ NEG-01: factor Cuota/UN por producto (configurable, siempre < 1)
+  inclusion:     {nombre: "Inclusión financiera", factor: 0.65, max_meses_gracia: 4, permite_solo_interes: true}
+  microempresa:  {nombre: "Microempresa", factor: 0.85, max_meses_gracia: 4, permite_solo_interes: true}
+  tope_tea: 1.0                 # referencial: tasa máxima BCRP para consumo y MYPE (se actualiza cada semestre; verificar la vigente)
+
+seguros_referenciales:          # tasas mensuales referenciales para la demo (la Caja confirma las suyas)
+  desgravamen_tasa_mensual: 0.00077
+  multirriesgo_tasa_mensual: 0.0003
