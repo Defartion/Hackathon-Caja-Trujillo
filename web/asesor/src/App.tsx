@@ -5,6 +5,7 @@ import Comite from "./pages/Comite";
 import ComiteLista from "./pages/ComiteLista";
 import Ficha from "./pages/Ficha";
 import NuevaSolicitud from "./pages/NuevaSolicitud";
+import PrestamoDetalle from "./pages/PrestamoDetalle";
 import Prestamos from "./pages/Prestamos";
 
 export default function App() {
@@ -17,6 +18,7 @@ export default function App() {
         <Route path="/comite" element={<ComiteLista />} />
         <Route path="/comite/:id" element={<Comite />} />
         <Route path="/prestamos" element={<Prestamos />} />
+        <Route path="/prestamos/:id" element={<PrestamoDetalle />} />
       </Routes>
     </Lateral>
   );

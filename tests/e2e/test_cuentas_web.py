@@ -133,3 +133,25 @@ def test_asesor_entra_con_pin_y_crea_su_cuenta_con_el_codigo(con_cuentas, explor
     expect(pagina.get_by_role("heading", name="Bandeja de solicitudes")).to_be_visible(timeout=15_000)
     expect(menu.get_by_text("Ana Torres Rojas")).to_be_visible()
     expect(pagina.get_by_role("cell", name="E001", exact=True)).to_be_visible()  # la API acepta el token de la cuenta
+
+
+def test_cliente_ve_su_cuenta_en_el_perfil(con_cuentas, explorador, comprobar):
+    contexto, _ = explorador
+    pagina = contexto.new_page()
+    pagina.set_viewport_size({"width": 430, "height": 900})
+    pagina.goto(con_cuentas["cliente"])
+    pagina.get_by_role("tab", name="Crear cuenta").click()
+    pagina.get_by_label("Nombre completo").fill("Teresa Vargas Ruiz")
+    pagina.get_by_label("Correo").fill("teresa.e2e@ejemplo.pe")
+    pagina.get_by_label("Contraseña", exact=True).fill("Limones2026")
+    pagina.get_by_role("button", name="Crear cuenta").click()
+    comprobar(pagina.get_by_role("heading", name="Hola, Teresa")).to_be_visible(timeout=15_000)
+
+    pagina.get_by_role("button", name="Abrir menú").click()
+    pagina.get_by_role("menuitem", name="Mi perfil").click()
+    comprobar(pagina.get_by_role("heading", name="Teresa Vargas Ruiz")).to_be_visible()
+    datos = pagina.locator(".kv").first
+    comprobar(datos).to_contain_text("teresa.e2e@ejemplo.pe")
+    comprobar(datos).to_contain_text("Correo y contraseña")
+    pagina.get_by_role("button", name="Volver al inicio").click()
+    comprobar(pagina.get_by_role("heading", name="Hola, Teresa")).to_be_visible()

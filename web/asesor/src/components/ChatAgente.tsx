@@ -220,7 +220,7 @@ const estilos = `
   .chat-agente details {
     display: flex;
     flex-direction: column;
-    background: #fff;
+    background: var(--cf-superficie);
     border: 1px solid var(--cf-gris-200);
     border-radius: var(--cf-radio-lg);
     box-shadow: var(--cf-sombra-3);
@@ -264,7 +264,7 @@ const estilos = `
   .chat-agente-pregunta { font-weight: 650; }
   .chat-agente-respuesta { line-height: 1.45; white-space: pre-wrap; }
   .chat-agente-aplicar { justify-self: start; }
-  .chat-agente-vista { background: #fff; border: 1px solid var(--cf-gris-200); border-radius: 12px; padding: 12px; }
+  .chat-agente-vista { background: var(--cf-superficie); border: 1px solid var(--cf-gris-200); border-radius: 12px; padding: 12px; }
   .chat-agente-vista p { margin-top: 4px; }
   .chat-agente-vista dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 8px 0 0; }
   .chat-agente-vista dt, .chat-agente-estado { color: var(--cf-gris-600); font-size: 12px; }

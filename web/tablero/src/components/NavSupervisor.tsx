@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { pedir } from '../api';
+import { BotonTema } from '../apariencia';
 import { cerrarSesion, iniciales, usuarioSesion } from '../sesion';
 
 export type Vista = 'simular' | 'alerta' | 'avisos';
@@ -70,6 +71,7 @@ export default function NavSupervisor({ vista, onVista }: { vista: Vista; onVist
             </span>
           </div>
         )}
+        <BotonTema className="nav-sec" texto />
         {confirmar ? (
           <div className="confirmar">
             <span>¿Borrar lo registrado y volver a los datos de demo?</span>

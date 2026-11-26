@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import type { Etapa } from "../../contratos";
 import { MESES } from "../../formato";
 import { COLOR, COLOR_ETAPA, ETAPA_ETIQUETA, partesPeriodo } from "./formato";
+import { colorTema } from "../../apariencia";
 
 /** Tick de dos líneas: mes y, en enero o en el primer mes, el año. */
 export function TickMes(props: { x?: number; y?: number; payload?: { value: number }; periodos: string[] }) {
@@ -60,7 +61,7 @@ export function Leyenda({ children }: { children: ReactNode }) {
 export function ItemEtapa({ etapa }: { etapa: Etapa }) {
   return (
     <span className="pl-leyenda-item">
-      <span className="pl-muestra pl-muestra-etapa" style={{ background: COLOR_ETAPA[etapa] }} />
+      <span className="pl-muestra pl-muestra-etapa" style={{ background: colorTema(COLOR_ETAPA[etapa]) }} />
       {ETAPA_ETIQUETA[etapa]}
     </span>
   );
@@ -69,7 +70,7 @@ export function ItemEtapa({ etapa }: { etapa: Etapa }) {
 export function ItemBarra({ color, texto }: { color: string; texto: string }) {
   return (
     <span className="pl-leyenda-item">
-      <span className="pl-muestra" style={{ background: color }} />
+      <span className="pl-muestra" style={{ background: colorTema(color) }} />
       {texto}
     </span>
   );
@@ -78,7 +79,7 @@ export function ItemBarra({ color, texto }: { color: string; texto: string }) {
 export function ItemLinea({ color, texto }: { color: string; texto: string }) {
   return (
     <span className="pl-leyenda-item">
-      <span className="pl-muestra-linea" style={{ background: color }} />
+      <span className="pl-muestra-linea" style={{ background: colorTema(color) }} />
       {texto}
     </span>
   );
@@ -101,7 +102,7 @@ export function CajaTooltip({ titulo, filas }: { titulo: string; filas: { color?
       {filas.map((f) => (
         <div key={f.k} className="pl-tooltip-fila">
           {f.color ? (
-            <span className={f.linea ? "pl-muestra-linea" : "pl-muestra"} style={{ background: f.color }} />
+            <span className={f.linea ? "pl-muestra-linea" : "pl-muestra"} style={{ background: colorTema(f.color) }} />
           ) : (
             <span className="pl-muestra-vacia" />
           )}

@@ -8,6 +8,33 @@ export interface Cuota {
   cuota: number
   estado: EstadoCuota
   temporada: Temporada
+  /** Vencimiento (último día del mes), AAAA-MM-DD. */
+  fecha: string
+  capital: number
+  interes: number
+  /** Capital que queda por pagar después de esta cuota. */
+  saldo: number
+  fechaPago: string | null
+}
+
+export interface CuotaResumida {
+  numero: number
+  mes: string
+  monto: number
+  fecha: string
+}
+
+export interface Resumen {
+  totalAPagar: number
+  totalPagado: number
+  porPagar: number
+  saldoCapital: number
+  interesesTotales: number
+  cuotasPendientes: number
+  cuotaMayor: CuotaResumida | null
+  cuotaMenor: CuotaResumida | null
+  proximoVencimiento: string | null
+  diasParaVencer: number | null
 }
 
 export interface Prestamo {
@@ -17,13 +44,17 @@ export interface Prestamo {
   descripcion: string
   estado: string
   principal: number
-  proximaCuota: { numero: number; mes: string; monto: number; temporada: Temporada } | null
+  tea: number
+  fechaDesembolso: string | null
+  proximaCuota: { numero: number; mes: string; monto: number; temporada: Temporada; fecha: string } | null
   cuotasPagadas: number
   totalCuotas: number
   aplazamientosRestantes: number
   clausulaElNino: boolean
   elNino: { activo: boolean; alivioDisponible: number; puedeAplicar: boolean }
   cronograma: Cuota[]
+  cuotaFijaReferencia: number
+  resumen: Resumen
   explicacion: string
 }
 
@@ -82,7 +113,9 @@ export const api = {
     enviar<{ loanId: number }>(producto === 'aplazamiento' ? '/demo-seed?producto=aplazamiento' : '/demo-seed'),
   prestamo: (id: number, signal?: AbortSignal) =>
     solicitar<Prestamo>(`/prestamos/${id}`, { signal }),
-  pagar: (id: number) => enviar(`/prestamos/${id}/pagar`),
+  /** Sin `cuota` paga la próxima; con `cuota` paga esa (puede ser una adelantada). */
+  pagar: (id: number, cuota?: number) =>
+    enviar<{ cuota: number }>(`/prestamos/${id}/pagar`, cuota === undefined ? undefined : { cuota }),
   previsualizar: (id: number, installment: number) =>
     enviar<VistaPrevia>(`/prestamos/${id}/aplazamiento/preview`, { installment }),
   aplazar: (id: number, installment: number, revision: string) =>

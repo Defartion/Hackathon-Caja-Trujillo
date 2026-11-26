@@ -3,6 +3,7 @@ import type { Resumen } from '../api';
 import { COLOR_PRODUCTO, NOMBRE_PRODUCTO } from '../colores';
 import { entero } from '../formato';
 import TarjetaGrafico from './TarjetaGrafico';
+import { colorTema } from '../apariencia';
 
 const ORDEN = ['fija', 'aplazamiento', 'estacional'] as const;
 
@@ -89,7 +90,7 @@ export default function GraficoProductos({ mix }: { mix: Resumen['mix_productos'
       <div className="leyenda" style={{ justifyContent: 'center' }}>
         {datos.map((d) => (
           <span key={d.id} className="leyenda-item estatico">
-            <span className="muestra" style={{ background: COLOR_PRODUCTO[d.id] }} aria-hidden="true" />
+            <span className="muestra" style={{ background: colorTema(COLOR_PRODUCTO[d.id]) }} aria-hidden="true" />
             {d.nombre}
           </span>
         ))}

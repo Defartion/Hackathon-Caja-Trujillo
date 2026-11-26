@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import Marca from "./marca";
+import { BotonTema } from "./apariencia";
 import { cerrarSesion, iniciales, usuarioSesion } from "./sesion";
 
 const ICONOS: Record<string, string> = {
@@ -108,6 +109,7 @@ export default function Lateral({ rol, opciones, children }: { rol: string; opci
               </span>
             </div>
           )}
+          <BotonTema className="opcion-sec" texto />
           {import.meta.env.BASE_URL !== "/" && (
             <a className="opcion-sec" href="/">
               <Icono nombre="rol" /> Cambiar de rol

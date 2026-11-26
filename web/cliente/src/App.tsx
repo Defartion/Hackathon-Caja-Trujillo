@@ -1,24 +1,28 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import MenuCliente from './MenuCliente'
 import Marca from './marca'
 import { usuarioSesion } from './sesion'
 import {
   CalendarDays, CheckCircle2, CircleHelp, FlaskConical, House, LoaderCircle,
-  TriangleAlert, WalletCards,
+  TriangleAlert, UserRound, WalletCards,
 } from 'lucide-react'
 import {
   api, ErrorApi, guardarPrestamo, leerPrestamo, prestamoEnUrl, quitarPrestamoDeUrl,
   type Prestamo, type ProductoDemo, type VistaPrevia,
 } from './api'
-import { Aplazamiento, Ayuda, Cronograma, Inicio, MOSTRAR_CREDITO_VIGENTE } from './screens'
+import {
+  Aplazamiento, Ayuda, Cronograma, DetalleCuota, Inicio, mesCompleto, MOSTRAR_CREDITO_VIGENTE, PagarCuota,
+  PerfilCliente, soles,
+} from './screens'
 
-type Pantalla = 'inicio' | 'cronograma' | 'aplazar' | 'actualizado' | 'ayuda'
+type Pantalla = 'inicio' | 'cronograma' | 'aplazar' | 'actualizado' | 'ayuda' | 'pagar' | 'perfil'
 type Accion = 'crear' | 'alerta' | 'pago' | 'alivio' | 'preview' | 'confirmar' | 'refrescar'
 
 const navegacion = [
   { pantalla: 'inicio', nombre: 'Inicio', Icono: House },
   { pantalla: 'cronograma', nombre: 'Cronograma', Icono: CalendarDays },
   { pantalla: 'ayuda', nombre: 'Ayuda', Icono: CircleHelp },
+  { pantalla: 'perfil', nombre: 'Perfil', Icono: UserRound },
 ] as const
 
 function mensajeError(error: unknown): string {
@@ -105,6 +109,8 @@ export default function App() {
   const [alertaDemo, setAlertaDemo] = useState<boolean | null>(null)
   const [alertaCargando, setAlertaCargando] = useState(true)
   const [cuota, setCuota] = useState<number | null>(null)
+  const [detalle, setDetalle] = useState<number | null>(null)
+  const [cuotaAPagar, setCuotaAPagar] = useState<number | null>(null)
   const [preview, setPreview] = useState<VistaPrevia | null>(null)
   const [error, setError] = useState('')
   const [aviso, setAviso] = useState('')
@@ -229,12 +235,24 @@ export default function App() {
     })
   }
 
-  function pagar() {
-    if (!prestamo?.proximaCuota) return
+  const cerrarDetalle = useCallback(() => setDetalle(null), [])
+
+  function abrirPago(numero?: number) {
+    setCuotaAPagar(numero ?? null)
+    setDetalle(null)
+    irA('pagar')
+  }
+
+  function pagarCuota(numero: number) {
+    if (!prestamo) return
+    const elegida = prestamo.cronograma.find(item => item.numero === numero)
     void ejecutar('pago', async () => {
-      await api.pagar(prestamo.loanId)
-      setAviso('Tu pago de demo quedó registrado.')
+      await api.pagar(prestamo.loanId, numero)
       await cargarCredito(prestamo.loanId)
+      setPantalla('inicio')
+      setAviso(elegida
+        ? `Pagaste la cuota ${numero} (${mesCompleto(elegida.mes).toLowerCase()}) por ${soles(elegida.cuota)}. Es un pago de demo.`
+        : 'Tu pago de demo quedó registrado.')
       desplazarAlInicio()
     })
   }
@@ -291,15 +309,16 @@ export default function App() {
   const bloqueado = accion !== null
   const listo = !cargando && !desactualizado && prestamo !== null
   const mostrarDemo = !cargando && (prestamo === null || demo)
-    && (pantalla === 'inicio' || !listo)
+    && (pantalla === 'inicio' || !listo) && pantalla !== 'perfil'
   const alertaActiva = desactualizado ? alertaDemo : prestamo?.elNino.activo ?? alertaDemo
-  const pestanaActiva = pantalla === 'aplazar' ? 'inicio' : pantalla === 'actualizado' ? 'cronograma' : pantalla
+  const pestanaActiva = pantalla === 'aplazar' || pantalla === 'pagar' ? 'inicio'
+    : pantalla === 'actualizado' ? 'cronograma' : pantalla
 
   return (
     <div className={`app-shell ${listo ? 'app-shell--nav' : ''}`}>
       <header className="app-header">
         <Marca tam={32} />
-        <MenuCliente prestamoId={id} />
+        <MenuCliente prestamoId={id} onPerfil={() => irA('perfil')} />
       </header>
       <main ref={contenido} tabIndex={-1} className="main-content">
         {error && (
@@ -314,12 +333,15 @@ export default function App() {
             <span>{aviso}</span>
           </div>
         )}
-        {cargando && (
+        {pantalla === 'perfil' && !cargando && (
+          <PerfilCliente prestamo={listo ? prestamo : null} onInicio={listo ? undefined : () => irA('inicio')} />
+        )}
+        {pantalla !== 'perfil' && cargando && (
           <div className="loading" role="status">
             <LoaderCircle aria-hidden="true" size={21} /> Cargando tu crédito…
           </div>
         )}
-        {!cargando && desactualizado && id !== null && (
+        {pantalla !== 'perfil' && !cargando && desactualizado && id !== null && (
           <section className="surface retry">
             <h1>Vuelve a cargar tu crédito</h1>
             <p>Así podrás ver tus cuotas actualizadas.</p>
@@ -328,7 +350,7 @@ export default function App() {
             </button>
           </section>
         )}
-        {!cargando && !desactualizado && !prestamo && (
+        {pantalla !== 'perfil' && !cargando && !desactualizado && !prestamo && (
           <section className="empty-state">
             <div className="empty-state__icon"><WalletCards size={28} aria-hidden="true" /></div>
             <h1>{cuenta ? `Hola, ${cuenta}` : 'Hola, qué gusto verte'}</h1>
@@ -343,13 +365,32 @@ export default function App() {
                 accion={accion}
                 bloqueado={bloqueado}
                 onCronograma={() => irA('cronograma')}
-                onPagar={pagar}
+                onPagar={() => abrirPago()}
                 onAplazar={iniciarAplazamiento}
                 onAlivio={aplicarAlivio}
+                onDetalle={setDetalle}
               />
             )}
             {(pantalla === 'cronograma' || pantalla === 'actualizado') && (
-              <Cronograma prestamo={prestamo} actualizado={pantalla === 'actualizado'} bloqueado={bloqueado} onInicio={() => irA('inicio')} />
+              <Cronograma
+                prestamo={prestamo}
+                actualizado={pantalla === 'actualizado'}
+                bloqueado={bloqueado}
+                onInicio={() => irA('inicio')}
+                onDetalle={setDetalle}
+              />
+            )}
+            {pantalla === 'pagar' && (
+              <PagarCuota
+                key={cuotaAPagar ?? 'proxima'}
+                prestamo={prestamo}
+                inicial={cuotaAPagar}
+                bloqueado={bloqueado}
+                accion={accion}
+                onPagar={pagarCuota}
+                onCancelar={() => irA('inicio')}
+                onDetalle={setDetalle}
+              />
             )}
             {pantalla === 'aplazar' && (
               <Aplazamiento
@@ -367,6 +408,13 @@ export default function App() {
               />
             )}
             {pantalla === 'ayuda' && <Ayuda explicacion={prestamo.explicacion} />}
+            <DetalleCuota
+              prestamo={prestamo}
+              numero={detalle}
+              puedePagar={prestamo.estado === 'Active' && !bloqueado}
+              onCerrar={cerrarDetalle}
+              onPagar={abrirPago}
+            />
           </>
         )}
         {mostrarDemo && (

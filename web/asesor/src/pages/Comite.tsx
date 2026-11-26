@@ -151,7 +151,7 @@ export default function Comite() {
         </button>
       </div>
 
-      <article className="pl-comite" aria-label={`Expediente ${exp.id} para el comité`}>
+      <article className="pl-comite cf-claro" aria-label={`Expediente ${exp.id} para el comité`}>
         <header className="rejilla" style={{ gap: 12 }}>
           <div className="pl-membrete">
             <div className="marca">

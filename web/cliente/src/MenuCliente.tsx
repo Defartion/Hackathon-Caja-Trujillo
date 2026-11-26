@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-import { LogOut, Menu, Repeat, X } from 'lucide-react'
+import { LogOut, Menu, Repeat, UserRound, X } from 'lucide-react'
 import { cerrarSesion, iniciales, usuarioSesion } from './sesion'
+import { BotonTema } from './apariencia'
 
 /** Menú secundario (☰): lo que no se usa a diario. Lo frecuente sigue en la barra inferior. */
-export default function MenuCliente({ prestamoId }: { prestamoId: number | null }) {
+export default function MenuCliente({ prestamoId, onPerfil }: { prestamoId: number | null; onPerfil: () => void }) {
   const [abierto, setAbierto] = useState(false)
   const caja = useRef<HTMLDivElement>(null)
 
@@ -46,6 +47,10 @@ export default function MenuCliente({ prestamoId }: { prestamoId: number | null 
           <div className="menu-cli__titulo">
             {prestamoId !== null ? `Mi crédito N° ${prestamoId}` : 'Mi crédito'}
           </div>
+          <button type="button" className="menu-cli__op" role="menuitem" onClick={() => { setAbierto(false); onPerfil() }}>
+            <UserRound size={18} aria-hidden="true" /> Mi perfil
+          </button>
+          <BotonTema className="menu-cli__op" rol="menuitemcheckbox" texto />
           {enDespliegue && (
             <a className="menu-cli__op" role="menuitem" href="/">
               <Repeat size={18} aria-hidden="true" /> Cambiar de rol
@@ -56,7 +61,6 @@ export default function MenuCliente({ prestamoId }: { prestamoId: number | null 
               <LogOut size={18} aria-hidden="true" /> Salir
             </button>
           )}
-          {!enDespliegue && !sesion && <div className="menu-cli__vacio">Sin opciones adicionales.</div>}
         </div>
       )}
     </div>

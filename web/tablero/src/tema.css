@@ -1,9 +1,11 @@
 /* CuotaFlex · sistema de diseño compartido (copia idéntica en web/asesor, web/cliente y web/tablero).
    Una prueba (tests/test_web_tema.py) verifica que las tres copias sigan iguales.
    Rojo Caja Trujillo para la marca y la acción principal; tinta azul pizarra para el texto;
-   Archivo (Omnibus-Type) con su eje de ancho: las cifras grandes van condensadas. */
+   Archivo (Omnibus-Type) con su eje de ancho: las cifras grandes van condensadas.
+   Tema oscuro: <html data-tema="oscuro"> (lo pone apariencia.tsx). Un bloque con la clase .cf-claro
+   (el documento del comité, por ejemplo) se queda en claro dentro del tema oscuro. */
 
-:root {
+:root, .cf-claro {
   /* Marca */
   --cf-rojo: #C8102E;
   --cf-rojo-hover: #A50D26;
@@ -22,7 +24,13 @@
   --cf-gris-200: #E2E6ED;
   --cf-gris-100: #EEF1F5;
   --cf-fondo: #F2F4F7;
-  --cf-blanco: #FFFFFF;
+  --cf-blanco: #FFFFFF;           /* blanco de verdad: texto sobre rojo, verde o tinta */
+  --cf-superficie: #FFFFFF;       /* tarjetas, campos, menús */
+  --cf-superficie-alt: #F7F8FA;   /* fila resaltada, zona hundida */
+  --cf-elevada: #FFFFFF;          /* lo seleccionado sobre un riel gris (segmentos, pestañas) */
+  --cf-lateral: #172033;          /* barra lateral oscura del asesor y del supervisor */
+  --cf-vidrio: rgb(255 255 255 / 92%);
+  --cf-velo: rgb(23 32 51 / 45%);
 
   /* Datos y estados */
   --cf-azul: #0B5CAD;
@@ -34,6 +42,22 @@
   --cf-ambar: #B7791F;
   --cf-ambar-osc: #8A5A12;
   --cf-ambar-suave: #FBF1DE;
+  --cf-rojo-texto: #C8102E;       /* rojo para texto o iconos sobre la superficie */
+  --cf-ok-texto: #145C29;
+  --cf-aviso-texto: #7A4F0F;
+
+  /* Gráficos (ver la paleta validada en docs/diseno/SISTEMA_DE_DISENO.md) */
+  --cf-graf-flex: #0B5CAD;
+  --cf-graf-fija: #8792A6;
+  --cf-graf-rejilla: #E8EBF0;
+  --cf-graf-eje: #CDD3DD;
+  --cf-graf-texto: #5A6478;
+  --cf-graf-tope: #C8102E;
+  --cf-graf-supera: #8E0B20;
+  --cf-graf-cima: #E1ECF8;
+  --cf-graf-valle: #FBE6D4;
+  --cf-graf-violeta: #6250d6;
+  --cf-graf-gris: #57606A;
 
   /* Forma y elevación: solo flota lo que se superpone (menús, chat, modales, barras fijas) */
   --cf-radio: 12px;
@@ -52,6 +76,64 @@
   --cf-curva: cubic-bezier(.2, .8, .2, 1);
   --cf-rapido: 140ms;
   --cf-medio: 240ms;
+}
+.cf-claro { color-scheme: light; color: var(--cf-tinta); }
+
+/* Tema oscuro: tinta azul noche, superficies un paso más claras que el fondo, el rojo de la marca intacto
+   para botones y bandas, y versiones más claras de rojo, azul, verde y ámbar para texto, iconos y datos. */
+:root[data-tema="oscuro"] {
+  color-scheme: dark;
+  --cf-rojo-hover: #DB1F3D;
+  --cf-rojo-osc: #FF9DAC;
+  --cf-rojo-suave: #3A1620;
+  --cf-rojo-borde: #6A2434;
+  --cf-rojo-texto: #FF7A8F;
+
+  --cf-tinta: #E7EBF2;
+  --cf-gris-900: #E7EBF2;
+  --cf-gris-700: #C3CAD7;
+  --cf-gris-600: #9AA4B6;
+  --cf-gris-400: #687388;
+  --cf-gris-300: #3B465A;
+  --cf-gris-200: #2A3446;
+  --cf-gris-100: #1D2534;
+  --cf-fondo: #0D121C;
+  --cf-superficie: #151C29;
+  --cf-superficie-alt: #1A2232;
+  --cf-elevada: #2B3548;
+  --cf-lateral: #090D15;
+  --cf-vidrio: rgb(21 28 41 / 90%);
+  --cf-velo: rgb(3 6 12 / 64%);
+
+  --cf-azul: #5AA6F2;
+  --cf-azul-osc: #9CCAF8;
+  --cf-azul-suave: #12263C;
+  --cf-verde: #2EA650;
+  --cf-verde-osc: #86DDA2;
+  --cf-verde-suave: #10301D;
+  --cf-ambar: #C48A22;
+  --cf-ambar-osc: #F1C677;
+  --cf-ambar-suave: #33270F;
+  --cf-ok-texto: #86DDA2;
+  --cf-aviso-texto: #F1C677;
+
+  --cf-sombra-1: 0 1px 2px rgb(0 0 0 / 40%);
+  --cf-sombra-2: 0 12px 28px -8px rgb(0 0 0 / 60%), 0 2px 6px rgb(0 0 0 / 35%);
+  --cf-sombra-3: 0 28px 56px -16px rgb(0 0 0 / 72%), 0 4px 12px rgb(0 0 0 / 40%);
+  --cf-anillo: 0 0 0 3px rgb(90 166 242 / 35%);
+
+  /* Validada con validate_palette.js contra #151C29: ΔE 19.3 entre CuotaFlex y la cuota fija. */
+  --cf-graf-flex: #55A3F0;
+  --cf-graf-fija: #626E83;
+  --cf-graf-rejilla: #263043;
+  --cf-graf-eje: #3B465A;
+  --cf-graf-texto: #9AA4B6;
+  --cf-graf-tope: #F0566E;
+  --cf-graf-supera: #FF7A8F;
+  --cf-graf-cima: #15283E;
+  --cf-graf-valle: #3A2614;
+  --cf-graf-violeta: #7A6AE6;
+  --cf-graf-gris: #8A94A6;
 }
 
 html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
@@ -89,11 +171,46 @@ button, a, input, select, textarea, summary { -webkit-tap-highlight-color: trans
 .recharts-legend-item-text { color: var(--cf-gris-700) !important; }
 .recharts-tooltip-wrapper .recharts-default-tooltip { border-radius: 10px; border-color: var(--cf-gris-200) !important; box-shadow: var(--cf-sombra-2); }
 
+/* En el tema oscuro los gráficos cambian de color sin tocar su código: los colores que los componentes
+   escriben como atributo (fill/stroke) se reemplazan aquí por su versión para fondo oscuro, solo dentro de un
+   gráfico (.recharts-wrapper) o de un SVG marcado con .cf-graf: el logo y los iconos no cambian. Todo pasa por
+   variables, así dentro de un bloque .cf-claro vuelven a sus valores de siempre. Para muestras de color en
+   HTML (leyendas) usa colorTema() de apariencia.tsx. */
+[data-tema="oscuro"] .recharts-default-tooltip { background-color: var(--cf-superficie) !important; color: var(--cf-tinta); }
+[data-tema="oscuro"] .recharts-tooltip-item { color: var(--cf-tinta) !important; }
+[data-tema="oscuro"] .recharts-cartesian-grid line { stroke: var(--cf-graf-rejilla); }
+[data-tema="oscuro"] .recharts-cartesian-axis-line, [data-tema="oscuro"] .recharts-cartesian-axis-tick-line { stroke: var(--cf-graf-eje); }
+[data-tema="oscuro"] .recharts-cartesian-axis-tick-value, [data-tema="oscuro"] .recharts-label { fill: var(--cf-graf-texto); }
+[data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [fill="#0B5CAD"] { fill: var(--cf-graf-flex); }
+[data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [stroke="#0B5CAD"] { stroke: var(--cf-graf-flex); }
+[data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [fill="#8792A6"] { fill: var(--cf-graf-fija); }
+[data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [stroke="#8792A6"] { stroke: var(--cf-graf-fija); }
+[data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [fill="#B7791F"] { fill: var(--cf-ambar); }
+[data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [stroke="#B7791F"] { stroke: var(--cf-ambar); }
+[data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [stroke="#C8102E"] { stroke: var(--cf-graf-tope); }
+[data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [fill="#C8102E"] { fill: var(--cf-graf-tope); }
+[data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [fill="#8E0B20"] { fill: var(--cf-graf-supera); }
+[data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [stroke="#8E0B20"] { stroke: var(--cf-graf-supera); }
+[data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [stroke="#172033"] { stroke: var(--cf-tinta); }
+[data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [fill="#172033"] { fill: var(--cf-tinta); }
+[data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [fill="#5A6478"], [data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [fill="#666"] { fill: var(--cf-graf-texto); }
+[data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [stroke="#eee"], [data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [stroke="#E8EBF0"] { stroke: var(--cf-graf-rejilla); }
+[data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [stroke="#CDD3DD"], [data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [stroke="#ccc"] { stroke: var(--cf-graf-eje); }
+[data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [stroke="#98A1B2"] { stroke: var(--cf-gris-400); }
+[data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [stroke="#fff"], [data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [stroke="#FFFFFF"] { stroke: var(--cf-superficie); }
+[data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [fill="#EEF1F5"] { fill: var(--cf-gris-100); }
+[data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [fill="#FFFFFF"] { fill: var(--cf-superficie); }
+[data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [fill="#E1ECF8"] { fill: var(--cf-graf-cima); }
+[data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [fill="#FBE6D4"] { fill: var(--cf-graf-valle); }
+[data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [fill="#6250d6"] { fill: var(--cf-graf-violeta); }
+[data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [fill="#57606A"] { fill: var(--cf-graf-gris); }
+[data-tema="oscuro"] :is(.recharts-wrapper, .cf-graf) [stroke="#57606A"] { stroke: var(--cf-graf-gris); }
+
 /* ---------- Marca ---------- */
 .cf-marca { display: inline-flex; align-items: center; gap: 10px; color: var(--cf-tinta); text-decoration: none; }
 .cf-marca__simbolo { flex: none; display: block; }
 .cf-marca__nombre { font-size: 19px; font-weight: 760; letter-spacing: -.02em; line-height: 1; }
-.cf-marca__flex { color: var(--cf-rojo); }
+.cf-marca__flex { color: var(--cf-rojo-texto); }
 .cf-marca--invertida { color: #fff; }
 .cf-marca--invertida .cf-marca__flex { color: #FFD3DA; }
 
@@ -177,7 +294,8 @@ button, a, input, select, textarea, summary { -webkit-tap-highlight-color: trans
 .acc-marca .cf-ritmo { margin-top: auto; padding-top: 40px; --cf-ritmo-alto: clamp(150px, 30vh, 290px); }
 .acc-marca .cf-ritmo__leyenda { color: rgb(255 255 255 / 88%); }
 
-.acc-panel { display: grid; place-items: center; padding: 40px 24px; }
+.acc-panel { position: relative; display: grid; place-items: center; padding: 40px 24px; }
+.acc-panel > .cf-tema-boton { position: absolute; top: 16px; right: 16px; }
 .acc-caja { width: min(420px, 100%); display: grid; gap: 22px; }
 .acc-caja.sacude { animation: acc-sacude 380ms var(--cf-curva); }
 @keyframes acc-sacude {
@@ -191,7 +309,7 @@ button, a, input, select, textarea, summary { -webkit-tap-highlight-color: trans
   display: inline-flex; align-items: center; gap: 8px;
   padding: 5px 12px 5px 8px;
   border-radius: 999px;
-  background: #fff;
+  background: var(--cf-superficie);
   border: 1px solid var(--cf-gris-200);
   font-size: 13px; font-weight: 600; color: var(--cf-gris-700);
 }
@@ -212,7 +330,7 @@ button, a, input, select, textarea, summary { -webkit-tap-highlight-color: trans
   position: absolute; top: 4px; bottom: 4px; left: 4px;
   width: calc(50% - 4px);
   border-radius: 10px;
-  background: #fff;
+  background: var(--cf-elevada);
   box-shadow: var(--cf-sombra-1);
   transition: transform var(--cf-medio) var(--cf-curva);
 }
@@ -237,7 +355,7 @@ button, a, input, select, textarea, summary { -webkit-tap-highlight-color: trans
   padding: 11px 14px;
   border: 1px solid var(--cf-gris-300);
   border-radius: 12px;
-  background: #fff;
+  background: var(--cf-superficie);
   color: var(--cf-tinta);
   font: inherit;
   font-size: 16px;
@@ -294,7 +412,7 @@ button, a, input, select, textarea, summary { -webkit-tap-highlight-color: trans
   display: grid; place-items: center;
   border: 1.5px solid var(--cf-gris-300);
   border-radius: 14px;
-  background: #fff;
+  background: var(--cf-superficie);
   transition: border-color var(--cf-rapido), box-shadow var(--cf-rapido), transform var(--cf-rapido);
 }
 .acc-pin__casilla.llena::after { content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--cf-tinta); animation: acc-punto 160ms var(--cf-curva); }
@@ -318,7 +436,7 @@ button, a, input, select, textarea, summary { -webkit-tap-highlight-color: trans
 .acc-boton:hover:not(:disabled) { background: var(--cf-rojo-hover); border-color: var(--cf-rojo-hover); }
 .acc-boton:active:not(:disabled) { transform: translateY(1px); }
 .acc-boton:disabled { cursor: progress; opacity: .8; }
-.acc-boton--sec { background: #fff; color: var(--cf-tinta); border-color: var(--cf-gris-300); }
+.acc-boton--sec { background: var(--cf-superficie); color: var(--cf-tinta); border-color: var(--cf-gris-300); }
 .acc-boton--sec:hover:not(:disabled) { background: var(--cf-gris-100); border-color: var(--cf-gris-400); }
 .acc-giro { width: 18px; height: 18px; border-radius: 50%; border: 2px solid rgb(255 255 255 / 40%); border-top-color: #fff; animation: acc-gira 800ms linear infinite; }
 @keyframes acc-gira { to { transform: rotate(1turn); } }
@@ -342,6 +460,113 @@ button, a, input, select, textarea, summary { -webkit-tap-highlight-color: trans
   .acc-marca .cf-ritmo__leyenda { display: none; }
   .cf-ritmo__barra { font-size: 0; padding: 0; border-radius: 5px 5px 0 0; }
   .acc-panel { place-items: start center; padding: 24px 20px 40px; }
+  .acc-panel > .cf-tema-boton { position: static; justify-self: end; margin-bottom: -8px; }
   .acc-cab h2 { font-size: 24px; }
   .acc-pin__casilla { width: 54px; height: 60px; }
+}
+
+/* ---------- Interruptor de tema ---------- */
+.cf-tema-boton {
+  display: inline-grid; place-items: center;
+  width: 40px; height: 40px;
+  border: 1px solid var(--cf-gris-200);
+  border-radius: 12px;
+  background: var(--cf-superficie);
+  color: var(--cf-gris-700);
+  cursor: pointer;
+  transition: background-color var(--cf-rapido), color var(--cf-rapido), border-color var(--cf-rapido);
+}
+.cf-tema-boton:hover { background: var(--cf-gris-100); color: var(--cf-tinta); }
+.cf-interruptor {
+  margin-left: auto;
+  width: 30px; height: 18px; flex: none;
+  display: flex; align-items: center;
+  padding: 2px;
+  border-radius: 999px;
+  background: rgb(152 161 178 / 45%);
+  transition: background-color var(--cf-rapido);
+}
+.cf-interruptor span { width: 14px; height: 14px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgb(0 0 0 / 30%); transition: transform var(--cf-medio) var(--cf-curva); }
+[aria-checked="true"] > .cf-interruptor { background: var(--cf-azul); }
+[aria-checked="true"] > .cf-interruptor span { transform: translateX(12px); }
+
+.cf-tema-selector { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.cf-tema-selector__opcion {
+  position: relative;
+  display: grid; justify-items: center; gap: 6px;
+  padding: 12px 6px 10px;
+  border: 1px solid var(--cf-gris-200);
+  border-radius: 12px;
+  background: var(--cf-superficie);
+  color: var(--cf-gris-600);
+  font-size: 13.5px; font-weight: 650;
+  cursor: pointer;
+  transition: border-color var(--cf-rapido), background-color var(--cf-rapido), color var(--cf-rapido);
+}
+.cf-tema-selector__opcion input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.cf-tema-selector__opcion:hover { border-color: var(--cf-gris-300); color: var(--cf-tinta); }
+.cf-tema-selector__opcion:has(input:checked) { border-color: var(--cf-azul); background: var(--cf-azul-suave); color: var(--cf-azul-osc); }
+.cf-tema-selector__opcion:has(input:focus-visible) { outline: 2px solid var(--cf-azul); outline-offset: 2px; }
+
+/* ---------- Exportar ---------- */
+.cf-exportar { position: relative; display: inline-flex; }
+.cf-exportar__boton {
+  display: inline-flex; align-items: center; gap: 8px;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--cf-gris-300);
+  border-radius: 10px;
+  background: var(--cf-superficie);
+  color: var(--cf-tinta);
+  font: inherit; font-size: 14px; font-weight: 650;
+  cursor: pointer;
+}
+.cf-exportar__boton:hover:not(:disabled) { background: var(--cf-gris-100); }
+.cf-exportar button svg { flex: none; }
+.cf-exportar__menu {
+  position: absolute; top: calc(100% + 6px); z-index: 40;
+  min-width: 250px;
+  display: grid;
+  padding: 6px;
+  border: 1px solid var(--cf-gris-200);
+  border-radius: 14px;
+  background: var(--cf-superficie);
+  box-shadow: var(--cf-sombra-2);
+  animation: cf-menu-abre 150ms var(--cf-curva);
+}
+.cf-exportar--fin .cf-exportar__menu { right: 0; transform-origin: top right; }
+.cf-exportar--inicio .cf-exportar__menu { left: 0; transform-origin: top left; }
+@keyframes cf-menu-abre { from { opacity: 0; transform: translateY(-4px) scale(.98); } }
+.cf-exportar__opcion {
+  display: flex; align-items: center; gap: 12px;
+  padding: 8px 10px;
+  border: 0; border-radius: 10px;
+  background: none;
+  color: var(--cf-tinta);
+  font: inherit; text-align: left;
+  cursor: pointer;
+}
+.cf-exportar__opcion:hover, .cf-exportar__opcion:focus-visible { background: var(--cf-gris-100); outline: none; }
+.cf-exportar__texto { display: grid; line-height: 1.3; }
+.cf-exportar__texto b { font-size: 14px; font-weight: 650; }
+.cf-exportar__texto small { font-size: 12.5px; color: var(--cf-gris-600); }
+.cf-exportar__ext {
+  flex: none;
+  width: 38px; height: 26px;
+  display: grid; place-items: center;
+  border-radius: 7px;
+  font-size: 11px; font-weight: 750; letter-spacing: .02em; text-transform: uppercase;
+  color: var(--cf-gris-700);
+  background: var(--cf-gris-100);
+  box-shadow: inset 0 0 0 1px var(--cf-gris-200);
+}
+.cf-exportar__ext--pdf { color: var(--cf-rojo-osc); background: var(--cf-rojo-suave); box-shadow: inset 0 0 0 1px var(--cf-rojo-borde); }
+.cf-exportar__ext--xlsx { color: var(--cf-verde-osc); background: var(--cf-verde-suave); box-shadow: none; }
+
+.cf-solo-lector {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%);
+  white-space: nowrap;
 }

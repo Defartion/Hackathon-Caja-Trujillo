@@ -25,6 +25,8 @@ import Avisos from './components/Avisos';
 import NavSupervisor from './components/NavSupervisor';
 import type { Vista } from './components/NavSupervisor';
 import Marca from './marca';
+import MenuExportar from './MenuExportar';
+import { documentoCorrida } from './exportarCorrida';
 
 const MAX_HISTORIAL = 5;
 
@@ -249,9 +251,12 @@ export default function App() {
               {actual ? (
                 <div className={`resultados ${corriendo ? 'cargando' : ''}`} aria-busy={corriendo}>
                   <div className="cab-corrida">
-                    <b>Corrida #{actual.num}</b> · {actual.escenario} · {TAMANOS[actual.tamano].n_clientes} créditos ×{' '}
-                    {TAMANOS[actual.tamano].n_escenarios} escenarios · {actual.replanificar ? 'Completo' : 'Solo cronograma'}{' '}
-                    · {actual.resp.duracion_s.toFixed(1)} s{actual.resp.desde_cache ? ' · desde caché' : ''}
+                    <span>
+                      <b>Corrida #{actual.num}</b> · {actual.escenario} · {TAMANOS[actual.tamano].n_clientes} créditos ×{' '}
+                      {TAMANOS[actual.tamano].n_escenarios} escenarios · {actual.replanificar ? 'Completo' : 'Solo cronograma'}{' '}
+                      · {actual.resp.duracion_s.toFixed(1)} s{actual.resp.desde_cache ? ' · desde caché' : ''}
+                    </span>
+                    <MenuExportar claseBoton="btn-sec btn-exportar" etiqueta="Exportar resultados" documento={() => documentoCorrida(actual)} />
                   </div>
                   <Indicadores resumen={actual.resp.resumen} />
                   <div className="graficos">

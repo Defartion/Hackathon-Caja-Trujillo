@@ -4,6 +4,7 @@
 // a la API, incluidas las de componentes que no usan api.ts (chat del agente, indicador del ENFEN).
 import { FormEvent, KeyboardEvent, ReactNode, useEffect, useRef, useState } from "react";
 import Marca, { Ritmo } from "./marca";
+import { BotonTema } from "./apariencia";
 
 type Rol = "asesor" | "cliente" | "supervisor";
 type Regla = "libre" | "codigo" | "no";
@@ -70,6 +71,29 @@ export function usuarioSesion(rol: Rol): Usuario | null {
   } catch {
     return null;
   }
+}
+
+/** Lo que la API sabe de la sesión (GET /auth/yo). Sin token no se consulta nada. */
+export interface Perfil {
+  sesion: boolean;
+  rol?: Rol;
+  metodo?: "cuenta" | "pin";
+  nombre?: string | null;
+  correo?: string | null;
+  creado?: string | null;
+  expira?: number;
+}
+
+export async function perfilSesion(rol: Rol, signal?: AbortSignal): Promise<Perfil> {
+  let token: string | null = null;
+  try {
+    token = sessionStorage.getItem(`${PREFIJO}${rol}`);
+  } catch {
+    token = null;
+  }
+  if (!token) return { sesion: false };
+  const r = await fetch(`${API}/auth/yo`, { headers: { Authorization: `Bearer ${token}` }, signal });
+  return r.ok ? ((await r.json()) as Perfil) : { sesion: false };
 }
 
 export function iniciales(nombre: string | null): string {
@@ -340,6 +364,7 @@ function Acceso({ rol, titulo, regla, alEntrar }: { rol: Rol; titulo: string; re
       </aside>
 
       <main className="acc-panel">
+        <BotonTema />
         <div
           className={`acc-caja ${sacude ? "sacude" : ""}`}
           onAnimationEnd={(e) => e.animationName === "acc-sacude" && setSacude(false)}
