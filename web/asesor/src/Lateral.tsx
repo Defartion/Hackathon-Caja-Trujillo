@@ -40,7 +40,7 @@ export const OPCIONES_ASESOR: Opcion[] = [
   { ruta: "/comite", texto: "Comité de créditos", icono: "comite", ayuda: "Validar e imprimir expedientes" },
 ];
 
-const CLAVE_TOKEN = "cuotaflex_token";
+const CLAVE_TOKEN = "cuotaflex_token.asesor";
 
 function haySesion() {
   try {

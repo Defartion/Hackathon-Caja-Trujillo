@@ -106,41 +106,19 @@ def test_asesor_y_cliente_prestamo_de_rosa(demo, explorador, captura, comprobar)
     captura(cliente, "06-cliente-e001-cronograma")
 
 
-def test_alerta_demo_y_alivio_de_martin(demo, explorador, captura, comprobar):
+def test_cliente_no_ofrece_aplazar_ni_alivio_en_vivo(demo, explorador, captura, comprobar):
+    """Fase 4 (FAQ del NEG-01): el plan es fijo desde el desembolso. Aplazar o pedir alivio de El Niño
+    en un crédito vigente es reprogramación, fuera del alcance: la app del cliente no lo ofrece."""
     contexto, _ = explorador
     expect = comprobar
     asesor = _asesor(contexto, demo, "E002", expect)
     credito = _registrar_y_desembolsar(asesor, expect)
     cliente = _cliente(contexto, demo, credito, panel_demo=True)
-    alerta_demo = cliente.get_by_role("switch", name="Alerta El Niño")
-    expect(alerta_demo).to_be_enabled()
-    expect(alerta_demo).to_have_attribute("aria-checked", "false")
-
-    cuota = _cuota_visible(cliente)
-    expect(cuota).to_be_visible()
-    cuota_antes = cuota.inner_text()
-    cuota_ini = _soles(cuota_antes)
-    alerta_demo.click()
-    expect(cliente.get_by_role("heading", name="Alerta El Niño activa")).to_be_visible()
-    captura(cliente, "07-cliente-e002-alerta")
-
-    tablero = contexto.new_page()
-    tablero.goto(demo.apps["tablero"])
-    distintivo = tablero.get_by_role("button", name=re.compile("Alerta de El Niño Costero"))
-    expect(distintivo).to_be_enabled()
-    distintivo.click()
-    impacto = tablero.get_by_role("region", name="Impacto de la alerta en la cartera")
-    expect(impacto.get_by_text("Saldo cubierto", exact=True)).to_be_visible()
-    expect(impacto.get_by_role("cell", name="Pesca", exact=True)).to_be_visible()
-    captura(tablero, "08-tablero-e002-cartera")
-
-    usar_alivio = cliente.get_by_role("button", name="Usar alivio")
-    usar_alivio.click()
-    expect(cliente.get_by_role("status")).to_contain_text("Alivio aplicado")
-    expect(cuota).not_to_have_text(cuota_antes)
-    assert Decimal("0") < _soles(cuota.inner_text()) < cuota_ini
-    expect(usar_alivio).to_have_count(0)
-    captura(cliente, "09-cliente-e002-alivio")
+    expect(_cuota_visible(cliente)).to_be_visible()
+    expect(cliente.get_by_role("switch", name="Alerta El Niño")).to_have_count(0)
+    expect(cliente.get_by_role("button", name="Necesito aplazar una cuota")).to_have_count(0)
+    expect(cliente.get_by_role("button", name="Usar alivio")).to_have_count(0)
+    captura(cliente, "07-cliente-e002-plan-fijo")
 
 
 def test_tablero_compara_escenario_base_con_ano_el_nino(demo, explorador, captura, comprobar):

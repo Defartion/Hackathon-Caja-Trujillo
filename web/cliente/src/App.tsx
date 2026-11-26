@@ -8,7 +8,7 @@ import {
   api, ErrorApi, guardarPrestamo, leerPrestamo, prestamoEnUrl, quitarPrestamoDeUrl,
   type Prestamo, type ProductoDemo, type VistaPrevia,
 } from './api'
-import { Aplazamiento, Ayuda, Cronograma, Inicio } from './screens'
+import { Aplazamiento, Ayuda, Cronograma, Inicio, MOSTRAR_CREDITO_VIGENTE } from './screens'
 
 type Pantalla = 'inicio' | 'cronograma' | 'aplazar' | 'actualizado' | 'ayuda'
 type Accion = 'crear' | 'alerta' | 'pago' | 'alivio' | 'preview' | 'confirmar' | 'refrescar'
@@ -43,6 +43,7 @@ function PanelDemo({
         <FlaskConical size={21} aria-hidden="true" />
         <h2 id="demo-title">Panel de demo</h2>
       </div>
+      {MOSTRAR_CREDITO_VIGENTE && (
       <fieldset disabled={accion !== null}>
         <legend>Tipo de crédito</legend>
         <div className="demo-options">
@@ -56,9 +57,11 @@ function PanelDemo({
           </label>
         </div>
       </fieldset>
+      )}
       <button className="button" onClick={() => onCrear(producto)} disabled={accion !== null}>
         {accion === 'crear' ? 'Creando cliente…' : 'Crear cliente de demo'}
       </button>
+      {MOSTRAR_CREDITO_VIGENTE && (
       <div className="demo-panel__alert">
         <span>Alerta El Niño</span>
         {activo === null ? (
@@ -83,6 +86,7 @@ function PanelDemo({
           </button>
         )}
       </div>
+      )}
     </section>
   )
 }

@@ -59,6 +59,11 @@ _SESION_PRIVADA = {"cliente_id", "nombre", "explicacion"}
 _TASAS = {"tea", "tcea", "tem"}
 _UNIDADES = {"mes": "meses", "dia": "dias", "ano": "anos"}
 
+# Fase 4 (FAQ del NEG-01): aplazar cuotas o pedir alivio de El Niño en un crédito vigente es reprogramación,
+# fuera del alcance del reto. Las explicaciones no lo ofrecen; El Niño se evalúa al diseñar el plan.
+MOSTRAR_CREDITO_VIGENTE = False
+_OFRECE_REPROGRAMACION = re.compile(r"\baplaz\w*|\balivio\w*|\bpostergar\w*", re.IGNORECASE)
+
 
 class Explicacion(TypedDict):
     texto: str
@@ -283,8 +288,8 @@ def _para_cliente(propuesta: dict, elegibilidad: dict) -> str:
     solicitado = propuesta["principal_solicitado"]
     plazo = propuesta["plazo"]
     minima, maxima = _cuotas(propuesta)
-    aplazamientos = propuesta.get("aplazamientos_disponibles", 0)
-    alivio = propuesta.get("clausula_el_nino")
+    aplazamientos = propuesta.get("aplazamientos_disponibles", 0) if MOSTRAR_CREDITO_VIGENTE else 0
+    alivio = propuesta.get("clausula_el_nino") and MOSTRAR_CREDITO_VIGENTE
     partes = [
         f"Te sugerimos un préstamo de {_soles(principal)} a {plazo} meses.",
         f"La tasa efectiva anual (TEA) es {_tasa(propuesta)}.",
@@ -340,9 +345,9 @@ def _para_asesor(propuesta: dict, elegibilidad: dict) -> str:
             partes.append("El excedente libre no cubre la carga de deuda.")
         else:
             partes.append(motivo[0].upper() + motivo[1:] + ".")
-    if propuesta.get("aplazamientos_disponibles"):
+    if MOSTRAR_CREDITO_VIGENTE and propuesta.get("aplazamientos_disponibles"):
         partes.append("Los aplazamientos tienen costo por intereses sobre el saldo postergado.")
-    if propuesta.get("clausula_el_nino"):
+    if MOSTRAR_CREDITO_VIGENTE and propuesta.get("clausula_el_nino"):
         partes.append("La cláusula de El Niño permite solicitar alivio con intereses ante una alerta aplicable.")
     if not propuesta.get("valido", True):
         partes.append("El cronograma requiere revisión por incumplimiento de parámetros de riesgo.")
@@ -391,8 +396,10 @@ def explicar(
         salida = llm.completar(
             sistema=(
                 f"Reescribe el borrador con los datos de la propuesta CuotaFlex. {tono} "
-                "Usa dígitos para cantidades y explicita la unidad de cada cifra. Mantén el costo de aplazar "
-                "cuando corresponda. Evita afirmar aprobación, garantía o resultados futuros."
+                "Usa dígitos para cantidades y explicita la unidad de cada cifra. "
+                + ("Mantén el costo de aplazar cuando corresponda. " if MOSTRAR_CREDITO_VIGENTE else
+                   "No ofrezcas aplazamientos ni alivios: el plan es fijo desde el desembolso. ")
+                + "Evita afirmar aprobación, garantía o resultados futuros."
             ),
             mensajes=[{"role": "user", "content": json.dumps(
                 {"propuesta": _para_llm(propuesta), "borrador": borrador}, ensure_ascii=False, allow_nan=False,
@@ -408,10 +415,11 @@ def explicar(
         and cifras_validas(texto, propuesta)
         and cumple_politica(
             texto, requiere_tasa=es_cliente,
-            requiere_costo=es_cliente and bool(
+            requiere_costo=es_cliente and MOSTRAR_CREDITO_VIGENTE and bool(
                 propuesta.get("aplazamientos_disponibles") or propuesta.get("clausula_el_nino")
             ),
         )
+        and (MOSTRAR_CREDITO_VIGENTE or not _OFRECE_REPROGRAMACION.search(texto))
     ):
         return {"texto": texto, "fuente": "llm", "cifras_verificadas": True}
     _LOG.info("Explicación generada rechazada por las salvaguardas (cifras_verificadas=false)")
