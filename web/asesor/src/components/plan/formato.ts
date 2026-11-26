@@ -25,13 +25,13 @@ export const TIPO_ETIQUETA: Record<TipoPeriodo, string> = {
 export const COLOR_ETAPA: Record<Etapa, string> = { cima: "#E1ECF8", normal: "#FFFFFF", valle: "#FBE6D4" };
 export const COLOR = {
   adaptado: "#0B5CAD",
-  fija: "#8C959F",
+  fija: "#8792A6",
   tope: "#C8102E",
   un: "#0B5CAD",
   banda: "#0B5CAD",
   supera: "#8E0B20",
-  eje: "#57606A",
-  rejilla: "#E5E7EB",
+  eje: "#5A6478",
+  rejilla: "#E8EBF0",
 };
 
 /** "2027-01" → { mes: 0, anio: 2027 }. */

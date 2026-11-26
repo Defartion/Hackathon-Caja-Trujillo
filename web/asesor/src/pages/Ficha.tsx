@@ -6,6 +6,7 @@ import ChatAgente from "../components/ChatAgente";
 import Comparativa from "../components/Comparativa";
 import GraficoCuotas from "../components/GraficoCuotas";
 import GraficoVentas from "../components/GraficoVentas";
+import ReglaAjuste from "../components/ReglaAjuste";
 import RegistroCore from "../components/RegistroCore";
 import ResumenDecision from "../components/ResumenDecision";
 import TablaCronograma from "../components/TablaCronograma";
@@ -24,12 +25,6 @@ const PESTANAS: { id: Pestana; texto: string }[] = [
 ];
 
 const clave = (e: Edicion) => `${e.principal}|${e.plazo}|${e.ajuste_asesor}`;
-
-function textoAjuste(a: number) {
-  const pct = Math.round((a - 1) * 100);
-  if (pct === 0) return "sin ajuste";
-  return pct < 0 ? `${pct}% (más prudente)` : `+${pct}% (más optimista)`;
-}
 
 export default function Ficha() {
   const { id } = useParams();
@@ -103,7 +98,7 @@ export default function Ficha() {
           <Link to="/" className="volver">
             ← Bandeja
           </Link>
-          <h1 style={{ fontSize: 20 }}>Solicitud {base.cliente_id}</h1>
+          <h1>Solicitud {base.cliente_id}</h1>
           <span className={`etiqueta ${est.clase}`}>Estacionalidad {est.texto.toLowerCase()}</span>
         </div>
         <div className="datos">
@@ -125,7 +120,7 @@ export default function Ficha() {
             {cargando ? "Actualizando la propuesta…" : "La propuesta se actualiza sola al cambiar un dato."}
           </span>
         </div>
-        <div className="fila">
+        <div className="fila fila-ajuste">
           <label className="campo">
             Monto (S/)
             <input
@@ -153,17 +148,7 @@ export default function Ficha() {
               ))}
             </div>
           </div>
-          <label className="campo" style={{ minWidth: 240 }}>
-            Ventas según tu visita: {textoAjuste(edicion.ajuste_asesor)}
-            <input
-              type="range"
-              min={0.9}
-              max={1.1}
-              step={0.01}
-              value={edicion.ajuste_asesor}
-              onChange={(e) => setEdicion({ ...edicion, ajuste_asesor: Number(e.target.value) })}
-            />
-          </label>
+          <ReglaAjuste valor={edicion.ajuste_asesor} cambiar={(v) => setEdicion({ ...edicion, ajuste_asesor: v })} />
           {sugerido !== null && !cargando && (
             <button type="button" className="btn" onClick={() => setEdicion({ ...edicion, ...sugerido })}>
               Usar la propuesta ({fmtS0(sugerido.principal)} a {sugerido.plazo} m)

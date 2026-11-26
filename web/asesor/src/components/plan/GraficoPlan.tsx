@@ -58,7 +58,7 @@ export default function GraficoPlan({ filas, factor, alto = 270, ancho }: Props)
         interval={0}
         tick={<TickMes periodos={etiquetas} />}
         tickLine={false}
-        axisLine={{ stroke: "#C9CED4" }}
+        axisLine={{ stroke: "#CDD3DD" }}
         height={34}
       />
       <YAxis domain={dominio} ticks={ticks} tickFormatter={formatoEje(ticks)} width={56} fontSize={11} tickLine={false} axisLine={false} stroke={COLOR.eje} />
@@ -115,7 +115,7 @@ export default function GraficoPlan({ filas, factor, alto = 270, ancho }: Props)
         <ItemBarra color={COLOR.fija} texto="Cuota fija" />
         <ItemLinea color={COLOR.tope} texto={`Tope: ${factor.toFixed(2)} × UN esperada`} />
         <span className="pl-leyenda-item">
-          <svg width="10" height="8" aria-hidden="true">
+          <svg className="cf-graf" width="10" height="8" aria-hidden="true">
             <path d="M1,7 L9,7 L5,1 Z" fill={COLOR.supera} />
           </svg>
           supera el tope

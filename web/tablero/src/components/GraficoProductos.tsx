@@ -3,6 +3,7 @@ import type { Resumen } from '../api';
 import { COLOR_PRODUCTO, NOMBRE_PRODUCTO } from '../colores';
 import { entero } from '../formato';
 import TarjetaGrafico from './TarjetaGrafico';
+import { colorTema } from '../apariencia';
 
 const ORDEN = ['fija', 'aplazamiento', 'estacional'] as const;
 
@@ -29,7 +30,7 @@ export default function GraficoProductos({ mix }: { mix: Resumen['mix_productos'
     const x = p.cx + r * Math.cos(-p.midAngle * RAD);
     const y = p.cy + r * Math.sin(-p.midAngle * RAD);
     return (
-      <text x={x} y={y} textAnchor={x > p.cx ? 'start' : 'end'} dominantBaseline="central" fontSize={12} fill="#1F2328">
+      <text x={x} y={y} textAnchor={x > p.cx ? 'start' : 'end'} dominantBaseline="central" fontSize={12} fill="#172033">
         {p.nombre} {p.pct}%
       </text>
     );
@@ -72,10 +73,10 @@ export default function GraficoProductos({ mix }: { mix: Resumen['mix_productos'
                   if (typeof cx !== 'number') return null;
                   return (
                     <g>
-                      <text x={cx} y={cy - 4} textAnchor="middle" fontSize={22} fontWeight={700} fill="#1F2328">
+                      <text x={cx} y={cy - 4} textAnchor="middle" fontSize={22} fontWeight={700} fill="#172033">
                         {entero(total)}
                       </text>
-                      <text x={cx} y={cy + 14} textAnchor="middle" fontSize={12} fill="#57606A">
+                      <text x={cx} y={cy + 14} textAnchor="middle" fontSize={12} fill="#5A6478">
                         créditos
                       </text>
                     </g>
@@ -89,7 +90,7 @@ export default function GraficoProductos({ mix }: { mix: Resumen['mix_productos'
       <div className="leyenda" style={{ justifyContent: 'center' }}>
         {datos.map((d) => (
           <span key={d.id} className="leyenda-item estatico">
-            <span className="muestra" style={{ background: COLOR_PRODUCTO[d.id] }} aria-hidden="true" />
+            <span className="muestra" style={{ background: colorTema(COLOR_PRODUCTO[d.id]) }} aria-hidden="true" />
             {d.nombre}
           </span>
         ))}

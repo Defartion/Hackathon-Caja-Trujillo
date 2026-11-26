@@ -13,7 +13,7 @@ export default function ComiteLista() {
     <div className="tarjeta">
       <div className="fila" style={{ marginBottom: 12 }}>
         <div>
-          <h1 style={{ fontSize: 20 }}>Comité de créditos</h1>
+          <h1>Comité de créditos</h1>
           <div className="ayuda">Expedientes enviados al comité. Ábrelos para validar o imprimir.</div>
         </div>
         <div className="espacio" />

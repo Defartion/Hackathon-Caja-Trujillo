@@ -2,6 +2,7 @@ import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { API_URL } from '../api';
 import { infoRubro } from '../colores';
 import { entero, pct1, solesExacto } from '../formato';
+import { colorTema } from '../apariencia';
 
 /** Distintivo del ENFEN en la cabecera (fase 2 · lote C). Al hacer clic muestra el impacto en la cartera. */
 
@@ -41,11 +42,16 @@ interface Impacto {
 }
 
 const TONOS: Record<CodigoEstado, { texto: string; fondo: string; punto: string }> = {
-  ALERTA_NINO: { texto: '#8E0B20', fondo: '#FDECEE', punto: '#C8102E' },
-  VIGILANCIA_NINO: { texto: '#6B4309', fondo: '#FFF4DE', punto: '#B7791F' },
-  NO_ACTIVO: { texto: '#14532D', fondo: '#E9F6EC', punto: '#1A7F37' },
-  VIGILANCIA_NINA: { texto: '#0B4A8B', fondo: '#E8F1FB', punto: '#0B5CAD' },
-  ALERTA_NINA: { texto: '#062F5C', fondo: '#DCE8F7', punto: '#08427E' },
+  // Variables del tema (tema.css): el distintivo cambia solo en el tema oscuro.
+  ALERTA_NINO: { texto: 'var(--cf-rojo-osc)', fondo: 'var(--cf-rojo-suave)', punto: 'var(--cf-rojo)' },
+  VIGILANCIA_NINO: { texto: 'var(--cf-aviso-texto)', fondo: 'var(--cf-ambar-suave)', punto: 'var(--cf-ambar)' },
+  NO_ACTIVO: { texto: 'var(--cf-ok-texto)', fondo: 'var(--cf-verde-suave)', punto: 'var(--cf-verde)' },
+  VIGILANCIA_NINA: { texto: 'var(--cf-azul-osc)', fondo: 'var(--cf-azul-suave)', punto: 'var(--cf-azul)' },
+  ALERTA_NINA: {
+    texto: 'var(--cf-azul-osc)',
+    fondo: 'color-mix(in srgb, var(--cf-azul) 16%, var(--cf-superficie))',
+    punto: 'var(--cf-azul-osc)',
+  },
 };
 
 const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'set', 'oct', 'nov', 'dic'];
@@ -177,7 +183,7 @@ export default function EstadoEnfen() {
           title={estado ? 'Ver el impacto en la cartera' : (error ?? undefined)}
           onClick={() => setAbierto((v) => !v)}
         >
-          <span className="enfen-punto" style={{ background: tono?.punto ?? '#9AA1A9' }} aria-hidden="true" />
+          <span className="enfen-punto" style={{ background: tono?.punto ?? 'var(--cf-gris-400)' }} aria-hidden="true" />
           <span className="enfen-textos">
             <span className="enfen-etiqueta">{estado ? estado.etiqueta : 'ENFEN'}</span>
             <span className="enfen-detalle">{detalle}</span>
@@ -242,7 +248,7 @@ export default function EstadoEnfen() {
                       {impacto.grupos.map((g) => (
                         <tr key={`${g.rubro}|${g.region}`}>
                           <td>
-                            <span className="enfen-rubro" style={{ background: infoRubro(g.rubro).color }} aria-hidden="true" />
+                            <span className="enfen-rubro" style={{ background: colorTema(infoRubro(g.rubro).color) }} aria-hidden="true" />
                             {infoRubro(g.rubro).nombre}
                           </td>
                           <td>{g.region}</td>
@@ -282,7 +288,7 @@ const CSS = `
 .enfen { position: relative; flex: none; }
 .enfen-distintivo {
   display: flex; align-items: center; gap: 6px; border: 1px solid var(--cf-gris-200);
-  border-radius: 999px; padding: 2px 12px 2px 2px; background: #fff;
+  border-radius: 999px; padding: 3px 14px 3px 4px; background: var(--cf-superficie);
 }
 .enfen-boton {
   display: flex; align-items: center; gap: 8px; background: none; border: none; color: inherit;
@@ -302,14 +308,14 @@ const CSS = `
 .enfen-etiqueta { font-size: 13px; font-weight: 700; white-space: nowrap; }
 .enfen-detalle { font-size: 11.5px; opacity: 0.9; white-space: nowrap; }
 .enfen-chip {
-  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
-  border: 1px solid currentColor; border-radius: 999px; padding: 1px 6px; background: rgba(255, 255, 255, 0.65);
+  font-size: 11px; font-weight: 700;
+  border: 1px solid currentColor; border-radius: 999px; padding: 0 7px; background: color-mix(in srgb, var(--cf-superficie) 70%, transparent);
 }
 .enfen-fuente { font-size: 12px; font-weight: 600; color: inherit; white-space: nowrap; }
 .enfen-panel {
   position: absolute; right: 0; top: calc(100% + 8px); z-index: 40; width: min(600px, 92vw);
-  background: #fff; color: var(--cf-gris-900); border: 1px solid var(--cf-gris-200);
-  border-radius: var(--cf-radio); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16); padding: 14px 16px;
+  background: var(--cf-superficie); color: var(--cf-tinta); border: 1px solid var(--cf-gris-200);
+  border-radius: var(--cf-radio-lg); box-shadow: var(--cf-sombra-3); padding: 16px 18px;
 }
 .enfen-panel-cab { display: flex; align-items: center; justify-content: space-between; }
 .enfen-panel-cab h2 { margin: 0; font-size: 15px; }
@@ -318,14 +324,14 @@ const CSS = `
   padding: 0 4px; border-radius: 4px;
 }
 .enfen-aviso { margin: 8px 0 10px; font-size: 13px; color: var(--cf-gris-600); }
-.enfen-aviso.alivio { color: #8E0B20; font-weight: 600; }
+.enfen-aviso.alivio { color: var(--cf-rojo-osc); font-weight: 600; }
 .enfen-aviso.error { color: var(--cf-rojo-osc); font-weight: 600; }
 .enfen-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
-.enfen-kpis > div { border: 1px solid var(--cf-gris-200); border-radius: 8px; padding: 8px 10px; }
+.enfen-kpis > div { background: var(--cf-gris-100); border-radius: 10px; padding: 9px 11px; }
 .enfen-kpis span { display: block; font-size: 11.5px; color: var(--cf-gris-600); }
 .enfen-kpis b { font-size: 18px; }
 .enfen-kpis small { display: block; font-size: 11.5px; font-weight: 500; color: var(--cf-gris-600); }
-.enfen-tabla { max-height: 260px; overflow-y: auto; border: 1px solid var(--cf-gris-200); border-radius: 8px; }
+.enfen-tabla { max-height: 260px; overflow-y: auto; border: 1px solid var(--cf-gris-200); border-radius: 10px; }
 .enfen-tabla table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
 .enfen-tabla th {
   position: sticky; top: 0; background: var(--cf-fondo); text-align: left; font-weight: 700;
@@ -337,5 +343,5 @@ const CSS = `
 .enfen-rubro { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
 .enfen-vacio { font-size: 13px; color: var(--cf-gris-600); margin: 4px 0; }
 .enfen-pie { margin: 10px 0 0; font-size: 11.5px; color: var(--cf-gris-600); }
-.enfen-advertencia { display: block; margin-top: 4px; color: #6B4309; }
+.enfen-advertencia { display: block; margin-top: 4px; color: var(--cf-aviso-texto); }
 `;

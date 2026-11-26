@@ -60,7 +60,7 @@ function Tip({ active, payload }: { active?: boolean; payload?: { payload: Pt }[
 
 function Simbolo({ r }: { r: InfoRubro }) {
   return (
-    <svg width="16" height="16" aria-hidden="true">
+    <svg className="cf-graf" width="16" height="16" aria-hidden="true">
       <Symbols cx={8} cy={8} type={r.simbolo} size={56} fill={r.color} stroke="#fff" strokeWidth={1.5} />
     </svg>
   );

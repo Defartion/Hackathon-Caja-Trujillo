@@ -156,7 +156,7 @@ export default function PasoNegocio({ valor: f, cambiar, catalogo, errorCatalogo
                 onClick={() => alternarMes(i)}
                 aria-label={`${MESES_LARGOS[i]}: mes ${ESTADO_TEXTO[s]}`}
               >
-                {MESES[i]}
+                <span className="pl-mes__nombre">{MESES_LARGOS[i].charAt(0).toUpperCase() + MESES_LARGOS[i].slice(1)}</span>
                 <small>{ESTADO_TEXTO[s]}</small>
               </button>
             ))}

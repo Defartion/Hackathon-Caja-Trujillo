@@ -26,9 +26,9 @@ export default function GraficoCuotas({ fija, flex, capacidad, mesInicio }: Prop
         <YAxis tickFormatter={(v: number) => fmtS0(v)} width={70} fontSize={11} />
         <Tooltip formatter={(v: number, nombre) => [fmtS(v), nombre]} />
         <Legend wrapperStyle={{ fontSize: 12 }} />
-        <Bar dataKey="fija" name="Cuota fija" fill="#57606A">
+        <Bar dataKey="fija" name="Cuota fija" fill="#8792A6">
           {filas.map((f, i) => (
-            <Cell key={i} fill={excede(f.fija, f.capacidad) ? "#B7791F" : "#57606A"} />
+            <Cell key={i} fill={excede(f.fija, f.capacidad) ? "#B7791F" : "#8792A6"} />
           ))}
         </Bar>
         <Bar dataKey="flex" name="Cuota CuotaFlex" fill="#0B5CAD">

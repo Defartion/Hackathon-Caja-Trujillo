@@ -1,7 +1,9 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Cliente } from "../api";
+import type { Documento } from "../exportar";
 import { fmtS0, nivelEstacionalidad, RUBRO_ETIQUETA } from "../formato";
+import MenuExportar from "../MenuExportar";
 import { useCartera } from "../useCartera";
 
 type Filtro = "todas" | "alta" | "atraso" | "limpias";
@@ -26,6 +28,42 @@ const COLUMNAS: { col: keyof Cliente; texto: string; num?: boolean; movil?: bool
   { col: "dias_atraso_max", texto: "Atraso máx.", num: true },
   { col: "indice_estacionalidad", texto: "Estacionalidad" },
 ];
+
+function documentoBandeja(filas: Cliente[], filtro: string): Documento {
+  return {
+    archivo: "bandeja-de-solicitudes",
+    titulo: "Bandeja de solicitudes",
+    subtitulo: `${filtro} (${filas.length} ${filas.length === 1 ? "solicitud" : "solicitudes"})`,
+    resumen: [
+      { etiqueta: "Solicitudes", valor: filas.length, tipo: "entero" },
+      { etiqueta: "Monto solicitado", valor: filas.reduce((s, c) => s + c.principal, 0), tipo: "moneda" },
+      { etiqueta: "Con atraso mayor a 8 días", valor: filas.filter((c) => c.dias_atraso_max > ATRASO_ALERTA).length, tipo: "entero" },
+    ],
+    tablas: [
+      {
+        titulo: "Solicitudes",
+        columnas: [
+          { clave: "cliente_id", titulo: "Código" },
+          { clave: "rubro", titulo: "Rubro" },
+          { clave: "region", titulo: "Región" },
+          { clave: "principal", titulo: "Monto", tipo: "moneda" },
+          { clave: "plazo", titulo: "Plazo (meses)", tipo: "entero" },
+          { clave: "ventas_medias", titulo: "Ventas medias", tipo: "moneda" },
+          { clave: "margen", titulo: "Margen", tipo: "porcentaje" },
+          { clave: "gasto_familiar", titulo: "Gasto familiar", tipo: "moneda" },
+          { clave: "otras_cuotas", titulo: "Otras cuotas", tipo: "moneda" },
+          { clave: "dias_atraso_max", titulo: "Atraso máx. (días)", tipo: "entero" },
+          { clave: "estacionalidad", titulo: "Estacionalidad" },
+        ],
+        filas: filas.map((c) => ({
+          ...c,
+          rubro: RUBRO_ETIQUETA[c.rubro] ?? c.rubro,
+          estacionalidad: nivelEstacionalidad(c.indice_estacionalidad).texto,
+        })),
+      },
+    ],
+  };
+}
 
 const normalizar = (t: string) => t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 
@@ -72,7 +110,7 @@ export default function Bandeja() {
     <div className="tarjeta">
       <div className="fila" style={{ marginBottom: 12 }}>
         <div>
-          <h1 style={{ fontSize: 20 }}>Bandeja de solicitudes</h1>
+          <h1>Bandeja de solicitudes</h1>
           <div className="ayuda">Toca una solicitud para ver la propuesta del agente y registrarla.</div>
         </div>
         <div className="espacio" />
@@ -89,6 +127,19 @@ export default function Bandeja() {
         <button type="button" className="btn btn-primario" onClick={() => nav("/nueva")}>
           Nueva solicitud
         </button>
+        <MenuExportar
+          claseBoton="btn"
+          deshabilitado={filas.length === 0}
+          documento={() => {
+            if (!filas.length) return null;
+            const partes = [
+              FILTROS.find((f) => f.id === filtro)?.texto ?? "Todas",
+              rubro ? `rubro ${RUBRO_ETIQUETA[rubro] ?? rubro}` : "",
+              busca.trim() ? `búsqueda "${busca.trim()}"` : "",
+            ].filter(Boolean);
+            return documentoBandeja(filas, partes.join(", "));
+          }}
+        />
         <label className="campo">
           Rubro
           <select value={rubro} onChange={(e) => setRubro(e.target.value)}>

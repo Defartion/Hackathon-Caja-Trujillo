@@ -1,16 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { api, Prestamo, PrestamoListado } from "../api";
-import { fmtS, fmtS0, RUBRO_ETIQUETA } from "../formato";
+import { api, PrestamoListado } from "../api";
+import type { Documento } from "../exportar";
+import { fmtS0, RUBRO_ETIQUETA } from "../formato";
+import MenuExportar from "../MenuExportar";
 
-const ESTADOS: Record<string, { texto: string; clase: string; accion?: "approve" | "disburse"; boton?: string }> = {
+export const ESTADOS: Record<string, { texto: string; clase: string; accion?: "approve" | "disburse"; boton?: string }> = {
   "Submitted and pending approval": { texto: "Falta aprobar", clase: "media", accion: "approve", boton: "Aprobar" },
   Approved: { texto: "Falta desembolsar", clase: "aplazamiento", accion: "disburse", boton: "Desembolsar" },
   Active: { texto: "Activo", clase: "baja" },
   "Closed (obligations met)": { texto: "Pagado", clase: "fija" },
 };
 
-const PRODUCTO: Record<string, string> = {
+export const PRODUCTO: Record<string, string> = {
   fija: "Cuota fija",
   aplazamiento: "Fija con aplazamientos",
   estacional: "Por temporada",
@@ -18,12 +20,50 @@ const PRODUCTO: Record<string, string> = {
 
 type Filtro = "todos" | "pendientes" | "activos";
 
+const NOMBRE_FILTRO: Record<Filtro, string> = { todos: "Todos", pendientes: "Pendientes", activos: "Activos" };
+
+function documentoLista(filas: PrestamoListado[], filtro: Filtro): Documento {
+  return {
+    archivo: `prestamos-registrados-${filtro}`,
+    titulo: "Préstamos registrados",
+    subtitulo: `Filtro: ${NOMBRE_FILTRO[filtro]} (${filas.length} ${filas.length === 1 ? "préstamo" : "préstamos"})`,
+    resumen: [
+      { etiqueta: "Préstamos", valor: filas.length, tipo: "entero" },
+      { etiqueta: "Monto total", valor: filas.reduce((s, f) => s + f.principal, 0), tipo: "moneda" },
+      { etiqueta: "Activos", valor: filas.filter((f) => f.estado === "Active").length, tipo: "entero" },
+      { etiqueta: "Pendientes", valor: filas.filter((f) => ESTADOS[f.estado]?.accion).length, tipo: "entero" },
+    ],
+    tablas: [
+      {
+        titulo: "Préstamos",
+        columnas: [
+          { clave: "id", titulo: "N°", tipo: "entero" },
+          { clave: "cliente", titulo: "Cliente" },
+          { clave: "rubro", titulo: "Rubro" },
+          { clave: "producto", titulo: "Producto" },
+          { clave: "principal", titulo: "Monto", tipo: "moneda" },
+          { clave: "plazo", titulo: "Plazo (meses)", tipo: "entero" },
+          { clave: "cuota_min", titulo: "Cuota mínima", tipo: "moneda" },
+          { clave: "cuota_max", titulo: "Cuota máxima", tipo: "moneda" },
+          { clave: "aplazamientos_restantes", titulo: "Aplazamientos", tipo: "entero" },
+          { clave: "estado", titulo: "Estado" },
+        ],
+        filas: filas.map((f) => ({
+          ...f,
+          rubro: f.rubro ? RUBRO_ETIQUETA[f.rubro] ?? f.rubro : null,
+          producto: f.producto ? PRODUCTO[f.producto] ?? f.producto : null,
+          estado: ESTADOS[f.estado]?.texto ?? f.estado,
+        })),
+      },
+    ],
+  };
+}
+
 export default function Prestamos() {
   const [filas, setFilas] = useState<PrestamoListado[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [ocupado, setOcupado] = useState<number | null>(null);
   const [filtro, setFiltro] = useState<Filtro>("todos");
-  const [detalle, setDetalle] = useState<Prestamo | null>(null);
 
   const cargar = useCallback(async () => {
     try {
@@ -50,14 +90,6 @@ export default function Prestamos() {
     }
   };
 
-  const verDetalle = async (id: number) => {
-    try {
-      setDetalle(await api.prestamo(id));
-    } catch (e) {
-      setError((e as Error).message);
-    }
-  };
-
   if (error && !filas) return <div className="aviso">{error}</div>;
   if (!filas) return <div className="cargando">Cargando préstamos…</div>;
 
@@ -68,7 +100,7 @@ export default function Prestamos() {
     <div className="tarjeta">
       <div className="fila" style={{ marginBottom: 12 }}>
         <div>
-          <h1 style={{ fontSize: 20 }}>Préstamos registrados</h1>
+          <h1>Préstamos registrados</h1>
           <div className="ayuda">
             {pendientes.length > 0
               ? `Tienes ${pendientes.length} ${pendientes.length === 1 ? "préstamo pendiente" : "préstamos pendientes"} de aprobar o desembolsar.`
@@ -79,6 +111,11 @@ export default function Prestamos() {
         <button type="button" className="btn" onClick={() => void cargar()}>
           Actualizar
         </button>
+        <MenuExportar
+          claseBoton="btn"
+          deshabilitado={visibles.length === 0}
+          documento={() => (visibles.length ? documentoLista(visibles, filtro) : null)}
+        />
       </div>
 
       <div className="chips" role="group" aria-label="Filtros">
@@ -118,7 +155,9 @@ export default function Prestamos() {
               const e = ESTADOS[f.estado] ?? { texto: f.estado, clase: "fija" };
               return (
                 <tr key={f.id}>
-                  <td style={{ fontWeight: 600 }}>#{f.id}</td>
+                  <td style={{ fontWeight: 600 }}>
+                    <Link to={`/prestamos/${f.id}`} className="enlace-fila">#{f.id}</Link>
+                  </td>
                   <td>
                     {f.cliente}
                     <div className="ayuda" style={{ marginTop: 0 }}>
@@ -144,54 +183,15 @@ export default function Prestamos() {
                         {ocupado === f.id ? "…" : e.boton}
                       </button>
                     )}{" "}
-                    <button type="button" className="btn" onClick={() => void verDetalle(f.id)}>
-                      Cronograma
-                    </button>
+                    <Link to={`/prestamos/${f.id}`} className="btn" aria-label={`Ver detalle del préstamo ${f.id}`}>
+                      Ver detalle
+                    </Link>
                   </td>
                 </tr>
               );
             })}
           </tbody>
         </table>
-      )}
-
-      {detalle && (
-        <div className="modal-fondo" onClick={() => setDetalle(null)}>
-          <div className="modal" role="dialog" aria-label={`Cronograma del préstamo ${detalle.id}`} onClick={(e) => e.stopPropagation()}>
-            <div className="fila" style={{ marginBottom: 10, alignItems: "center" }}>
-              <h2 style={{ margin: 0 }}>Préstamo #{detalle.id}</h2>
-              <span className={`etiqueta ${ESTADOS[detalle.status.value]?.clase ?? "fija"}`}>
-                {ESTADOS[detalle.status.value]?.texto ?? detalle.status.value}
-              </span>
-              <div className="espacio" />
-              <button type="button" className="btn" onClick={() => setDetalle(null)}>
-                Cerrar
-              </button>
-            </div>
-            <table>
-              <thead>
-                <tr>
-                  <th className="num">Cuota</th>
-                  <th className="num">Monto</th>
-                  <th className="num">Capital</th>
-                  <th className="num">Interés</th>
-                  <th className="num">Saldo</th>
-                </tr>
-              </thead>
-              <tbody>
-                {detalle.repaymentSchedule?.periods.map((p) => (
-                  <tr key={p.period}>
-                    <td className="num">{p.period}</td>
-                    <td className="num" style={{ fontWeight: 600 }}>{fmtS(p.totalDueForPeriod)}</td>
-                    <td className="num">{fmtS(p.principalDue)}</td>
-                    <td className="num">{fmtS(p.interestDue)}</td>
-                    <td className="num">{fmtS(p.principalLoanBalanceOutstanding)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
       )}
     </div>
   );

@@ -124,7 +124,76 @@ export const api = {
   comando: (id: number, command: "approve" | "disburse") =>
     post<{ status: { value: string } }>(`${BASE}/loans/${id}?command=${command}`),
   prestamos: () => pedir<PrestamoListado[]>("/motor/prestamos"),
+  detallePrestamo: (id: number) => pedir<DetallePrestamo>(`/motor/prestamos/${id}`),
 };
+
+export interface CuotaDetalle {
+  numero: number;
+  mes: string;
+  cuota: number;
+  interes: number;
+  capital: number;
+  saldo: number;
+  /** Vencimiento (último día del mes), AAAA-MM-DD. */
+  fecha: string;
+  estado: "pagada" | "proxima" | "pendiente";
+  fechaPago: string | null;
+}
+
+export interface CuotaResumida {
+  numero: number;
+  mes: string;
+  monto: number;
+  fecha: string;
+}
+
+/** GET /motor/prestamos/{id}: todo lo del préstamo registrado en una sola respuesta. */
+export interface DetallePrestamo {
+  id: number;
+  clientId: number;
+  estado: string;
+  producto: string | null;
+  descripcionProducto: string;
+  principal: number;
+  principalSolicitado: number | null;
+  plazo: number;
+  tea: number;
+  fechaDesembolso: string | null;
+  cuotaMinima: number;
+  cuotaMaxima: number;
+  cuotaFijaReferencia: number | null;
+  aplazamientosRestantes: number;
+  clausulaElNino: boolean;
+  cumplePoliticas: boolean | null;
+  explicacion: string;
+  cliente: {
+    nombre: string | null;
+    rubro: string | null;
+    region: string | null;
+    ventas_medias: number | null;
+    margen: number | null;
+    gasto_familiar: number | null;
+    otras_cuotas: number | null;
+    dias_atraso_max: number | null;
+    ajuste_asesor: number | null;
+  };
+  cuotasPagadas: number;
+  totalCuotas: number;
+  pagos: { fecha: string | null; monto: number | null; cuota: number | null }[];
+  resumen: {
+    totalAPagar: number;
+    totalPagado: number;
+    porPagar: number;
+    saldoCapital: number;
+    interesesTotales: number;
+    cuotasPendientes: number;
+    cuotaMayor: CuotaResumida | null;
+    cuotaMenor: CuotaResumida | null;
+    proximoVencimiento: string | null;
+    diasParaVencer: number | null;
+  };
+  cronograma: CuotaDetalle[];
+}
 
 export interface PrestamoListado {
   id: number;

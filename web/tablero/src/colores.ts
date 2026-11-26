@@ -1,8 +1,10 @@
-export const COLOR_FIJA = '#57606A';
+// Cuota fija en pizarra clara y CuotaFlex en azul: el par pasa el control de distinción para todo
+// tipo de visión (ΔE 21 en OKLab; el gris anterior, #57606A, quedaba en 12.8).
+export const COLOR_FIJA = '#8792A6';
 export const COLOR_FLEX = '#0B5CAD';
-export const COLOR_GRID = '#E5E7EB';
-export const COLOR_EJE = '#D0D7DE';
-export const COLOR_TEXTO_EJE = '#57606A';
+export const COLOR_GRID = '#E8EBF0';
+export const COLOR_EJE = '#CDD3DD';
+export const COLOR_TEXTO_EJE = '#5A6478';
 
 export const COLOR_PRODUCTO: Record<string, string> = {
   fija: '#57606A',

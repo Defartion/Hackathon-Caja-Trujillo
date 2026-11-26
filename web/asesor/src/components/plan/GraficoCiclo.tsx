@@ -35,7 +35,7 @@ export default function GraficoCiclo({ periodos, alto = 260, ancho }: Props) {
         interval={0}
         tick={<TickMes periodos={etiquetas} />}
         tickLine={false}
-        axisLine={{ stroke: "#C9CED4" }}
+        axisLine={{ stroke: "#CDD3DD" }}
         height={34}
       />
       <YAxis domain={dominio} ticks={ticks} tickFormatter={formatoEje(ticks)} width={56} fontSize={11} tickLine={false} axisLine={false} stroke={COLOR.eje} />
@@ -52,7 +52,7 @@ export default function GraficoCiclo({ periodos, alto = 260, ancho }: Props) {
         isAnimationActive={false}
       />
       <Tooltip
-        cursor={{ stroke: "#8C959F", strokeWidth: 1 }}
+        cursor={{ stroke: "#98A1B2", strokeWidth: 1 }}
         isAnimationActive={false}
         content={({ active, label }) => {
           const p = active && label != null ? periodos[Math.round(Number(label))] : undefined;

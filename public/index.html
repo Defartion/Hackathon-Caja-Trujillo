@@ -3,68 +3,185 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#C8102E" />
+<meta name="color-scheme" content="light dark" />
 <title>CuotaFlex · Elige tu rol</title>
+<script>
+  /* Tema claro u oscuro antes de pintar; la elección se comparte con las apps (misma clave en localStorage). */
+  (function () {
+    try {
+      var t = localStorage.getItem("cuotaflex.tema");
+      if (t !== "claro" && t !== "oscuro") t = matchMedia("(prefers-color-scheme: dark)").matches ? "oscuro" : "claro";
+      document.documentElement.dataset.tema = t;
+      document.documentElement.style.colorScheme = t === "oscuro" ? "dark" : "light";
+    } catch (e) {}
+  })();
+</script>
 <style>
-  :root { --rojo: #C8102E; --rojo-osc: #8E0B20; --g9: #1F2328; --g6: #57606A; --g2: #E5E7EB; --fondo: #F7F7F8; }
+  /* Portada para elegir el rol. Mismo sistema de diseño que las apps (web/<app>/src/tema.css).
+     La fuente viaja con la app del asesor: web/asesor/public/fuentes/ → /asesor/fuentes/. */
+  @font-face {
+    font-family: "Archivo Variable";
+    src: url("/asesor/fuentes/archivo-latin-wdth-normal.woff2") format("woff2-variations");
+    font-weight: 100 900;
+    font-stretch: 62% 125%;
+    font-style: normal;
+    font-display: swap;
+  }
+  :root {
+    --rojo: #C8102E; --rojo-hover: #A50D26; --rojo-suave: #FDECEF; --vino: #6E0A1D;
+    --tinta: #172033; --g7: #343F54; --g6: #5A6478; --g3: #CDD3DD; --g2: #E2E6ED; --g1: #EEF1F5; --fondo: #F2F4F7;
+    --azul: #0B5CAD; --superficie: #FFFFFF; --rojo-texto: #C8102E;
+    --curva: cubic-bezier(.2, .8, .2, 1);
+    --fuente: "Archivo Variable", "Archivo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  :root[data-tema="oscuro"] {
+    --rojo-suave: #3A1620; --rojo-texto: #FF7A8F;
+    --tinta: #E7EBF2; --g7: #C3CAD7; --g6: #9AA4B6; --g3: #3B465A; --g2: #2A3446; --g1: #1D2534; --fondo: #0D121C;
+    --azul: #5AA6F2; --superficie: #151C29;
+  }
   * { box-sizing: border-box; }
-  body { margin: 0; font-family: "Inter", system-ui, sans-serif; color: var(--g9); background: var(--fondo); min-height: 100vh; display: flex; flex-direction: column; }
-  header { background: #fff; border-bottom: 3px solid var(--rojo); padding: 14px 24px; }
-  .marca { font-weight: 800; font-size: 20px; letter-spacing: -0.3px; }
-  .marca span { color: var(--rojo); }
-  main { flex: 1; width: 100%; max-width: 980px; margin: 0 auto; padding: 40px 20px; }
-  h1 { font-size: 26px; margin: 0 0 6px; }
-  p.sub { color: var(--g6); margin: 0 0 28px; font-size: 15px; }
-  .roles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-  a.rol { display: flex; flex-direction: column; gap: 10px; background: #fff; border: 1px solid var(--g2); border-radius: 12px; padding: 20px; text-decoration: none; color: inherit; transition: border-color .15s, box-shadow .15s, transform .15s; }
-  a.rol:hover, a.rol:focus-visible { border-color: var(--rojo); box-shadow: 0 6px 20px rgba(200, 16, 46, .12); transform: translateY(-2px); outline: none; }
-  .icono { width: 44px; height: 44px; border-radius: 10px; background: #FDE8EB; color: var(--rojo); display: flex; align-items: center; justify-content: center; }
-  .rol h2 { margin: 0; font-size: 18px; }
-  .rol ul { margin: 0; padding-left: 18px; color: var(--g6); font-size: 14px; line-height: 1.6; }
-  .rol .ir { margin-top: auto; font-weight: 700; color: var(--rojo); }
-  .nota { margin-top: 28px; font-size: 13px; color: var(--g6); }
-  footer { text-align: center; color: var(--g6); font-size: 12px; padding: 16px; }
-  @media (max-width: 760px) { .roles { grid-template-columns: 1fr; } main { padding: 24px 14px; } h1 { font-size: 22px; } }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; font-family: var(--fuente); color: var(--tinta); background: var(--fondo); -webkit-font-smoothing: antialiased; line-height: 1.5; }
+  :focus-visible { outline: 2px solid var(--azul); outline-offset: 3px; }
+
+  .portada { min-height: 100vh; min-height: 100dvh; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
+
+  .marca-panel { position: sticky; top: 0; height: 100vh; height: 100dvh; display: flex; flex-direction: column; padding: 36px clamp(28px, 4.5vw, 64px) 0; background: var(--rojo); color: #fff; overflow: hidden; }
+  .cab { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .marca { display: inline-flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 760; letter-spacing: -.02em; line-height: 1; }
+  .marca em { font-style: normal; color: #FFD3DA; }
+  .cab small { font-size: 12.5px; font-weight: 600; color: rgb(255 255 255 / 78%); }
+  .texto { margin-top: clamp(40px, 12vh, 128px); display: grid; gap: 16px; max-width: 30rem; }
+  h1 { margin: 0; font-size: clamp(34px, 3.6vw, 50px); line-height: 1.02; font-weight: 720; font-stretch: 88%; letter-spacing: -.025em; text-wrap: balance; }
+  .lema { margin: 0; font-size: 17px; line-height: 1.45; color: rgb(255 255 255 / 88%); max-width: 27rem; }
+
+  .ritmo { margin: auto 0 0; padding-top: 40px; display: grid; gap: 14px; }
+  .leyenda { display: flex; flex-wrap: wrap; gap: 6px 20px; font-size: 13px; color: rgb(255 255 255 / 88%); }
+  .leyenda span { display: inline-flex; align-items: center; gap: 8px; }
+  .leyenda i { display: inline-block; width: 18px; }
+  .leyenda i.barra { height: 12px; border-radius: 3px 3px 0 0; background: currentColor; }
+  .leyenda i.linea { border-top: 2px dashed currentColor; }
+  .lienzo { position: relative; height: clamp(150px, 30vh, 290px); display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: clamp(4px, .6vw, 8px); align-items: end; }
+  .lienzo span { height: calc(var(--h) * 100%); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; border-radius: 8px 8px 0 0; background: rgb(255 255 255 / 94%); color: var(--vino); font-size: 11.5px; font-weight: 700; transform-origin: 50% 100%; animation: crece 760ms var(--curva) both; animation-delay: calc(var(--i) * 45ms + 120ms); }
+  .lienzo span.baja { background: rgb(255 255 255 / 58%); }
+  .lienzo .fija { position: absolute; left: 0; right: 0; bottom: 56%; height: 0; padding: 0; border-radius: 0; background: none; border-top: 2px dashed rgb(255 255 255 / 95%); animation: none; }
+  @keyframes crece { from { transform: scaleY(.03); } }
+
+  .roles { position: relative; display: grid; place-items: center; padding: 48px 24px; }
+  .tema { position: absolute; top: 16px; right: 16px; width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid var(--g2); border-radius: 12px; background: var(--superficie); color: var(--g7); cursor: pointer; }
+  .tema:hover { background: var(--g1); color: var(--tinta); }
+  .tema .luna, [data-tema="oscuro"] .tema .sol { display: none; }
+  [data-tema="oscuro"] .tema .luna { display: block; }
+  .caja { width: min(520px, 100%); display: grid; gap: 22px; }
+  h2 { margin: 0; font-size: 30px; line-height: 1.15; font-weight: 720; letter-spacing: -.02em; }
+  .sub { margin: 6px 0 0; color: var(--g6); font-size: 15.5px; }
+  .lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .rol { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 16px; padding: 16px 18px; border: 1px solid var(--g2); border-radius: 16px; background: var(--superficie); color: inherit; text-decoration: none; transition: border-color 140ms, box-shadow 140ms, transform 140ms; }
+  .rol:hover { border-color: var(--g3); box-shadow: 0 10px 28px -12px rgb(23 32 51 / 22%); }
+  .rol:active { transform: translateY(1px); }
+  .icono { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; background: var(--rojo-suave); color: var(--rojo-texto); }
+  .rol b { display: block; font-size: 17px; font-weight: 680; letter-spacing: -.01em; }
+  .rol .d { display: block; margin-top: 2px; font-size: 14px; color: var(--g6); }
+  .ir { color: var(--g6); transition: transform 140ms var(--curva), color 140ms; }
+  .rol:hover .ir { color: var(--rojo-texto); transform: translateX(3px); }
+  .nota { margin: 4px 0 0; font-size: 13px; color: var(--g6); }
+
+  @media (max-width: 900px) {
+    .portada { grid-template-columns: minmax(0, 1fr); }
+    .marca-panel { position: relative; height: auto; padding: 18px 20px 0; }
+    .cab small { display: none; }
+    .texto { margin-top: 22px; gap: 8px; }
+    h1 { font-size: clamp(28px, 8vw, 36px); }
+    .lema { font-size: 15px; }
+    .ritmo { padding-top: 18px; }
+    .leyenda { display: none; }
+    .lienzo { height: 76px; }
+    .lienzo span { font-size: 0; padding: 0; border-radius: 5px 5px 0 0; }
+    .roles { place-items: start center; padding: 28px 20px 40px; }
+    .tema { position: static; justify-self: end; margin-bottom: 8px; }
+    h2 { font-size: 25px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .lienzo span, .rol, .ir { animation: none; transition: none; } }
 </style>
 </head>
 <body>
-<header><div class="marca">Cuota<span>Flex</span></div></header>
-<main>
-  <h1>¿Cómo quieres entrar?</h1>
-  <p class="sub">Cuotas que se adaptan al flujo del negocio. Elige tu rol: cada uno ve solo lo que necesita.</p>
-  <div class="roles">
-    <a class="rol" href="/asesor/">
-      <div class="icono"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 20v-2a4 4 0 0 0-8 0v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg></div>
-      <h2>Asesor de negocios</h2>
-      <ul>
-        <li>Revisa las solicitudes</li>
-        <li>Ve y ajusta la propuesta del agente</li>
-        <li>Registra, aprueba y desembolsa</li>
+<div class="portada">
+  <aside class="marca-panel">
+    <div class="cab">
+      <span class="marca" translate="no">
+        <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#fff"/><rect x="6.4" y="17.5" width="3.8" height="7.5" rx="1.7" fill="#C8102E" fill-opacity=".7"/><rect x="11.6" y="12" width="3.8" height="13" rx="1.7" fill="#C8102E"/><rect x="16.8" y="7" width="3.8" height="18" rx="1.7" fill="#C8102E"/><rect x="22" y="14.5" width="3.8" height="10.5" rx="1.7" fill="#C8102E" fill-opacity=".7"/></svg>
+        <span>Cuota<em>Flex</em></span>
+      </span>
+      <small>Cajathón 2026, Caja Trujillo</small>
+    </div>
+    <div class="texto">
+      <h1>Cuotas que se adaptan al flujo del negocio</h1>
+      <p class="lema">El asesor arma un plan que sigue la temporada de cada negocio, el cliente lo consulta desde el celular y el supervisor mide el efecto en la cartera.</p>
+    </div>
+    <figure class="ritmo" aria-labelledby="ritmo-desc">
+      <figcaption id="ritmo-desc" class="leyenda">
+        <span><i class="barra" aria-hidden="true"></i> Cuotas CuotaFlex de un arrocero de Chepén, de enero a diciembre</span>
+        <span><i class="linea" aria-hidden="true"></i> Cuota fija</span>
+      </figcaption>
+      <div class="lienzo" aria-hidden="true">
+        <span class="baja" style="--h:.32;--i:0">E</span><span class="baja" style="--h:.27;--i:1">F</span><span class="baja" style="--h:.34;--i:2">M</span><span class="baja" style="--h:.46;--i:3">A</span><span style="--h:.64;--i:4">M</span><span style="--h:.94;--i:5">J</span><span style="--h:1;--i:6">J</span><span style="--h:.72;--i:7">A</span><span class="baja" style="--h:.5;--i:8">S</span><span class="baja" style="--h:.4;--i:9">O</span><span class="baja" style="--h:.36;--i:10">N</span><span class="baja" style="--h:.42;--i:11">D</span>
+        <span class="fija"></span>
+      </div>
+    </figure>
+  </aside>
+
+  <main class="roles">
+    <button class="tema" type="button" role="switch" aria-checked="false" aria-label="Tema oscuro">
+      <svg class="sol" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="luna" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.1A8.5 8.5 0 1 1 9.9 3.5a6.6 6.6 0 0 0 10.6 10.6Z"/></svg>
+    </button>
+    <div class="caja">
+      <div>
+        <h2>¿Cómo quieres entrar?</h2>
+        <p class="sub">Elige tu rol: cada uno ve solo lo que necesita. Entra con tu cuenta o con el PIN de tu rol.</p>
+      </div>
+      <ul class="lista">
+        <li>
+          <a class="rol" href="/asesor/">
+            <span class="icono"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 20v-2a4 4 0 0 0-8 0v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg></span>
+            <span><b>Asesor de negocios</b><span class="d">Revisa solicitudes, ajusta la propuesta del agente y registra el crédito.</span></span>
+            <svg class="ir" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+          </a>
+        </li>
+        <li>
+          <a class="rol" href="/cliente/?loanId=2">
+            <span class="icono"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 2h10v20H7zM11 18h2"/></svg></span>
+            <span><b>Cliente</b><span class="d">Mira tu próxima cuota y tu cronograma desde el celular.</span></span>
+            <svg class="ir" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+          </a>
+        </li>
+        <li>
+          <a class="rol" href="/tablero/">
+            <span class="icono"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>
+            <span><b>Supervisor</b><span class="d">Simula la cartera: cuota fija frente a CuotaFlex, con El Niño incluido.</span></span>
+            <svg class="ir" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+          </a>
+        </li>
       </ul>
-      <span class="ir">Entrar como asesor →</span>
-    </a>
-    <a class="rol" href="/cliente/?loanId=2">
-      <div class="icono"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 2h10v20H7zM11 18h2"/></svg></div>
-      <h2>Cliente</h2>
-      <ul>
-        <li>Mira tu próxima cuota</li>
-        <li>Consulta tu cronograma</li>
-        <li>Pide un aplazamiento o alivio</li>
-      </ul>
-      <span class="ir">Entrar como cliente →</span>
-    </a>
-    <a class="rol" href="/tablero/">
-      <div class="icono"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div>
-      <h2>Supervisor</h2>
-      <ul>
-        <li>Simula la cartera: fija vs. CuotaFlex</li>
-        <li>Compara escenarios, incluido El Niño</li>
-        <li>Envía avisos a clientes</li>
-      </ul>
-      <span class="ir">Entrar como supervisor →</span>
-    </a>
-  </div>
-  <p class="nota">Cada rol pide su PIN. La app del cliente está pensada para el celular.</p>
-</main>
-<footer>Datos 100% sintéticos · Cajathón 2026 · Caja Trujillo</footer>
+      <p class="nota">Todos los datos son sintéticos. La app del cliente está pensada para el celular.</p>
+    </div>
+  </main>
+</div>
+<script>
+  (function () {
+    var boton = document.querySelector(".tema");
+    var raiz = document.documentElement;
+    var pintar = function () { boton.setAttribute("aria-checked", String(raiz.dataset.tema === "oscuro")); };
+    pintar();
+    boton.addEventListener("click", function () {
+      var t = raiz.dataset.tema === "oscuro" ? "claro" : "oscuro";
+      raiz.dataset.tema = t;
+      raiz.style.colorScheme = t === "oscuro" ? "dark" : "light";
+      try { localStorage.setItem("cuotaflex.tema", t); } catch (e) {}
+      pintar();
+    });
+  })();
+</script>
 </body>
 </html>

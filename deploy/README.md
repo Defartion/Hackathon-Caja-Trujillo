@@ -17,8 +17,9 @@ PYTHONPATH=src uvicorn cuotaflex.api.main:app --port 8000 --workers 1
 cd web/asesor && npm ci && npm run build && npx vite preview --port 5173   # ídem cliente (5174) y tablero (5175)
 ```
 
-## Roles y PIN
-Con `CUOTAFLEX_AUTH=1`, cada app pide su PIN:
+## Roles: cuentas y PIN
+Con `CUOTAFLEX_AUTH=1`, cada app pide entrar de una de tres formas: **ingresar** con correo y contraseña,
+**crear cuenta** o **entrar con el PIN** del rol (como antes):
 
 | App | Rol | Variable | PIN de demo |
 |---|---|---|---|
@@ -27,6 +28,15 @@ Con `CUOTAFLEX_AUTH=1`, cada app pide su PIN:
 | Tablero (5175) | supervisor | `PIN_SUPERVISOR` | 3333 |
 
 **Cambia los PIN y `CUOTAFLEX_SECRETO` antes de publicar una URL.** El token dura 12 h y se guarda en la pestaña (`sessionStorage`).
+
+Cuentas (`src/cuotaflex/cuentas.py`, rutas `POST /auth/registro` y `POST /auth/ingresar`):
+- Quién puede crear cuenta lo decide `CUOTAFLEX_REGISTRO`. Por defecto (`cliente`) el cliente se registra solo y
+  el asesor y el supervisor escriben el PIN de su rol como **código de autorización**: así nadie se da a sí mismo
+  el rol de supervisor. Con `codigo` todos los roles lo piden; con `no` no se crean cuentas nuevas.
+- La contraseña se guarda como hash scrypt con sal (nunca en texto). Pide al menos 8 caracteres con letras y números.
+- Tras 5 intentos fallidos con un mismo correo, ese correo espera 10 minutos (el PIN sigue disponible).
+- Las cuentas van en la tabla `cuentas` del mismo SQLite (`CUOTAFLEX_DB`). `reset_demo` no las borra.
+- Una cuenta solo entra a la app de su rol. El token lleva el nombre, que se muestra en el menú de cada app.
 
 | Prefijo | Roles |
 |---|---|

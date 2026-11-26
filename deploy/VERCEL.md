@@ -30,12 +30,14 @@ git add public && git commit -m "Apps compiladas para el despliegue"
 | `CUOTAFLEX_AUTH` | `1` |
 | `CUOTAFLEX_SECRETO` | un texto largo y aleatorio |
 | `PIN_ASESOR`, `PIN_CLIENTE`, `PIN_SUPERVISOR` | PIN propios (**no** 1111, 2222 ni 3333) |
+| `CUOTAFLEX_REGISTRO` | opcional: `cliente` (por defecto), `codigo` o `no`. Ver deploy/README.md |
 | `ENFEN_MODO` | `demo` (u `oficial` para leer el comunicado real) |
 
 5. **Deploy.** La URL queda como `https://<proyecto>.vercel.app`. Anótala en `deploy/URLS.md`.
 
 ## Qué tener en cuenta
 - **Memoria no persistente:** cada reinicio de la función empieza de cero. `server.py` vuelve a sembrar los préstamos de demo al arrancar, así que nunca queda vacía. Lo que registres durante la demo (préstamos nuevos, aplazamientos, la alerta El Niño encendida a mano) puede perderse tras un rato sin uso. El flujo de propuesta y simulación no guarda nada, así que siempre funciona.
+- **Cuentas:** también viven en `/tmp`, así que una cuenta creada en Vercel puede desaparecer tras un rato sin uso. El PIN de cada rol sigue funcionando siempre. Para cuentas que duren, usa el despliegue con Docker y un volumen (deploy/README.md).
 - **Primera visita tras un rato sin uso:** tarda unos segundos más. Ábrela unos minutos antes de presentar.
 - **Tablero:** en Vercel corre en un solo proceso. Usa el tamaño "Rápido" en la demo (~6 s en local).
 - **Dependencias:** `requirements.txt` solo trae lo que necesita la API (~310 MB, debajo del límite de 500 MB de Vercel). Lo de desarrollo está en `requirements-dev.txt`.
