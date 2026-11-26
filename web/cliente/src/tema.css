@@ -276,6 +276,8 @@ button, a, input, select, textarea, summary { -webkit-tap-highlight-color: trans
 .acc-fuerza__reglas li { display: inline-flex; align-items: center; gap: 6px; }
 .acc-fuerza__reglas li::before { content: ""; width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--cf-gris-300); box-sizing: border-box; }
 .acc-fuerza__reglas li.ok { color: var(--cf-verde-osc); }
+.acc-fuerza__reglas li.nivel { margin-left: auto; font-weight: 650; color: var(--cf-gris-700); }
+.acc-fuerza__reglas li.nivel::before { display: none; }
 .acc-fuerza__reglas li.ok::before {
   border: 0;
   background: var(--cf-verde) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M3.5 7.2l2.2 2.2 4.8-4.8' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 14px no-repeat;

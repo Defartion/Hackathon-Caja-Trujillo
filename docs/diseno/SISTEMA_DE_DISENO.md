@@ -73,3 +73,11 @@ No se agregaron Tailwind ni librerías de animación: el diseño vive en CSS con
 
 Contraste AA en texto, foco visible en todo control, navegación por teclado en las pestañas de acceso (flechas),
 errores asociados a su campo (`aria-describedby`) y movimiento reducido cuando el sistema lo pide.
+
+## Capturas
+
+| | |
+|---|---|
+| ![Acceso del asesor](capturas/01-acceso-asesor.png) | ![Crear cuenta en el celular](capturas/02-crear-cuenta-cliente.png) |
+| ![Bandeja del asesor](capturas/03-asesor-bandeja.png) | ![Ficha y propuesta del agente](capturas/04-asesor-ficha.png) |
+| ![Inicio del cliente](capturas/05-cliente-inicio.png) | ![Tablero del supervisor](capturas/06-tablero.png) |

@@ -439,7 +439,7 @@ function Acceso({ rol, titulo, regla, alEntrar }: { rol: Rol; titulo: string; re
                     <ul className="acc-fuerza__reglas">
                       <li className={v.contrasena.length >= 8 ? "ok" : ""}>Al menos 8 caracteres</li>
                       <li className={/\p{L}/u.test(v.contrasena) && /\d/.test(v.contrasena) ? "ok" : ""}>Letras y números</li>
-                      {nivel > 0 && <li aria-live="polite">Seguridad: {NIVELES[nivel].toLowerCase()}</li>}
+                      {nivel > 0 && <li className="nivel" aria-live="polite">Seguridad: {NIVELES[nivel].toLowerCase()}</li>}
                     </ul>
                   </div>
                 )}
