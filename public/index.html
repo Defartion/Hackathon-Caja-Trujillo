@@ -4,7 +4,19 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="theme-color" content="#C8102E" />
+<meta name="color-scheme" content="light dark" />
 <title>CuotaFlex · Elige tu rol</title>
+<script>
+  /* Tema claro u oscuro antes de pintar; la elección se comparte con las apps (misma clave en localStorage). */
+  (function () {
+    try {
+      var t = localStorage.getItem("cuotaflex.tema");
+      if (t !== "claro" && t !== "oscuro") t = matchMedia("(prefers-color-scheme: dark)").matches ? "oscuro" : "claro";
+      document.documentElement.dataset.tema = t;
+      document.documentElement.style.colorScheme = t === "oscuro" ? "dark" : "light";
+    } catch (e) {}
+  })();
+</script>
 <style>
   /* Portada para elegir el rol. Mismo sistema de diseño que las apps (web/<app>/src/tema.css).
      La fuente viaja con la app del asesor: web/asesor/public/fuentes/ → /asesor/fuentes/. */
@@ -19,9 +31,14 @@
   :root {
     --rojo: #C8102E; --rojo-hover: #A50D26; --rojo-suave: #FDECEF; --vino: #6E0A1D;
     --tinta: #172033; --g7: #343F54; --g6: #5A6478; --g3: #CDD3DD; --g2: #E2E6ED; --g1: #EEF1F5; --fondo: #F2F4F7;
-    --azul: #0B5CAD;
+    --azul: #0B5CAD; --superficie: #FFFFFF; --rojo-texto: #C8102E;
     --curva: cubic-bezier(.2, .8, .2, 1);
     --fuente: "Archivo Variable", "Archivo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  :root[data-tema="oscuro"] {
+    --rojo-suave: #3A1620; --rojo-texto: #FF7A8F;
+    --tinta: #E7EBF2; --g7: #C3CAD7; --g6: #9AA4B6; --g3: #3B465A; --g2: #2A3446; --g1: #1D2534; --fondo: #0D121C;
+    --azul: #5AA6F2; --superficie: #151C29;
   }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
@@ -51,19 +68,23 @@
   .lienzo .fija { position: absolute; left: 0; right: 0; bottom: 56%; height: 0; padding: 0; border-radius: 0; background: none; border-top: 2px dashed rgb(255 255 255 / 95%); animation: none; }
   @keyframes crece { from { transform: scaleY(.03); } }
 
-  .roles { display: grid; place-items: center; padding: 48px 24px; }
+  .roles { position: relative; display: grid; place-items: center; padding: 48px 24px; }
+  .tema { position: absolute; top: 16px; right: 16px; width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid var(--g2); border-radius: 12px; background: var(--superficie); color: var(--g7); cursor: pointer; }
+  .tema:hover { background: var(--g1); color: var(--tinta); }
+  .tema .luna, [data-tema="oscuro"] .tema .sol { display: none; }
+  [data-tema="oscuro"] .tema .luna { display: block; }
   .caja { width: min(520px, 100%); display: grid; gap: 22px; }
   h2 { margin: 0; font-size: 30px; line-height: 1.15; font-weight: 720; letter-spacing: -.02em; }
   .sub { margin: 6px 0 0; color: var(--g6); font-size: 15.5px; }
   .lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
-  .rol { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 16px; padding: 16px 18px; border: 1px solid var(--g2); border-radius: 16px; background: #fff; color: inherit; text-decoration: none; transition: border-color 140ms, box-shadow 140ms, transform 140ms; }
+  .rol { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 16px; padding: 16px 18px; border: 1px solid var(--g2); border-radius: 16px; background: var(--superficie); color: inherit; text-decoration: none; transition: border-color 140ms, box-shadow 140ms, transform 140ms; }
   .rol:hover { border-color: var(--g3); box-shadow: 0 10px 28px -12px rgb(23 32 51 / 22%); }
   .rol:active { transform: translateY(1px); }
-  .icono { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; background: var(--rojo-suave); color: var(--rojo); }
+  .icono { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; background: var(--rojo-suave); color: var(--rojo-texto); }
   .rol b { display: block; font-size: 17px; font-weight: 680; letter-spacing: -.01em; }
   .rol .d { display: block; margin-top: 2px; font-size: 14px; color: var(--g6); }
   .ir { color: var(--g6); transition: transform 140ms var(--curva), color 140ms; }
-  .rol:hover .ir { color: var(--rojo); transform: translateX(3px); }
+  .rol:hover .ir { color: var(--rojo-texto); transform: translateX(3px); }
   .nota { margin: 4px 0 0; font-size: 13px; color: var(--g6); }
 
   @media (max-width: 900px) {
@@ -78,6 +99,7 @@
     .lienzo { height: 76px; }
     .lienzo span { font-size: 0; padding: 0; border-radius: 5px 5px 0 0; }
     .roles { place-items: start center; padding: 28px 20px 40px; }
+    .tema { position: static; justify-self: end; margin-bottom: 8px; }
     h2 { font-size: 25px; }
   }
   @media (prefers-reduced-motion: reduce) { .lienzo span, .rol, .ir { animation: none; transition: none; } }
@@ -110,6 +132,10 @@
   </aside>
 
   <main class="roles">
+    <button class="tema" type="button" role="switch" aria-checked="false" aria-label="Tema oscuro">
+      <svg class="sol" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="luna" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.1A8.5 8.5 0 1 1 9.9 3.5a6.6 6.6 0 0 0 10.6 10.6Z"/></svg>
+    </button>
     <div class="caja">
       <div>
         <h2>¿Cómo quieres entrar?</h2>
@@ -142,5 +168,20 @@
     </div>
   </main>
 </div>
+<script>
+  (function () {
+    var boton = document.querySelector(".tema");
+    var raiz = document.documentElement;
+    var pintar = function () { boton.setAttribute("aria-checked", String(raiz.dataset.tema === "oscuro")); };
+    pintar();
+    boton.addEventListener("click", function () {
+      var t = raiz.dataset.tema === "oscuro" ? "claro" : "oscuro";
+      raiz.dataset.tema = t;
+      raiz.style.colorScheme = t === "oscuro" ? "dark" : "light";
+      try { localStorage.setItem("cuotaflex.tema", t); } catch (e) {}
+      pintar();
+    });
+  })();
+</script>
 </body>
 </html>

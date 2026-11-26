@@ -28,9 +28,49 @@ es una herramienta de crédito de Caja Trujillo.
 | `--cf-azul` | `#0B5CAD` | serie CuotaFlex en gráficos, enlaces, foco |
 | `--cf-verde`, `--cf-ambar` | `#1A7F37`, `#B7791F` | estados (con su versión `-osc` para texto y `-suave` para fondo) |
 | `--cf-radio-sm` / `--cf-radio` / `--cf-radio-lg` | 8 / 12 / 16 px | controles / tarjetas pequeñas / hojas |
+| `--cf-superficie` / `--cf-superficie-alt` | `#FFFFFF` / `#F7F8FA` | tarjetas, campos y menús / fila resaltada |
+| `--cf-elevada` | `#FFFFFF` | lo seleccionado sobre un riel gris (segmentos, pestañas) |
+| `--cf-lateral` | `#172033` | barra lateral del asesor y del supervisor |
+| `--cf-vidrio` / `--cf-velo` | blanco 92 % / tinta 45 % | barras fijas translúcidas / fondo detrás de modales y hojas |
+| `--cf-rojo-texto` | `#C8102E` | rojo para texto e iconos (en oscuro pasa a `#FF7A8F`) |
+| `--cf-graf-*` | ver abajo | colores de los gráficos, con su versión oscura |
+
+`--cf-blanco` queda solo para texto sobre rojo, verde o tinta; las superficies usan `--cf-superficie`, así el tema
+oscuro cambia una variable y no cada regla.
 
 Gráficos: la cuota fija va en pizarra `#8792A6` y CuotaFlex en azul `#0B5CAD`. El par pasa el control de distinción
 para visión normal y daltonismo (ΔE 21; el gris anterior, `#57606A`, quedaba en 12.8). El texto de las leyendas usa la tinta.
+
+## Tema oscuro
+
+Se elige en el perfil del cliente (Claro, Oscuro o Automático), con el interruptor de la barra lateral del asesor y del
+supervisor, en el menú del cliente, en la pantalla de acceso y en la portada. Sin elección sigue al sistema.
+
+- **Cómo funciona.** `apariencia.tsx` pone `data-tema="oscuro"` en `<html>` y guarda la elección en `localStorage`
+  (`cuotaflex.tema`, la misma clave en las tres apps y la portada). Un script en línea de cada `index.html` aplica el
+  tema antes de pintar, para que no haya un destello blanco.
+- **Paleta.** Fondo azul noche `#0D121C`, superficies un paso más claras (`#151C29`), tinta `#E7EBF2`. El rojo de la
+  marca no cambia en botones ni en bandas; el rojo, azul, verde y ámbar de texto pasan a versiones más claras.
+- **Gráficos.** Las reglas `:is(.recharts-wrapper, .cf-graf) [fill="…"]` de `tema.css` cambian los colores de datos sin
+  tocar los componentes. La pareja oscura CuotaFlex `#55A3F0` / cuota fija `#626E83` se validó contra `#151C29`
+  (ΔE 19.3 con visión normal, 18.3 con deuteranopía). Para muestras de color en HTML (leyendas) se usa `colorTema()`.
+- **Papel siempre claro.** El expediente del comité lleva `.cf-claro` y se ve como una hoja blanca; al imprimir
+  o guardar en PDF todo vuelve al tema claro.
+
+## Exportar
+
+`exportar.ts` y `MenuExportar.tsx` (copias idénticas) generan los archivos en el navegador, sin dependencias nuevas:
+
+| Formato | Qué lleva |
+|---|---|
+| PDF | Helvetica estándar, A4 vertical u horizontal según las columnas, banda de la marca, resumen, tablas con cabecera repetida y número de página |
+| Excel (.xlsx) | hoja "Resumen" y una hoja por tabla, con formato de soles, porcentaje y fecha, fila de títulos fija y filtros |
+| CSV | la tabla principal, UTF-8 con BOM para que Excel lea las tildes |
+| JSON | valores sin formato (números, fechas ISO, porcentajes como fracción) y la descripción de cada columna |
+| Texto (.txt) | resumen y columnas alineadas |
+
+Está en el cronograma del cliente ("Descargar"), la bandeja, la lista y el detalle de préstamos del asesor, y los
+resultados de cada corrida del tablero.
 
 ## Tipografía
 
@@ -47,7 +87,10 @@ para visión normal y daltonismo (ΔE 21; el gris anterior, `#57606A`, quedaba e
 |---|---|
 | `tema.css` | tokens, base, marca, ritmo de cuotas y pantalla de acceso |
 | `marca.tsx` | `<Marca />` (símbolo y nombre), `<Simbolo />` y `<Ritmo />` |
-| `sesion.tsx` | `<ConSesion>`: ingresar, crear cuenta o PIN; `usuarioSesion()` y `cerrarSesion()` |
+| `sesion.tsx` | `<ConSesion>`: ingresar, crear cuenta o PIN; `usuarioSesion()`, `perfilSesion()` y `cerrarSesion()` |
+| `apariencia.tsx` | tema claro u oscuro: `useTema()`, `<BotonTema />`, `<SelectorTema />` y `colorTema()` |
+| `exportar.ts` | PDF, XLSX, CSV, JSON y TXT a partir de un `Documento` (resumen y tablas) |
+| `MenuExportar.tsx` | botón "Exportar" con los cinco formatos, navegable con el teclado |
 
 Cada app se compila sola (Docker copia solo `web/<app>/`), por eso van copiados. **Si cambias uno, copia la versión de
 `web/asesor/src/` a las otras dos.** `tests/test_web_tema.py` falla si las copias se separan.
@@ -81,3 +124,6 @@ errores asociados a su campo (`aria-describedby`) y movimiento reducido cuando e
 | ![Acceso del asesor](capturas/01-acceso-asesor.png) | ![Crear cuenta en el celular](capturas/02-crear-cuenta-cliente.png) |
 | ![Bandeja del asesor](capturas/03-asesor-bandeja.png) | ![Ficha y propuesta del agente](capturas/04-asesor-ficha.png) |
 | ![Inicio del cliente](capturas/05-cliente-inicio.png) | ![Tablero del supervisor](capturas/06-tablero.png) |
+| ![Inicio del cliente en tema oscuro](capturas/07-cliente-inicio-oscuro.png) | ![Detalle de una cuota](capturas/08-cliente-detalle-cuota.png) |
+| ![Elegir qué cuota pagar](capturas/09-cliente-pagar-cuota.png) | ![Detalle de un préstamo registrado](capturas/10-asesor-prestamo.png) |
+| ![Regla del ajuste por visita](capturas/11-asesor-regla.png) | ![Tablero en tema oscuro](capturas/12-tablero-oscuro.png) |
