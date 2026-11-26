@@ -1,0 +1,44 @@
+---
+config:
+  fontFamily: "Inter, Arial, sans-serif"
+  theme: base
+  themeVariables:
+    fontFamily: "Inter, Arial, sans-serif"
+    fontSize: "18px"
+    primaryColor: "#FFFFFF"
+    primaryTextColor: "#1F2328"
+    primaryBorderColor: "#57606A"
+    lineColor: "#57606A"
+---
+%% Fuente de docs/concepto/v3/img/flujo-plan-v3.png (CuotaFlex · concepto v3 · NEG-01)
+%% Se lee en "S": fila superior de izquierda a derecha y fila inferior de derecha a izquierda.
+%% Regenerar desde docs/concepto/v3/img/:
+%%   npx -y @mermaid-js/mermaid-cli -i flujo-plan-v3.mmd -o flujo-plan-v3.png -b white -s 2 -w 1500
+block-beta
+  columns 5
+  cap["1 · Captura del asesor<br/>ventas por temporada, costos,<br/>gastos y carga familiar"]
+  space
+  pat["2 · Patrón del sector y la zona<br/>fuentes públicas, ajustado<br/>con la captura"]
+  space
+  cic["3 · Ciclo estimado<br/>etapas cima, normal y valle<br/>UN p10 · p50 · p90"]
+  space:5
+  com["6 · Asesor de Riesgos y comité<br/>ciclo, cuotas, Cuota/UN por etapa,<br/>supuestos; plan fijo al desembolsar"]
+  space
+  est["5 · Escenarios adversos<br/>plan frente a la cuota fija:<br/>El Niño, retraso, veda, precios"]
+  space
+  pla["4 · Plan por etapas<br/>Cuota/UN ≤ factor en cada etapa<br/>seguros → interés → capital"]
+  space:5
+  space:4
+  aju["Si no hay plan factible:<br/>reducir monto, ampliar plazo o<br/>bajar el factor; o informar al comité"]
+  cap --> pat
+  pat --> cic
+  cic --> pla
+  pla -- "factible" --> est
+  est --> com
+  pla -- "no factible" --> aju
+  aju --> pla
+
+  classDef paso stroke:#0B5CAD,stroke-width:2px,fill:#FFFFFF,color:#1F2328
+  classDef ajuste stroke:#B7791F,stroke-width:2px,fill:#FDF6EA,color:#1F2328
+  class cap,pat,cic,pla,est,com paso
+  class aju ajuste

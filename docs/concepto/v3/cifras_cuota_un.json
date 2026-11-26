@@ -1,0 +1,75 @@
+{
+  "fuente": "docs/concepto/v3/cifras_cuota_un.py (motor de la fase 2)",
+  "semilla": 2026,
+  "n_clientes": 600,
+  "productos_plan_adaptado": {
+    "fija": 143,
+    "estacional": 457
+  },
+  "factor_0.85": {
+    "fija": {
+      "clientes_pct": 45.83,
+      "etapas_promedio": 2.39
+    },
+    "adaptado": {
+      "clientes_pct": 34.33,
+      "etapas_promedio": 1.602
+    }
+  },
+  "factor_0.65": {
+    "fija": {
+      "clientes_pct": 56.0,
+      "etapas_promedio": 3.417
+    },
+    "adaptado": {
+      "clientes_pct": 39.0,
+      "etapas_promedio": 2.133
+    }
+  },
+  "el_nino_factor_0.85": {
+    "fija": {
+      "clientes_pct": 62.67,
+      "etapas_promedio": 7.18
+    },
+    "adaptado": {
+      "clientes_pct": 55.0,
+      "etapas_promedio": 7.227
+    }
+  },
+  "interes_medio": {
+    "fija": 2059.52,
+    "adaptado": 2029.68
+  },
+  "por_rubro_factor_0.85": {
+    "agricultura": {
+      "n": 127,
+      "fija_pct": 100.0,
+      "adaptado_pct": 77.95
+    },
+    "bodega": {
+      "n": 116,
+      "fija_pct": 0.0,
+      "adaptado_pct": 1.72
+    },
+    "calzado": {
+      "n": 82,
+      "fija_pct": 70.73,
+      "adaptado_pct": 34.15
+    },
+    "comercio_campana": {
+      "n": 125,
+      "fija_pct": 27.2,
+      "adaptado_pct": 17.6
+    },
+    "pesca": {
+      "n": 56,
+      "fija_pct": 100.0,
+      "adaptado_pct": 94.64
+    },
+    "servicios": {
+      "n": 94,
+      "fija_pct": 0.0,
+      "adaptado_pct": 2.13
+    }
+  }
+}

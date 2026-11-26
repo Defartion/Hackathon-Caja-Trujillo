@@ -211,3 +211,134 @@ def test_concepto_md_queda_como_puntero():
     texto = (RAIZ / "docs" / "CONCEPTO.md").read_text(encoding="utf-8")
     assert "concepto/CONCEPT_SOLUTION.md" in texto
     assert "## " not in texto  # sin secciones propias: solo apunta a docs/concepto/
+
+
+# --- Concepto v3 (fase 4): ajustado a las preguntas frecuentes del NEG-01 del 24 de noviembre ---
+V3 = CONCEPTO / "v3"
+CIFRAS_V3 = json.loads((V3 / "cifras_cuota_un.json").read_text(encoding="utf-8"))
+RUBROS_V3 = {"agricultura": "Agricultura", "pesca": "Pesca", "calzado": "Calzado",
+             "comercio_campana": "Comercio de campaña"}
+
+
+def _texto_v3(nombre: str) -> str:
+    return (V3 / nombre).read_text(encoding="utf-8")
+
+
+def _celdas(fila: str) -> list[str]:
+    return [celda.strip().replace("**", "") for celda in fila.strip("|").split("|")[1:]]
+
+
+def _soles(valor) -> str:
+    return f"S/ {int(_redondeo(valor, 0)):,}"
+
+
+@pytest.fixture(scope="module")
+def figura_v3():
+    spec = importlib.util.spec_from_file_location("generar_figura_v3", V3 / "generar_figura.py")
+    modulo = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(modulo)
+    return modulo
+
+
+def test_v3_tabla_cuota_un_coincide_con_las_cifras():
+    doc = _texto_v3("CONCEPT_SOLUTION.md")
+    c85, c65 = CIFRAS_V3["factor_0.85"], CIFRAS_V3["factor_0.65"]
+    nino, interes = CIFRAS_V3["el_nino_factor_0.85"], CIFRAS_V3["interes_medio"]
+    filas = {
+        "| Clientes con alguna etapa donde Cuota/UN > 0.85": [_pct(c85[p]["clientes_pct"]) for p in ("fija", "adaptado")],
+        "| Etapas por crédito con Cuota/UN > 0.85": [str(_redondeo(c85[p]["etapas_promedio"], 2)) for p in ("fija", "adaptado")],
+        "| Clientes con alguna etapa donde Cuota/UN > 0.65": [_pct(c65[p]["clientes_pct"]) for p in ("fija", "adaptado")],
+        "| Escenario El Niño": [_pct(nino[p]["clientes_pct"]) for p in ("fija", "adaptado")],
+        "| Interés total medio por crédito": [_soles(interes[p]) for p in ("fija", "adaptado")],
+    }
+    for inicio, esperado in filas.items():
+        assert _celdas(_fila(doc, inicio)) == esperado, inicio
+    for rubro, etiqueta in RUBROS_V3.items():
+        r = CIFRAS_V3["por_rubro_factor_0.85"][rubro]
+        esperado = [f"{_redondeo(r['fija_pct'], 0)}%", f"{_redondeo(r['adaptado_pct'], 0)}%"]
+        assert _celdas(_fila(doc, f"| {etiqueta} |")) == esperado, etiqueta
+
+
+def test_v3_lectura_honesta_coincide_con_las_cifras():
+    doc = _texto_v3("CONCEPT_SOLUTION.md")
+    nino = CIFRAS_V3["el_nino_factor_0.85"]
+    etapas = {_redondeo(nino[p]["etapas_promedio"]) for p in ("fija", "adaptado")}
+    assert len(etapas) == 1 and f"son {etapas.pop()} con ambos planes" in doc
+    otros = CIFRAS_V3["por_rubro_factor_0.85"]
+    fija = {_redondeo(otros[r]["fija_pct"], 0) for r in ("bodega", "servicios")}
+    adaptado = {_redondeo(otros[r]["adaptado_pct"], 0) for r in ("bodega", "servicios")}
+    assert len(fija) == len(adaptado) == 1
+    assert f"{fija.pop()}% con la cuota fija y {adaptado.pop()}% con el plan del prototipo" in doc
+    interes = CIFRAS_V3["interes_medio"]
+    assert f"{_soles(interes['fija'])} con la cuota fija y {_soles(interes['adaptado'])}" in doc
+
+
+def test_v3_resumen_y_componentes_oficiales():
+    doc = _texto_v3("CONCEPT_SOLUTION.md")
+    componentes = ["Problema abordado", "Concepto de solución", "Impacto esperado", "Enfoque tecnológico",
+                   "Tecnología preexistente", "Funcionalidad crítica", "Nivel de desarrollo esperado",
+                   "Factibilidad y dependencias"]
+    posiciones = [doc.index(f"## {i}. {nombre}") for i, nombre in enumerate(componentes, start=1)]
+    assert posiciones == sorted(posiciones)
+    resumen = doc.split("## Resumen ejecutivo")[1].split("## 1.")[0]
+    assert len(resumen.split()) <= 150
+    c85 = CIFRAS_V3["factor_0.85"]
+    assert f"{_pct(c85['fija']['clientes_pct'])} a {_pct(c85['adaptado']['clientes_pct'])}" in resumen
+    assert "default" not in resumen.lower() and " mora" not in resumen.lower()  # sin titular de mora de cartera
+
+
+def test_v3_cumple_la_lista_de_verificacion_de_las_faq():
+    import re
+
+    doc = _texto_v3("CONCEPT_SOLUTION.md")
+    texto = doc.lower()
+    # El cliente ya no aplaza cuotas ni activa alivios durante el crédito
+    assert "aplaz" not in texto and "alivio" not in texto
+    for termino in ("Asesor de Negocios", "Asesor de Riesgos", "comité", "vista"):
+        assert termino in doc, termino
+    for termino in ("TED", "base 360", "seguros", "prelación", "pendiente sin capitalizar", "TCEA"):
+        assert termino in doc, termino
+    for fuente in ("MIDAGRI", "SENAMHI", "INEI", "BCRP", "SUNAT", "calendarios comerciales"):
+        assert fuente in doc, fuente
+    # El historial de pagos solo aparece para decir que no se usa
+    menciones = [m.start() for m in re.finditer("historial de pagos", doc)]
+    assert menciones and all(re.search(r"(sin usar el|no usa el) $", doc[:i]) for i in menciones)
+    assert "LLM externo" in doc and "créditos nuevos" in doc
+
+
+def test_v3_figura_1_coincide_con_el_texto(figura_v3):
+    cliente, propuesta = figura_v3.elegir_ejemplo()
+    d = figura_v3.datos(cliente, propuesta)
+    assert d["meses_sobre_adaptado"] < d["meses_sobre_fija"]
+    leyenda = _texto_v3("CONCEPT_SOLUTION.md").split("*Figura 1.")[1].split("*")[0]
+    assert d["cliente_id"] in leyenda
+    assert f"S/ {d['principal']:,.0f} a {d['plazo']} meses" in leyenda
+    assert f"en {d['meses_sobre_fija']} meses de valle y el plan del prototipo en {d['meses_sobre_adaptado']}" in leyenda
+
+
+def test_v3_figuras_y_diagramas():
+    img = V3 / "img"
+    for nombre in ("arquitectura-v3", "flujo-plan-v3"):
+        assert (img / f"{nombre}.mmd").read_text(encoding="utf-8").strip()
+        assert (img / f"{nombre}.png").read_bytes()[:8] == PNG
+    assert (img / "cuota-un-ejemplo.png").read_bytes()[:8] == PNG
+    doc = _texto_v3("CONCEPT_SOLUTION.md")
+    for nombre in ("cuota-un-ejemplo.png", "arquitectura-v3.png", "flujo-plan-v3.png"):
+        assert f"(img/{nombre})" in doc
+
+
+def test_v3_one_pager_coincide_con_las_cifras():
+    doc = _texto_v3("one-pager.md")
+    c85, nino = CIFRAS_V3["factor_0.85"], CIFRAS_V3["el_nino_factor_0.85"]
+    assert _celdas(_fila(doc, "| Clientes con alguna etapa donde Cuota/UN > 0.85")) == [
+        _pct(c85[p]["clientes_pct"]) for p in ("fija", "adaptado")]
+    assert _celdas(_fila(doc, "| Escenario El Niño")) == [_pct(nino[p]["clientes_pct"]) for p in ("fija", "adaptado")]
+    assert "Concepto v3" in doc and "Asesor de Riesgos" in doc
+
+
+def test_exportacion_pdf_del_concepto_v3():
+    pdf = PdfReader(V3 / "export" / "CuotaFlex-Solution-Concept-v3.pdf")
+    assert len(pdf.pages) <= 8
+    texto = " ".join(pagina.extract_text() for pagina in pdf.pages)
+    assert "Versión 3" in texto and "Figura 1." in texto and "Cuota/UN" in texto
+    assert _pct(CIFRAS_V3["factor_0.85"]["adaptado"]["clientes_pct"]) in texto
