@@ -4,7 +4,9 @@
 import { FormEvent, ReactNode, useEffect, useState } from "react";
 
 const API = ((import.meta.env.VITE_API_URL as string | undefined) || "http://127.0.0.1:8000").replace(/\/+$/, "");
-const CLAVE = "cuotaflex_token";
+// Una sesión por rol: las tres apps comparten dominio en el despliegue y no deben reusar el token de otro rol.
+const PREFIJO = "cuotaflex_token.";
+let CLAVE = `${PREFIJO}sin-rol`;;
 const EXPIRADA = "cuotaflex-sesion-expirada";
 
 function leerToken(): string | null {
@@ -50,6 +52,7 @@ function instalarFetch() {
 type Estado = "cargando" | "login" | "listo";
 
 export function ConSesion({ rol, titulo, children }: { rol: "asesor" | "cliente" | "supervisor"; titulo: string; children: ReactNode }) {
+  CLAVE = `${PREFIJO}${rol}`;
   const [estado, setEstado] = useState<Estado>("cargando");
   useEffect(() => {
     instalarFetch();

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { LogOut, Menu, Repeat, X } from 'lucide-react'
 
-const CLAVE_TOKEN = 'cuotaflex_token'
+const CLAVE_TOKEN = 'cuotaflex_token.cliente'
 
 function haySesion() {
   try {

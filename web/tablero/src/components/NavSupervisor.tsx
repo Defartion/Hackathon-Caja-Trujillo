@@ -19,7 +19,7 @@ const OPCIONES: { id: Vista; texto: string; ayuda: string }[] = [
   { id: 'avisos', texto: 'Avisos a clientes', ayuda: 'Recordatorios de pago' },
 ];
 
-const CLAVE_TOKEN = 'cuotaflex_token';
+const CLAVE_TOKEN = 'cuotaflex_token.supervisor';
 
 function haySesion() {
   try {

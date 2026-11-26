@@ -43,14 +43,18 @@ interface InicioProps {
   onAlivio: () => void
 }
 
+// Fase 4 (FAQ del NEG-01): aplazar cuotas o pedir alivio de El Niño en un crédito vigente es reprogramación,
+// fuera del alcance del reto. Se oculta sin borrar el código; El Niño se considera al diseñar el plan.
+export const MOSTRAR_CREDITO_VIGENTE = false
+
 export function Inicio({
   prestamo, bloqueado, accion, onCronograma, onPagar, onAplazar, onAlivio,
 }: InicioProps) {
   const cuota = prestamo.proximaCuota
   const nombre = prestamo.nombre?.trim().split(/\s+/)[0]
   const activo = prestamo.estado === 'Active'
-  const alerta = prestamo.elNino.activo && prestamo.clausulaElNino && cuota
-  const puedeAplazar = activo && prestamo.aplazamientosRestantes > 0
+  const alerta = MOSTRAR_CREDITO_VIGENTE && prestamo.elNino.activo && prestamo.clausulaElNino && cuota
+  const puedeAplazar = MOSTRAR_CREDITO_VIGENTE && activo && prestamo.aplazamientosRestantes > 0
     && prestamo.cronograma.some(item => item.estado !== 'pagada' && item.numero < prestamo.totalCuotas)
 
   return (
@@ -274,16 +278,20 @@ export function Aplazamiento({
 
 const preguntasFrecuentes = [
   {
-    pregunta: '¿Qué es el aplazamiento?',
-    respuesta: 'Si tu crédito lo permite, puedes pagar una parte de una cuota y repartir lo que falta entre tus cuotas siguientes.',
+    pregunta: '¿Por qué mis cuotas cambian según el mes?',
+    respuesta: 'Tus cuotas siguen el ritmo de tu negocio: son más bajas en los meses flojos y más altas cuando vendes más. Nunca pasan de lo que puedes pagar cada mes.',
   },
   {
-    pregunta: '¿Cuánto me cuesta?',
-    respuesta: 'Depende de la cuota y de cuántas te faltan. Antes de confirmar, verás cuánto pagarás este mes, cuánto sube cada cuota siguiente y el costo adicional total.',
+    pregunta: '¿Mi cronograma puede cambiar después?',
+    respuesta: 'No. Tu plan se definió antes del desembolso y se mantiene igual hasta el final. Lo que ves en "Cronograma" es lo que pagarás.',
   },
   {
     pregunta: '¿Qué pasa si hay El Niño?',
-    respuesta: 'Si tu crédito incluye el alivio y hay una alerta activa, puedes pagar la cuota mínima ese mes. El resto se reparte entre tus próximas cuotas.',
+    respuesta: 'Tu plan ya se revisó pensando en un año El Niño y otros meses difíciles. Si aun así tienes problemas para pagar, habla con tu asesor.',
+  },
+  {
+    pregunta: '¿Cuánto me cuesta?',
+    respuesta: 'Pagas intereses según la tasa (TEA) y los seguros de tu crédito. En "Cronograma" ves cuánto pagas cada mes y cuánto va a capital e intereses.',
   },
 ]
 
@@ -291,8 +299,7 @@ export function Ayuda({ explicacion }: { explicacion: string }) {
   const explicacionCliente = explicacion
     .replace('Puede pagar solo la cuota mínima', 'Puedes pagar solo la cuota mínima')
     .replace('si mantiene sus pagos al día', 'si mantienes tus pagos al día')
-    .replace('Incluye alivio automático si el ENFEN declara alerta de El Niño costero.',
-      'Si se activa una alerta de El Niño costero, puedes solicitar el alivio desde esta app.')
+    .replace('Incluye alivio automático si el ENFEN declara alerta de El Niño costero.', '')
     .replace('Cronograma diseñado contra el escenario conservador (p25) de ingresos.',
       'Las cuotas se calcularon pensando en meses de menores ingresos.')
 

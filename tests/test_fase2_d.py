@@ -63,7 +63,8 @@ def test_explicacion_descarta_cifras_inventadas_o_incumplimientos(sesion, monkey
     respuesta = explicar(sesion.propuesta, _elegibilidad(sesion))
     assert respuesta["fuente"] == "plantilla"
     assert respuesta["cifras_verificadas"] is False
-    assert "TEA" in respuesta["texto"] and "costo" in respuesta["texto"]
+    # Fase 4 (FAQ): el plan es fijo desde el desembolso; la plantilla no ofrece aplazar ni alivios.
+    assert "TEA" in respuesta["texto"] and "aplaz" not in respuesta["texto"].lower()
     payload = json.loads(stub.mensajes[0][0]["content"])
     assert set(payload) == {"propuesta", "borrador"}
     assert "cliente_id" not in payload["propuesta"]
