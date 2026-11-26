@@ -106,7 +106,7 @@ function mensajeDetalle(detail: unknown): string {
   return 'Solicitud no válida.';
 }
 
-async function pedir<T>(ruta: string, init?: RequestInit, timeoutMs = TIMEOUT_MS): Promise<T> {
+export async function pedir<T>(ruta: string, init?: RequestInit, timeoutMs = TIMEOUT_MS): Promise<T> {
   const ctl = new AbortController();
   const t = setTimeout(() => ctl.abort(), timeoutMs);
   let resp: Response;

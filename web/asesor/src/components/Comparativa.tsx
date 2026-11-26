@@ -27,15 +27,15 @@ function Kpi({ k, a, b, fmt, menosEsMejor }: { k: string; a: number; b: number; 
 export default function Comparativa({ fija, flex, n }: Props) {
   return (
     <div className="tarjeta">
-      <h2>Riesgo simulado: cuota fija → CuotaFlex</h2>
+      <h2>Riesgo simulado: cuota fija → esta propuesta</h2>
       <div className="rejilla r3">
         <Kpi k="Atraso > 30 días" a={fija.mora30} b={flex.mora30} fmt={(v) => fmtPct(v)} menosEsMejor />
-        <Kpi k="Default (3 cuotas impagas)" a={fija.default} b={flex.default} fmt={(v) => fmtPct(v)} menosEsMejor />
-        <Kpi k="VPN medio para la Caja" a={fija.vpn_medio} b={flex.vpn_medio} fmt={fmtS0} menosEsMejor={false} />
+        <Kpi k="Incumplimiento (3 cuotas impagas)" a={fija.default} b={flex.default} fmt={(v) => fmtPct(v)} menosEsMejor />
+        <Kpi k="Ganancia esperada para la Caja (VPN)" a={fija.vpn_medio} b={flex.vpn_medio} fmt={fmtS0} menosEsMejor={false} />
       </div>
       <div style={{ color: "var(--cf-gris-600)", fontSize: 12, marginTop: 10 }}>
-        {n} escenarios de ventas y El Niño, con las mismas trayectorias para ambas estrategias. VPN neto de fondeo, costo
-        operativo y pérdidas. Peor 5% de escenarios: {fmtS0(fija.vpn_p5)} → {fmtS0(flex.vpn_p5)}.
+        {n} escenarios de ventas y El Niño, con las mismas trayectorias para ambas estrategias. La ganancia descuenta fondeo, costo operativo y
+        pérdidas. En el 5% de escenarios más malos: {fmtS0(fija.vpn_p5)} → {fmtS0(flex.vpn_p5)}.
       </div>
     </div>
   );

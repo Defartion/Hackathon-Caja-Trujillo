@@ -4,6 +4,15 @@ import { fmtS } from "../formato";
 
 type Estado = { loanId: number; status: string; aviso?: string };
 
+const ESTADO_ES: Record<string, string> = {
+  "Submitted and pending approval": "Registrada, falta aprobar",
+  Approved: "Aprobada, falta desembolsar",
+  Active: "Desembolsada (activa)",
+};
+const PASOS = ["Registrar", "Aprobar", "Desembolsar"];
+const pasoActual = (status?: string) =>
+  !status ? 0 : status === "Submitted and pending approval" ? 1 : status === "Approved" ? 2 : 3;
+
 export default function RegistroCore({ cliente, propuesta }: { cliente: Cliente; propuesta: Propuesta }) {
   const [estado, setEstado] = useState<Estado | null>(null);
   const [ocupado, setOcupado] = useState(false);
@@ -47,10 +56,20 @@ export default function RegistroCore({ cliente, propuesta }: { cliente: Cliente;
 
   return (
     <div className="tarjeta">
-      <h2>Registro en el core (API compatible con Fineract)</h2>
+      <h2>Registrar en el core</h2>
+      <ol className="pasos" aria-label="Avance del registro">
+        {PASOS.map((t, i) => {
+          const actual = pasoActual(estado?.status);
+          return (
+            <li key={t} className={i < actual ? "hecho" : i === actual ? "actual" : ""} aria-current={i === actual ? "step" : undefined}>
+              <span className="num">{i < actual ? "✓" : i + 1}</span> {t}
+            </li>
+          );
+        })}
+      </ol>
       {!estado ? (
         <button className="btn btn-primario" disabled={ocupado} onClick={registrar}>
-          {ocupado ? "Registrando…" : "Registrar solicitud"}
+          {ocupado ? "Registrando…" : "Registrar solicitud en el core"}
         </button>
       ) : (
         <>
@@ -61,17 +80,21 @@ export default function RegistroCore({ cliente, propuesta }: { cliente: Cliente;
             </div>
             <div className="dato">
               <span className="k">Estado</span>
-              <span className="v">{estado.status}</span>
+              <span className="v">{ESTADO_ES[estado.status] ?? estado.status}</span>
             </div>
           </div>
           {estado.aviso && <div className="info" style={{ marginBottom: 10 }}>{estado.aviso}</div>}
           <div className="fila">
-            <button className="btn" disabled={ocupado || estado.status !== "Submitted and pending approval"} onClick={() => comando("approve")}>
-              Aprobar
-            </button>
-            <button className="btn" disabled={ocupado || estado.status !== "Approved"} onClick={() => comando("disburse")}>
-              Desembolsar
-            </button>
+            {estado.status === "Submitted and pending approval" && (
+              <button className="btn btn-primario" disabled={ocupado} onClick={() => comando("approve")}>
+                {ocupado ? "Aprobando…" : "Aprobar"}
+              </button>
+            )}
+            {estado.status === "Approved" && (
+              <button className="btn btn-primario" disabled={ocupado} onClick={() => comando("disburse")}>
+                {ocupado ? "Desembolsando…" : "Desembolsar"}
+              </button>
+            )}
             <button className="btn" disabled={ocupado} onClick={verCronograma}>
               Ver cronograma en core
             </button>
@@ -84,7 +107,7 @@ export default function RegistroCore({ cliente, propuesta }: { cliente: Cliente;
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="fila" style={{ marginBottom: 10 }}>
               <h2 style={{ margin: 0 }}>
-                Préstamo #{modal.id} · {modal.status.value}
+                Préstamo #{modal.id} · {ESTADO_ES[modal.status.value] ?? modal.status.value}
               </h2>
               <div className="espacio" />
               <button className="btn" onClick={() => setModal(null)}>

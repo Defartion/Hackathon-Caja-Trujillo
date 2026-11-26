@@ -1,5 +1,10 @@
 # Fase 4 · Lote C — Flujo del asesor y vista para el Asesor de Riesgos y el comité
 
+> **Actualización (25 nov):** el Asesor ya tiene un menú lateral (`web/asesor/src/Lateral.tsx`). "Nueva solicitud" y
+> "Comité de créditos" ya aparecen en el menú marcados como *pronto*. Para activarlas: agrega tus rutas `/nueva` y
+> `/comite` en `App.tsx` y quita `pronto: true` de esas dos opciones en `OPCIONES_ASESOR` (`Lateral.tsx`). Ya no hace
+> falta el botón "Nueva solicitud" en `Bandeja.tsx` ni un enlace en la cabecera: el menú los reemplaza.
+
 **Rama:** `fase-4/lote-c-comite`
 
 ## Objetivo

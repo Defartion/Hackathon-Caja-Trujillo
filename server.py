@@ -65,6 +65,10 @@ app.mount("/api", api.app)
 
 @app.get("/", include_in_schema=False)
 def inicio():
+    """Página para elegir el rol (public/index.html); si no existe, va directo al asesor."""
+    portada = PUBLICO / "index.html"
+    if portada.is_file():
+        return FileResponse(portada)
     return RedirectResponse("/asesor/")
 
 

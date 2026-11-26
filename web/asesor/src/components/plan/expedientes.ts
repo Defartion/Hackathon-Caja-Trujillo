@@ -102,3 +102,23 @@ export const DECISION_ETIQUETA: Record<Decision, string> = {
   observado: "Observado",
   rechazado: "Rechazado",
 };
+
+/** Todos los expedientes guardados (localStorage + memoria), del más reciente al más antiguo. */
+export function listarExpedientes(): Expediente[] {
+  const claves = new Set<string>(memoria.keys());
+  try {
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const k = window.localStorage.key(i);
+      if (k) claves.add(k);
+    }
+  } catch {
+    /* almacenamiento bloqueado: solo memoria */
+  }
+  const lista: Expediente[] = [];
+  for (const k of claves) {
+    if (!k.startsWith(`${PREFIJO}.expediente.`)) continue;
+    const e = leerExpediente(k.slice(`${PREFIJO}.expediente.`.length));
+    if (e) lista.push(e);
+  }
+  return lista.sort((a, b) => b.creado.localeCompare(a.creado));
+}

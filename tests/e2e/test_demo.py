@@ -23,7 +23,7 @@ def _asesor(contexto, demo, caso, expect):
     pagina.goto(demo.apps["asesor"])
     pagina.get_by_role("cell", name=caso, exact=True).click()
     expect(pagina.get_by_role("heading", name=f"Solicitud {caso}")).to_be_visible()
-    expect(pagina.get_by_role("heading", name="Bitácora del agente")).to_be_visible(timeout=25_000)
+    expect(pagina.get_by_role("heading", name="Propuesta del agente")).to_be_visible(timeout=25_000)
     return pagina
 
 
@@ -36,18 +36,18 @@ def _registrar_y_desembolsar(pagina, expect, captura=None):
         lambda respuesta: respuesta.request.method == "POST" and respuesta.url.endswith(RUTA_CORE),
         timeout=25_000,
     ) as registro:
-        pagina.get_by_role("button", name="Registrar solicitud").click()
+        pagina.get_by_role("button", name="Registrar solicitud en el core", exact=True).click()
     assert registro.value.ok, registro.value.text()
     credito = registro.value.json()["loanId"]
-    expect(pagina.get_by_text("Submitted and pending approval", exact=True)).to_be_visible()
+    expect(pagina.get_by_text("Registrada, falta aprobar", exact=True)).to_be_visible()
     pagina.get_by_role("button", name="Aprobar", exact=True).click()
-    expect(pagina.get_by_text("Approved", exact=True)).to_be_visible()
+    expect(pagina.get_by_text("Aprobada, falta desembolsar", exact=True)).to_be_visible()
     if captura is not None:
-        captura(_tarjeta(pagina, "Registro en el core (API compatible con Fineract)"), "03-asesor-e001-aprobacion")
+        captura(_tarjeta(pagina, "Registrar en el core"), "03-asesor-e001-aprobacion")
     pagina.get_by_role("button", name="Desembolsar", exact=True).click()
-    expect(pagina.get_by_text("Active", exact=True)).to_be_visible()
+    expect(pagina.get_by_text("Desembolsada (activa)", exact=True)).to_be_visible()
     if captura is not None:
-        captura(_tarjeta(pagina, "Registro en el core (API compatible con Fineract)"), "04-asesor-e001-desembolso")
+        captura(_tarjeta(pagina, "Registrar en el core"), "04-asesor-e001-desembolso")
     return credito
 
 
@@ -71,7 +71,8 @@ def test_asesor_y_cliente_prestamo_de_rosa(demo, explorador, captura, comprobar)
     contexto, _ = explorador
     expect = comprobar
     asesor = _asesor(contexto, demo, "E001", expect)
-    bitacora = _tarjeta(asesor, "Bitácora del agente")
+    asesor.get_by_role("tab", name="Cómo decidió el agente").click()
+    bitacora = _tarjeta(asesor, "Cómo decidió el agente")
     expect(bitacora.get_by_text("Selección por simulación: cuotas estacionales", exact=True)).to_be_visible()
     captura(bitacora, "01-asesor-e001-seleccion")
 
@@ -147,7 +148,7 @@ def test_tablero_compara_escenario_base_con_ano_el_nino(demo, explorador, captur
     expect = comprobar
     tablero = contexto.new_page()
     tablero.goto(demo.apps["tablero"])
-    tablero.get_by_role("radio", name="Rápido", exact=True).click()
+    # "Rápido" es el tamaño por defecto y el escenario base corre solo al abrir.
     base = tablero.get_by_role("button", name="Base", exact=True)
     base.click()
     expect(tablero.locator(".cab-corrida")).to_contain_text(
@@ -156,7 +157,7 @@ def test_tablero_compara_escenario_base_con_ano_el_nino(demo, explorador, captur
     indicadores = tablero.locator(".kpi")
     expect(indicadores).to_have_count(4)
     for etiqueta in (
-        "Créditos con atraso > 30 días", "Default (3 cuotas impagas)",
+        "Créditos con atraso > 30 días", "Incumplimiento (3 cuotas impagas)",
         "Margen neto / cartera", "Cartera colocada",
     ):
         expect(indicadores.get_by_text(etiqueta, exact=True)).to_be_visible()
@@ -177,7 +178,10 @@ def test_asesor_explica_la_reduccion_del_monto_de_luis(demo, explorador, captura
     contexto, _ = explorador
     expect = comprobar
     asesor = _asesor(contexto, demo, "E003", expect)
-    bitacora = _tarjeta(asesor, "Bitácora del agente")
+    asesor.get_by_role("tab", name="Cómo decidió el agente").click()
+    bitacora = _tarjeta(asesor, "Cómo decidió el agente")
+    expect(bitacora.get_by_text(re.compile(r"^Ajuste del monto: "))).to_be_visible()
+    bitacora.get_by_role("button", name="Ver intentos").click()
     expect(bitacora.get_by_text("Replanificación: reducir monto", exact=True).first).to_be_visible()
     captura(bitacora, "12-asesor-e003-reduccion")
 
