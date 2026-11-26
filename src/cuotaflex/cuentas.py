@@ -184,6 +184,19 @@ def _guardar_nueva(correo: str, nombre: str, rol: str, h: str) -> dict:
         return dict(cuenta)
 
 
+def por_id(cuenta_id: int) -> dict | None:
+    if persistencia.activa():
+        if not persistencia.ruta_db().exists():
+            return None
+        with _candado, _conectar() as con:
+            fila = con.execute("SELECT id, correo, nombre, rol, hash, creado FROM cuentas WHERE id = ?",
+                               (int(cuenta_id),)).fetchone()
+        return _fila_a_cuenta(fila) if fila else None
+    with _candado:
+        c = next((c for c in _memoria.values() if c["id"] == int(cuenta_id)), None)
+        return dict(c) if c else None
+
+
 def publica(cuenta: dict) -> dict:
     """Lo que se puede devolver al navegador (nunca el hash)."""
     return {k: cuenta[k] for k in ("id", "nombre", "correo", "rol")}

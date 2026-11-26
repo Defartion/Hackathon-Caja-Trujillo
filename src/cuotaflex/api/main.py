@@ -211,6 +211,8 @@ def comando_prestamo(lid: int, command: str):
     if command not in estados:
         raise HTTPException(400, "command debe ser approve o disburse")
     l["status"] = {"value": estados[command]}
+    if command == "disburse":  # las fechas de vencimiento del cronograma se cuentan desde aquí
+        l.setdefault("fechaDesembolso", date.today().isoformat())
     return {"loanId": lid, "status": l["status"]}
 
 

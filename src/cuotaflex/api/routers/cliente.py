@@ -9,6 +9,7 @@ from typing import Annotated, Literal
 
 from fastapi import APIRouter, Body, HTTPException
 
+from ... import cronograma as crono
 from ...config import cargar_parametros, cuota_francesa, tea_a_tem
 from ...datos import PERFILES
 from ...politica import PRODUCTOS
@@ -39,18 +40,12 @@ def _temporada(cuota: float, referencia: float) -> str:
 
 
 def _cronograma(prestamo: dict, cuotas: list[float]) -> list[dict]:
-    propuesta = prestamo["propuesta"]
-    pagadas = prestamo.get("cuotasPagadas", 0)
-    filas = []
-    for numero, (cuota, original) in enumerate(zip(cuotas, propuesta["cronograma"]), start=1):
-        estado = "pendiente"
-        if numero <= pagadas:
-            estado = "pagada"
-        elif numero == pagadas + 1:
-            estado = "proxima"
-        filas.append({"numero": numero, "mes": original["mes"], "cuota": cuota, "estado": estado,
-                      "temporada": _temporada(cuota, propuesta["cuota_fija_referencia"])})
-    return filas
+    """Además de número, mes, monto, estado y temporada: vencimiento, capital, interés, saldo y fecha de pago."""
+    referencia = prestamo["propuesta"]["cuota_fija_referencia"]
+    return [{"numero": fila["numero"], "mes": fila["mes"], "cuota": cuota, "estado": fila["estado"],
+             "temporada": _temporada(cuota, referencia), "fecha": fila["fecha"], "capital": fila["capital"],
+             "interes": fila["interes"], "saldo": fila["saldo"], "fechaPago": fila["fechaPago"]}
+            for fila, cuota in zip(crono.detalle(prestamo, cuotas), cuotas)]
 
 
 def _validar_aplazamiento(prestamo: dict, installment: int) -> None:
@@ -59,7 +54,7 @@ def _validar_aplazamiento(prestamo: dict, installment: int) -> None:
     _validar_activo(prestamo)
     if not 1 <= installment < len(prestamo["cuotas"]):
         raise HTTPException(400, "Elige una cuota del cronograma que no sea la última.")
-    if installment <= prestamo.get("cuotasPagadas", 0):
+    if installment in crono.pagadas(prestamo):
         raise HTTPException(400, "Esa cuota ya está pagada.")
     tem = tea_a_tem(prestamo["tea"])
     if prestamo["cuotas"][installment - 1] <= round(_piso(prestamo, tem), 2):
@@ -87,7 +82,8 @@ def _redistribuir_cuota(prestamo: dict, indice: int) -> tuple[list[float], float
 
 def _revision_aplazamiento(prestamo: dict, installment: int) -> str:
     condiciones = (installment, prestamo["cuotas"], prestamo.get("cuotasPagadas", 0),
-                   prestamo["aplazamientosRestantes"], prestamo["principal"], prestamo["tea"])
+                   prestamo["aplazamientosRestantes"], prestamo["principal"], prestamo["tea"],
+                   sorted(prestamo.get("cuotasAdelantadas", [])))
     return sha256(dumps(condiciones).encode("utf-8")).hexdigest()
 
 
@@ -134,12 +130,12 @@ def ver_prestamo(loan_id: int):
         prestamo = _prestamo(loan_id)
         propuesta = prestamo["propuesta"]
         cronograma = _cronograma(prestamo, prestamo["cuotas"])
-        pagadas = prestamo.get("cuotasPagadas", 0)
+        siguiente = crono.proxima(prestamo)
         proxima = None
-        if pagadas < len(cronograma):
-            fila = cronograma[pagadas]
+        if siguiente is not None:
+            fila = cronograma[siguiente - 1]
             proxima = {"numero": fila["numero"], "mes": fila["mes"], "monto": fila["cuota"],
-                       "temporada": fila["temporada"]}
+                       "temporada": fila["temporada"], "fecha": fila["fecha"]}
         activo = estado_el_nino()["activo"]
         cliente = api.DB["clients"].get(prestamo["clientId"], {})
         return {
@@ -150,29 +146,40 @@ def ver_prestamo(loan_id: int):
             "estado": prestamo["status"]["value"],
             "tea": prestamo["tea"],
             "principal": prestamo["principal"],
+            "fechaDesembolso": prestamo.get("fechaDesembolso"),
             "proximaCuota": proxima,
-            "cuotasPagadas": pagadas,
+            "cuotasPagadas": len(crono.pagadas(prestamo)),
             "totalCuotas": len(cronograma),
             "aplazamientosRestantes": prestamo["aplazamientosRestantes"],
             "clausulaElNino": propuesta["clausula_el_nino"],
             "elNino": {"activo": activo, "alivioDisponible": _alivio_disponible(prestamo),
                        "puedeAplicar": _puede_aplicar_alivio(prestamo, activo)},
             "cronograma": cronograma,
+            "cuotaFijaReferencia": propuesta["cuota_fija_referencia"],
+            "resumen": crono.resumen(prestamo),
             "explicacion": propuesta["explicacion"],
         }
 
 
 @router.post("/prestamos/{loan_id}/pagar")
-def pagar_cuota(loan_id: int):
+def pagar_cuota(loan_id: int, cuota: Annotated[int | None, Body(embed=True)] = None):
+    """Paga la cuota que elige el cliente; sin `cuota`, la próxima (como antes). Adelantar una cuota no cambia
+    el plan: solo la marca como pagada y la próxima sigue siendo la primera sin pagar."""
     with _bloqueo:
         prestamo = _prestamo(loan_id)
         _validar_activo(prestamo)
-        pagadas = prestamo.get("cuotasPagadas", 0)
-        if pagadas >= len(prestamo["cuotas"]):
+        siguiente = crono.proxima(prestamo)
+        if siguiente is None:
             raise HTTPException(409, "Ya pagaste todas tus cuotas.")
-        respuesta = api.pagar(loan_id, "repayment", {"transactionAmount": prestamo["cuotas"][pagadas]})
-        prestamo["cuotasPagadas"] = pagadas + 1
-        return respuesta
+        numero = siguiente if cuota is None else cuota
+        if not 1 <= numero <= len(prestamo["cuotas"]):
+            raise HTTPException(400, "Esa cuota no está en tu cronograma.")
+        if numero in crono.pagadas(prestamo):
+            raise HTTPException(409, "Esa cuota ya está pagada.")
+        respuesta = api.pagar(loan_id, "repayment", {"transactionAmount": prestamo["cuotas"][numero - 1]})
+        prestamo["pagos"][-1]["cuota"] = numero
+        crono.registrar_pago(prestamo, numero)
+        return {**respuesta, "cuota": numero}
 
 
 @router.post("/prestamos/{loan_id}/aplazamiento/preview")

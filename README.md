@@ -45,6 +45,7 @@ src/cuotaflex/
   agente.py                 agente asesor: orquesta, replanifica y explica (LLM opcional)
   simulacion.py             Monte Carlo cuota fija vs. CuotaFlex
   cuentas.py                cuentas con correo y contraseña (además del PIN por rol)
+  cronograma.py             vencimientos, desglose y pagos de cada cuota (en orden o adelantados)
   api/main.py               API compatible con Fineract (+ aplazamiento)
 scripts/                    simular.py, demo_agente.py
 tests/                      pruebas del motor y de la API
