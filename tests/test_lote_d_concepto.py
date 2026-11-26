@@ -298,12 +298,30 @@ def test_v3_cumple_la_lista_de_verificacion_de_las_faq():
         assert termino in doc, termino
     for termino in ("TED", "base 360", "seguros", "prelación", "pendiente sin capitalizar", "TCEA"):
         assert termino in doc, termino
-    for fuente in ("MIDAGRI", "SENAMHI", "INEI", "BCRP", "SUNAT", "calendarios comerciales"):
+    # Fuentes públicas que usa el modelo de ciclo del lote B (docs/ciclo/FUENTES.md)
+    for fuente in ("MIDAGRI", "SENAMHI", "INEI", "BCRP", "PRODUCE", "ENFEN", "calendarios comerciales"):
         assert fuente in doc, fuente
     # El historial de pagos solo aparece para decir que no se usa
     menciones = [m.start() for m in re.finditer("historial de pagos", doc)]
     assert menciones and all(re.search(r"(sin usar el|no usa el) $", doc[:i]) for i in menciones)
     assert "LLM externo" in doc and "créditos nuevos" in doc
+
+
+def test_v3_alineado_con_los_lotes_b_y_c():
+    # Validación del ciclo: resultados/ciclo_validacion.md (PR #11, 84cbd35).
+    # Casos estrella: docs/demo/comite/README.md (PR #12, 9484c35).
+    doc = _texto_v3("CONCEPT_SOLUTION.md")
+    for cifra in ("16 combinaciones de actividad y zona", "640 clientes y 7,680 meses", "**79.8%**",
+                  "rango aceptado de 75% a 85%", "MAPE de ventas p50 fue **18.5%**"):
+        assert cifra in doc, cifra
+    casos = {"E001 · Rosa": ["S/ 7,000 a 24 meses", "10 etapas superarían el factor"],
+             "E002 · Martín": ["S/ 5,200 a 12 meses", "tope de 4 meses"],
+             "E003 · Luis": ["Pide S/ 8,000 a 12 meses", "sugiere S/ 1,900"]}
+    for caso, textos in casos.items():
+        fila = _fila(doc, f"| **{caso}")
+        assert all(t in fila for t in textos), caso
+    for texto in (doc, (V3 / "img" / "arquitectura-v3.mmd").read_text(encoding="utf-8")):
+        assert "SUNAT" not in texto  # el modelo de ciclo no usa SUNAT
 
 
 def test_v3_figura_1_coincide_con_el_texto(figura_v3):
@@ -334,6 +352,7 @@ def test_v3_one_pager_coincide_con_las_cifras():
         _pct(c85[p]["clientes_pct"]) for p in ("fija", "adaptado")]
     assert _celdas(_fila(doc, "| Escenario El Niño")) == [_pct(nino[p]["clientes_pct"]) for p in ("fija", "adaptado")]
     assert "Concepto v3" in doc and "Asesor de Riesgos" in doc
+    assert "**79.8%**" in doc and "SUNAT" not in doc
 
 
 def test_exportacion_pdf_del_concepto_v3():

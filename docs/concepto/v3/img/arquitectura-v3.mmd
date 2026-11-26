@@ -17,6 +17,9 @@ config:
     nodeSpacing: 22
     rankSpacing: 46
     wrappingWidth: 360
+    subGraphTitleMargin:
+      top: 4
+      bottom: 16
 ---
 %% Fuente de docs/concepto/v3/img/arquitectura-v3.png (CuotaFlex · concepto v3 · NEG-01)
 %% Sigue docs/fases/fase-4/CONTRATOS.md: /ciclo/estimar (lote B) y /plan/proponer (lote A).
@@ -26,7 +29,7 @@ flowchart TB
   subgraph entradas["Entradas (sin datos internos ni historial de pagos)"]
     direction TB
     captura["Asesor de Negocios en campo<br/>ventas por temporada, costos, gastos,<br/>carga familiar y evidencias"]
-    fuentes["Fuentes públicas del sector y la zona<br/>MIDAGRI · SENAMHI · INEI<br/>BCRP · SUNAT · calendarios comerciales"]
+    fuentes["Fuentes públicas del sector y la zona<br/>MIDAGRI · BCRP · INEI · PRODUCE<br/>SENAMHI · ENFEN · SENASA · ANA<br/>y calendarios comerciales"]
   end
 
   subgraph motor["CuotaFlex · API"]

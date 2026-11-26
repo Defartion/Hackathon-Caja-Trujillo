@@ -10,10 +10,10 @@ Los microempresarios de La Libertad venden por temporadas, pero su capacidad de 
 
 Una herramienta del **Asesor de Negocios** para créditos nuevos:
 
-- **estima el ciclo económico** del cliente con el patrón de su sector y su zona, tomado de fuentes públicas y ajustado con la captura en campo, sin historial de pagos;
+- **estima el ciclo económico** del cliente con el patrón de su sector y su zona, tomado de fuentes públicas (MIDAGRI, BCRP, INEI, PRODUCE, SENAMHI, ENFEN y calendarios comerciales) y ajustado con la captura en campo, sin historial de pagos. En la validación sintética, el intervalo p10–p90 cubrió el **79.8%** de los meses;
 - **construye desde el inicio un plan** con cuotas y periodos variables, con **Cuota/UN ≤ factor en cada etapa**;
 - aplica los costos de la Caja: TED base 360, seguros, prelación seguros → interés → capital, pendientes sin capitalizar y TCEA;
-- muestra al **Asesor de Riesgos y al comité** el ciclo, las cuotas, Cuota/UN por etapa, los supuestos y la comparación con la cuota fija en escenarios adversos.
+- muestra al **Asesor de Riesgos y al comité**, en un expediente imprimible, el ciclo, las cuotas, Cuota/UN por etapa, los supuestos y la comparación con la cuota fija en escenarios adversos. Casos de la demo: Rosa (arroz), Martín (pesca) y Luis (bodega).
 
 ## Impacto en escenarios sintéticos
 
