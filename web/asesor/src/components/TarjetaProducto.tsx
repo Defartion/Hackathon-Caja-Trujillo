@@ -1,6 +1,11 @@
 import { Propuesta } from "../api";
 import { fmtPct, fmtS, fmtS0 } from "../formato";
 
+// Fase 4 (FAQ del NEG-01): solo cuentan créditos nuevos con el plan fijo desde el desembolso.
+// Aplazar cuotas o activar el alivio de El Niño en un crédito vigente es una reprogramación, fuera
+// del alcance del reto: se oculta en la app del asesor sin borrar el código.
+const MOSTRAR_CREDITO_VIGENTE = false;
+
 export default function TarjetaProducto({ p }: { p: Propuesta }) {
   const reducido = p.principal_aprobado < p.principal_solicitado;
   return (
@@ -35,16 +40,23 @@ export default function TarjetaProducto({ p }: { p: Propuesta }) {
           escenario conservador.
         </div>
       )}
-      <div className="datos">
-        <div className="dato">
-          <span className="k">Aplazamientos</span>
-          <span className="v">{p.aplazamientos_disponibles}</span>
+      {MOSTRAR_CREDITO_VIGENTE ? (
+        <div className="datos">
+          <div className="dato">
+            <span className="k">Aplazamientos</span>
+            <span className="v">{p.aplazamientos_disponibles}</span>
+          </div>
+          <div className="dato">
+            <span className="k">Cláusula El Niño</span>
+            <span className="v">{p.clausula_el_nino ? "Sí" : "No"}</span>
+          </div>
         </div>
-        <div className="dato">
-          <span className="k">Cláusula El Niño</span>
-          <span className="v">{p.clausula_el_nino ? "Sí" : "No"}</span>
+      ) : (
+        <div className="info" style={{ fontSize: 13 }} data-testid="fuera-de-alcance">
+          Aplazamientos durante el crédito y alivio de El Niño en vivo: fuera del alcance del reto (créditos vigentes =
+          reprogramación). El Niño se evalúa como escenario adverso al diseñar el plan, en <strong>Nueva solicitud</strong>.
         </div>
-      </div>
+      )}
     </div>
   );
 }
