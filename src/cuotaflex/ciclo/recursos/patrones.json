@@ -1,0 +1,256 @@
+{
+  "departamento": "La Libertad",
+  "fuentes_el_nino": ["enfen_2017", "senamhi_2023", "bcrp_marzo_2017", "bcrp_memoria_2023"],
+  "fuentes": {
+    "midagri_arroz": {
+      "nombre": "MIDAGRI · Commodities arroz",
+      "fecha": "julio–setiembre 2021",
+      "uso": "Calendario de cosecha de la campaña grande de la costa norte.",
+      "url": "https://cdn.www.gob.pe/uploads/document/file/2629870/Commodities%20Arroz%3A%20jul-set%202021.pdf"
+    },
+    "midagri_observatorio": {
+      "nombre": "MIDAGRI · Observatorio de siembras y perspectivas de producción de arroz",
+      "fecha": "campaña 2023–2024",
+      "uso": "Variación de los precios en chacra y cambios en el calendario de siembra de La Libertad ante El Niño de 2023.",
+      "url": "https://cdn.www.gob.pe/uploads/document/file/5855273/4344772-observatorio-de-siembras-y-perspectivas-de-produccion-arroz.pdf?v=1712843397"
+    },
+    "gore_siembra": {
+      "nombre": "Gobierno Regional La Libertad · Intenciones de siembra",
+      "fecha": "campaña 2025–2026",
+      "uso": "Presencia territorial del arroz en Jequetepeque y de la papa en Sánchez Carrión.",
+      "url": "https://www.gob.pe/institucion/regionlalibertad/noticias/1304142-agricultores-libertenos-aumentan-sus-intenciones-de-siembra-para-la-proxima-campana-agricola"
+    },
+    "ana_cana": {
+      "nombre": "ANA · Resolución Directoral 0243-2024",
+      "fecha": "2024",
+      "uso": "Localización del cultivo de caña de azúcar en Casa Grande, provincia de Ascope.",
+      "url": "https://www.ana.gob.pe/sites/default/files/normatividad/files/10-RD-0243-2024-03.pdf"
+    },
+    "senasa_viru": {
+      "nombre": "SENASA · Cultivos de exportación en Virú",
+      "fecha": "2018",
+      "uso": "Presencia de espárrago y palta en Virú y ventanas de campaña regional.",
+      "url": "https://www.senasa.gob.pe/senasacontigo/la-libertad-universitarios-de-tumbes-son-capacitados-en-proceso-de-inspeccion-fitosanitaria-e-inocuidad/"
+    },
+    "bcrp_ll_2017": {
+      "nombre": "BCRP Trujillo · Síntesis de La Libertad",
+      "fecha": "diciembre 2017",
+      "uso": "Daños del Niño Costero al arroz en Jequetepeque y variabilidad de la pesca para consumo directo.",
+      "url": "https://www.bcrp.gob.pe/docs/Sucursales/Trujillo/2017/sintesis-la-libertad-12-2017.pdf"
+    },
+    "bcrp_ll_2023": {
+      "nombre": "BCRP Trujillo · Síntesis de La Libertad",
+      "fecha": "diciembre 2023",
+      "uso": "Anexos 1 y 2 de toneladas mensuales de productos agrícolas y de desembarque para consumo humano directo.",
+      "url": "https://www.bcrp.gob.pe/docs/Sucursales/Trujillo/2023/sintesis-la-libertad-12-2023.pdf"
+    },
+    "fondepes_puertos": {
+      "nombre": "FONDEPES · Desembarcaderos pesqueros artesanales en La Libertad",
+      "fecha": "8 de mayo de 2024",
+      "uso": "Ubicación de los desembarcaderos de Pacasmayo, Puerto Malabrigo y Salaverry.",
+      "url": "https://www.gob.pe/institucion/fondepes/noticias/950527-fondepes-y-gobierno-regional-de-la-libertad-firman-convenio-para-impulsar-la-pesca-artesanal-y-la-acuicultura"
+    },
+    "produce_perico": {
+      "nombre": "PRODUCE · Veda del perico (RM 245-2014-PRODUCE)",
+      "fecha": "2014",
+      "uso": "Ventana anual de pesca del perico de octubre a abril y veda de mayo a setiembre.",
+      "url": "https://pescayconsumoresponsable.produce.gob.pe/vedas.html"
+    },
+    "produce_anchoveta": {
+      "nombre": "PRODUCE · Cuota artesanal de anchoveta para consumo humano directo",
+      "fecha": "2025",
+      "uso": "Ámbito artesanal de consumo directo como régimen distinto al industrial.",
+      "url": "https://www.gob.pe/institucion/produce/noticias/1205437-produce-fija-en-150-mil-toneladas-el-limite-de-captura-de-anchoveta-para-consumo-humano-directo-en-2025"
+    },
+    "produce_escolar": {
+      "nombre": "PRODUCE · Campaña escolar de las MYPE en Trujillo",
+      "fecha": "22 de febrero de 2019",
+      "uso": "Campaña escolar local entre febrero y marzo.",
+      "url": "https://www.gob.pe/institucion/produce/noticias/25893-ministerio-de-la-produccion-mypes-de-la-libertad-inician-campana-escolar-con-venta-de-uniformes-y-calzados"
+    },
+    "el_porvenir": {
+      "nombre": "Municipalidad Distrital de El Porvenir · Calzaferias",
+      "fecha": "2024",
+      "uso": "Campañas de Fiestas Patrias y del Festival de la Primavera del calzado de El Porvenir.",
+      "url": "https://muniporvenir.gob.pe/el-porvenir-celebrara-las-fiestas-patrias-y-el-festival-de-la-primavera-con-calzaferias/"
+    },
+    "inei_julio": {
+      "nombre": "INEI · Producción Nacional",
+      "fecha": "julio 2024",
+      "uso": "Demanda de comercio y mayor tráfico terrestre en vacaciones y Fiestas Patrias.",
+      "url": "https://www.gob.pe/institucion/inei/noticias/1022519-produccion-nacional-crecio-4-47-en-julio-de-2024"
+    },
+    "inei_diciembre": {
+      "nombre": "INEI · Producción Nacional",
+      "fecha": "diciembre 2024",
+      "uso": "Efecto de la campaña navideña y las fiestas de fin de año en comercio, alimentos y restaurantes.",
+      "url": "https://www.gob.pe/es/institucion/inei/noticias/1110092-national-production-grew-4-85-in-december-of-2024-and-closed-the-year-with-an-increase-of-3-33"
+    },
+    "saimt_navidad": {
+      "nombre": "SAIMT Trujillo · Campaña navideña",
+      "fecha": "diciembre 2025",
+      "uso": "Calendario comercial de fin de año en mercados de Trujillo.",
+      "url": "https://www.gob.pe/institucion/saimt/noticias/1310466-por-fiestas-de-fin-de-ano-el-saimt-ejecutara-limpieza-integral-y-cerrara-temporalmente-dos-mercados-municipales"
+    },
+    "inei_precios": {
+      "nombre": "INEI · Avance Económico Departamental La Libertad",
+      "fecha": "marzo 2024",
+      "uso": "Precios agrícolas en chacra, IPC Trujillo y flujo vehicular departamental como referencias sectoriales.",
+      "url": "https://www.inei.gob.pe/media/MenuRecursivo/publicaciones_digitales/Est/Lib1966/laliber.htm"
+    },
+    "enfen_2017": {
+      "nombre": "ENFEN · Informe Técnico Extraordinario 001-2017",
+      "fecha": "julio 2017",
+      "uso": "Cronología del Niño Costero 2017 y anomalías frente a la costa norte.",
+      "url": "https://enfen.imarpe.gob.pe/download/informe-tecnico-el-nino-costero-2017/"
+    },
+    "senamhi_2023": {
+      "nombre": "SENAMHI · Boletín Climático Nacional",
+      "fecha": "marzo 2023",
+      "uso": "Lluvias extremas y récord diario en la estación Talla de La Libertad.",
+      "url": "https://www.senamhi.gob.pe/load/file/02215SENA-117.pdf"
+    },
+    "bcrp_marzo_2017": {
+      "nombre": "BCRP · Nota de Estudios 36",
+      "fecha": "18 de mayo de 2017",
+      "uso": "Interrupciones viales y afectación a la agricultura, manufactura y transporte en marzo de 2017.",
+      "url": "https://www.bcrp.gob.pe/docs/Publicaciones/Notas-Estudios/2017/nota-de-estudios-36-2017.pdf"
+    },
+    "bcrp_memoria_2023": {
+      "nombre": "BCRP · Memoria 2023, actividad económica",
+      "fecha": "2023",
+      "uso": "Efectos nacionales del Niño Costero 2023 en agricultura y pesca y exposición de la costa norte.",
+      "url": "https://www.bcrp.gob.pe/docs/Publicaciones/Memoria/2023/memoria-bcrp-2023-1.pdf"
+    }
+  },
+  "patrones": [
+    {
+      "sector": "agricultura", "actividad": "arroz", "zona": {"provincia": "Chepén"},
+      "valores": [0.35, 0.30, 0.40, 0.70, 1.24, 2.65, 2.37, 1.04, 0.68, 0.65, 0.75, 1.08],
+      "meses_altos": [6, 7], "meses_bajos": [1, 2, 3], "volatilidad": 0.21,
+      "fuentes": ["midagri_arroz", "gore_siembra", "bcrp_ll_2023", "midagri_observatorio", "inei_precios"],
+      "el_nino": {"caida": 0.40, "meses": [1, 2, 3, 4, 5, 6, 7], "fuentes": ["bcrp_ll_2017"]},
+      "supuestos": ["Supuesto: las ventas de arroz en Chepén se concentran en junio y julio por la cosecha y su comercialización; enero a marzo son meses de menor caja. Las ponderaciones trasladan el calendario de la costa norte al valle."]
+    },
+    {
+      "sector": "agricultura", "actividad": "arroz", "zona": {"provincia": "Pacasmayo"},
+      "valores": [0.46, 0.36, 0.42, 0.81, 1.42, 2.42, 2.08, 1.04, 0.72, 0.61, 0.72, 1.04],
+      "meses_altos": [6, 7], "meses_bajos": [1, 2, 3], "volatilidad": 0.21,
+      "fuentes": ["midagri_arroz", "gore_siembra", "bcrp_ll_2023", "midagri_observatorio", "inei_precios"],
+      "el_nino": {"caida": 0.35, "meses": [1, 2, 3, 4, 5, 6, 7], "fuentes": ["bcrp_ll_2017"]},
+      "supuestos": ["Supuesto: se usa el calendario de referencia del valle Jequetepeque, con mayor dispersión de cobros entre mayo y agosto en Pacasmayo."]
+    },
+    {
+      "sector": "agricultura", "actividad": "caña de azúcar", "zona": {"provincia": "Ascope"},
+      "valores": [396244, 409583, 421792, 265236, 373161, 380179, 509382, 529610, 468487, 529235, 443278, 460391],
+      "peso_serie": 0.70, "meses_altos": [7, 8, 10], "meses_bajos": [4, 5, 6], "volatilidad": 0.14,
+      "fuentes": ["ana_cana", "bcrp_ll_2023", "inei_precios"],
+      "el_nino": {"caida": 0.24, "meses": [2, 3, 4, 5], "fuentes": ["bcrp_ll_2017"]},
+      "supuestos": ["Supuesto: el 70% de la variación relativa de las toneladas regionales de caña de azúcar orienta los cambios de ventas de Ascope; la parte uniforme recoge entregas a ingenio durante el año."]
+    },
+    {
+      "sector": "agricultura", "actividad": "espárrago", "zona": {"provincia": "Virú"},
+      "valores": [11265, 14431, 13598, 11749, 11700, 11998, 11242, 13444, 12646, 12937, 15351, 13778],
+      "peso_serie": 0.75, "meses_altos": [2, 11, 12], "meses_bajos": [1, 5, 7], "volatilidad": 0.15,
+      "fuentes": ["senasa_viru", "bcrp_ll_2023", "inei_precios"],
+      "el_nino": {"caida": 0.24, "meses": [2, 3, 4, 5, 6], "fuentes": ["bcrp_ll_2023"]},
+      "supuestos": ["Supuesto: se atenúa a 75% la amplitud mensual de las toneladas regionales de espárrago por diferencias de cosecha y contratos en Virú."]
+    },
+    {
+      "sector": "agricultura", "actividad": "palta", "zona": {"provincia": "Virú"},
+      "valores": [492, 772, 7383, 21233, 47577, 84646, 66000, 30061, 8000, 6144, 5573, 2564],
+      "peso_serie": 0.55, "meses_altos": [5, 6, 7], "meses_bajos": [1, 2, 12], "volatilidad": 0.19,
+      "fuentes": ["senasa_viru", "bcrp_ll_2023", "inei_precios"],
+      "el_nino": {"caida": 0.22, "meses": [2, 3, 4, 5, 6], "fuentes": ["bcrp_ll_2023"]},
+      "supuestos": ["Supuesto: se conserva el 55% de la amplitud relativa de la serie regional de palta para representar un negocio con cobros repartidos antes y después de campaña."]
+    },
+    {
+      "sector": "agricultura", "actividad": "papa de sierra", "zona": {"provincia": "Sánchez Carrión"},
+      "valores": [28271, 38610, 63787, 96856, 90144, 107479, 59893, 8330, 8775, 22287, 34812, 30516],
+      "peso_serie": 0.60, "meses_altos": [4, 5, 6], "meses_bajos": [8, 9, 10], "volatilidad": 0.22,
+      "fuentes": ["gore_siembra", "bcrp_ll_2023", "inei_precios"],
+      "el_nino": {"caida": 0.18, "meses": [2, 3, 4, 5], "fuentes": ["bcrp_ll_2023"]},
+      "supuestos": ["Supuesto: las toneladas de papa regional anteceden el ciclo de ventas de papa de sierra en Sánchez Carrión; se atenúa su amplitud al 60% por diferencias de altura, siembra y venta."]
+    },
+    {
+      "sector": "pesca", "actividad": "pesca artesanal", "zona": {"provincia": "Pacasmayo"},
+      "valores": [1.42, 1.41, 1.43, 1.06, 0.47, 0.38, 0.43, 0.56, 0.59, 1.23, 1.42, 1.60],
+      "meses_altos": [11, 12, 1, 2, 3], "meses_bajos": [5, 6, 7, 8, 9], "meses_veda": [5, 6, 7, 8, 9], "volatilidad": 0.23,
+      "fuentes": ["fondepes_puertos", "produce_perico", "bcrp_ll_2023"],
+      "el_nino": {"caida": 0.28, "meses": [1, 2, 3, 4, 5, 6], "fuentes": ["bcrp_ll_2017"]},
+      "supuestos": ["Supuesto: el negocio artesanal de referencia se concentra en perico. Durante su veda de mayo a setiembre conserva ventas reducidas de otras especies permitidas. La combinación real de especies se contrasta con el asesor."]
+    },
+    {
+      "sector": "pesca", "actividad": "pesca artesanal", "zona": {"provincia": "Ascope"},
+      "valores": [1.31, 1.35, 1.42, 1.13, 0.65, 0.45, 0.53, 0.64, 0.66, 1.13, 1.28, 1.45],
+      "meses_altos": [11, 12, 1, 2, 3], "meses_bajos": [5, 6, 7, 8, 9], "meses_veda": [5, 6, 7, 8, 9], "volatilidad": 0.23,
+      "fuentes": ["fondepes_puertos", "produce_perico", "bcrp_ll_2023"],
+      "el_nino": {"caida": 0.30, "meses": [1, 2, 3, 4, 5, 6], "fuentes": ["bcrp_ll_2017"]},
+      "supuestos": ["Supuesto: Puerto Malabrigo concentra un negocio con perico como especie de referencia y diversificación de ventas en veda. Se conserva la ventana de veda observada para la especie."]
+    },
+    {
+      "sector": "pesca", "actividad": "anchoveta artesanal", "zona": {"provincia": "Pacasmayo"},
+      "valores": [433, 580, 786, 236, 215, 142, 217, 658, 673, 452, 540, 837],
+      "peso_serie": 0.65, "meses_altos": [3, 9, 12], "meses_bajos": [5, 6, 7], "volatilidad": 0.24,
+      "fuentes": ["fondepes_puertos", "produce_anchoveta", "bcrp_ll_2023"],
+      "el_nino": {"caida": 0.32, "meses": [1, 2, 3, 4, 5, 6, 7], "fuentes": ["bcrp_ll_2017"]},
+      "supuestos": ["Supuesto: se usa el 65% de la variación mensual del desembarque regional de pesca fresca para consumo directo como aproximación a ventas. Los valles reflejan esa serie agregada. Los cierres de la anchoveta artesanal se determinan con la normativa vigente, por lo que el patrón carece de meses fijos de veda."]
+    },
+    {
+      "sector": "comercio", "actividad": "útiles escolares", "zona": {"provincia": "Trujillo"},
+      "valores": [1.23, 2.10, 2.45, 1.04, 0.76, 0.68, 0.71, 0.63, 0.61, 0.63, 0.70, 0.84],
+      "meses_altos": [2, 3], "meses_bajos": [8, 9, 10], "volatilidad": 0.16,
+      "fuentes": ["produce_escolar"],
+      "el_nino": {"caida": 0.17, "meses": [2, 3, 4]},
+      "supuestos": ["Supuesto: la compra de útiles sigue la campaña escolar de febrero y marzo. Sus magnitudes y valles son estimaciones de demanda comercial, ya que la fuente reporta fechas de campaña de productos escolares."]
+    },
+    {
+      "sector": "comercio", "actividad": "Fiestas Patrias", "zona": {"provincia": "Trujillo"},
+      "valores": [0.72, 0.62, 0.68, 0.70, 0.90, 1.36, 2.55, 1.22, 0.85, 0.73, 0.72, 0.95],
+      "meses_altos": [6, 7], "meses_bajos": [2, 3, 4], "volatilidad": 0.17,
+      "fuentes": ["el_porvenir", "inei_julio"],
+      "el_nino": {"caida": 0.16, "meses": [2, 3, 4]},
+      "supuestos": ["Supuesto: los pedidos de campaña se anticipan a la segunda quincena de julio. Los coeficientes aproximan las ventas de una MYPE orientada a Fiestas Patrias."]
+    },
+    {
+      "sector": "comercio", "actividad": "Navidad", "zona": {"provincia": "Trujillo"},
+      "valores": [0.78, 0.59, 0.62, 0.69, 0.74, 0.74, 0.82, 0.75, 0.84, 0.98, 1.39, 2.72],
+      "meses_altos": [11, 12], "meses_bajos": [2, 3, 4], "volatilidad": 0.17,
+      "fuentes": ["saimt_navidad", "inei_diciembre"],
+      "el_nino": {"caida": 0.14, "meses": [2, 3, 4]},
+      "supuestos": ["Supuesto: una MYPE de campaña concentra pedidos entre noviembre y diciembre y mantiene ventas regulares el resto del año."]
+    },
+    {
+      "sector": "manufactura", "actividad": "calzado", "zona": {"provincia": "Trujillo", "distrito": "El Porvenir"},
+      "valores": [0.88, 1.30, 1.40, 0.78, 0.79, 0.91, 1.31, 0.83, 1.16, 0.87, 0.81, 0.96],
+      "meses_altos": [2, 3, 7, 9], "meses_bajos": [4, 5, 11], "volatilidad": 0.17,
+      "fuentes": ["el_porvenir", "produce_escolar"],
+      "el_nino": {"caida": 0.20, "meses": [2, 3, 4]},
+      "supuestos": ["Supuesto: el patrón del distrito combina la campaña escolar con las calzaferias de Fiestas Patrias y de primavera; los pesos comerciales son estimados."]
+    },
+    {
+      "sector": "comercio", "actividad": "bodega", "zona": {"provincia": "Trujillo"},
+      "valores": [0.99, 0.94, 0.98, 0.95, 0.96, 0.98, 1.07, 0.98, 0.97, 1.00, 1.04, 1.14],
+      "meses_altos": [7, 12], "meses_bajos": [2, 4], "volatilidad": 0.12,
+      "fuentes": ["inei_julio", "inei_diciembre", "inei_precios"],
+      "el_nino": {"caida": 0.12, "meses": [2, 3, 4]},
+      "supuestos": ["Supuesto: la demanda vecinal de alimentos cambia poco durante el año, con repuntes moderados por Fiestas Patrias y Navidad. Los pesos de bodega se infieren de contexto agregado."]
+    },
+    {
+      "sector": "servicios", "actividad": "restaurante", "zona": {"provincia": "Trujillo"},
+      "valores": [1.03, 1.02, 0.91, 0.92, 0.95, 0.97, 1.14, 0.98, 1.02, 0.96, 0.97, 1.13],
+      "meses_altos": [7, 12], "meses_bajos": [3, 4], "volatilidad": 0.16,
+      "fuentes": ["inei_julio", "inei_diciembre"],
+      "el_nino": {"caida": 0.20, "meses": [2, 3, 4]},
+      "supuestos": ["Supuesto: se aproximan visitas y eventos en julio y diciembre con las ventanas que reporta el INEI a escala nacional; los niveles y meses bajos son locales e hipotéticos."]
+    },
+    {
+      "sector": "transporte", "actividad": "transporte", "zona": {"provincia": "Trujillo"},
+      "valores": [1.03, 0.91, 1.01, 0.86, 0.92, 0.98, 1.19, 1.03, 0.96, 0.98, 0.99, 1.14],
+      "meses_altos": [7, 12], "meses_bajos": [2, 4], "volatilidad": 0.16,
+      "fuentes": ["inei_julio", "inei_diciembre", "inei_precios"],
+      "el_nino": {"caida": 0.24, "meses": [2, 3, 4]},
+      "supuestos": ["Supuesto: un servicio de transporte terrestre de pasajeros en Trujillo experimenta mayor demanda en vacaciones y feriados. El flujo de peajes aporta contexto regional, mientras que la magnitud mensual se estima."]
+    }
+  ]
+}
