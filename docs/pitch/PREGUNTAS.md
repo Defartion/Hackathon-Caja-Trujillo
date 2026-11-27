@@ -1,4 +1,4 @@
-# Preguntas del jurado · CuotaFlex
+# Preguntas del jurado · Thinku
 
 Cada respuesta está pensada para unos 30 segundos. Cuando el jurado pida evidencia, muestra la fila, la pantalla o la prueba que se cita debajo.
 
@@ -6,13 +6,13 @@ Cada respuesta está pensada para unos 30 segundos. Cuando el jurado pida eviden
 
 ### 01 · ¿Qué problema resuelve para una persona como Rosa?
 
-En siembra, Rosa paga insumos y aún tiene ingresos bajos. En cosecha dispone de más caja. CuotaFlex compara modalidades y puede mover parte de sus pagos hacia los meses de mayores ventas. El asesor ve el cronograma y la bitácora antes de evaluar la propuesta. En E001 se puede observar el cambio mes a mes.
+En siembra, Rosa paga insumos y aún tiene ingresos bajos. En cosecha dispone de más caja. Thinku compara modalidades y puede mover parte de sus pagos hacia los meses de mayores ventas. El asesor ve el cronograma y la bitácora antes de evaluar la propuesta. En E001 se puede observar el cambio mes a mes.
 
 Evidencia del caso [E001 y cronograma](https://github.com/Defartion/Hackathon-Caja-Trujillo/blob/fase-3/lote-b-qa/docs/demo/CASOS_ESTRELLA.md#e001--rosa-agricultora-de-arroz-en-chepén)
 
 ### 02 · ¿Cuánto reduce el incumplimiento?
 
-En la evaluación completa, el default pasa de 4,76 % con cuota fija a 2,05 % con CuotaFlex. El atraso de más de treinta días pasa de 10,36 % a 4,82 %. Evaluamos seiscientos créditos sintéticos en doscientos escenarios. En un piloto mediríamos si el resultado se reproduce con la cartera y los costos reales de la Caja.
+En la evaluación completa, el default pasa de 4,76 % con cuota fija a 2,05 % con Thinku. El atraso de más de treinta días pasa de 10,36 % a 4,82 %. Evaluamos seiscientos créditos sintéticos en doscientos escenarios. En un piloto mediríamos si el resultado se reproduce con la cartera y los costos reales de la Caja.
 
 Evidencia de simulación [Resumen de resultados](../../resultados/resumen.json) · [Cambios de la fase 2](../../resultados/CAMBIOS_FASE2.md)
 
@@ -30,7 +30,7 @@ Evidencia de colocación y margen [Resumen de resultados](../../resultados/resum
 
 ### 05 · ¿Qué significa el margen mostrado?
 
-El tablero divide el margen neto simulado entre la cartera colocada. Cuota fija da 19,24 % y el modo completo de CuotaFlex 25,69 %. La comparación también cambia el monto colocado. Por eso mostramos el saldo de cartera y el margen total en soles junto con la tasa. El piloto debe incorporar fondeo, costos y pérdidas observados.
+El tablero divide el margen neto simulado entre la cartera colocada. Cuota fija da 19,24 % y el modo completo de Thinku 25,69 %. La comparación también cambia el monto colocado. Por eso mostramos el saldo de cartera y el margen total en soles junto con la tasa. El piloto debe incorporar fondeo, costos y pérdidas observados.
 
 Evidencia de margen y denominador [Resumen de resultados](../../resultados/resumen.json)
 
@@ -42,13 +42,13 @@ Evidencia y definición [Cambios de la fase 2](../../resultados/CAMBIOS_FASE2.md
 
 ### 07 · ¿Y si el pronóstico falla?
 
-En el backtest fuera de muestra, el intervalo p10 a p90 cubrió 79,5 % de las ventas sintéticas. También duplicamos la volatilidad en sensibilidad. El default subió con las dos estrategias, y CuotaFlex mantuvo menor default en esa corrida. En un piloto mediríamos el error por rubro y revisaríamos los casos que se desvíen del rango previsto.
+En el backtest fuera de muestra, el intervalo p10 a p90 cubrió 79,5 % de las ventas sintéticas. También duplicamos la volatilidad en sensibilidad. El default subió con las dos estrategias, y Thinku mantuvo menor default en esa corrida. En un piloto mediríamos el error por rubro y revisaríamos los casos que se desvíen del rango previsto.
 
 Evidencia de validación [Backtest](../../resultados/backtest.md) · [Sensibilidad](../../resultados/sensibilidad.md)
 
 ### 08 · ¿Qué pasa si no hay El Niño?
 
-Sin una alerta, el préstamo sigue el cronograma previsto y conserva las condiciones de su modalidad. En sensibilidad se ensayó una probabilidad anual nula y CuotaFlex mantuvo menor default en esa simulación. El ajuste estacional y la evaluación del excedente también sirven para meses de baja venta que son parte de una campaña normal.
+Sin una alerta, el préstamo sigue el cronograma previsto y conserva las condiciones de su modalidad. En sensibilidad se ensayó una probabilidad anual nula y Thinku mantuvo menor default en esa simulación. El ajuste estacional y la evaluación del excedente también sirven para meses de baja venta que son parte de una campaña normal.
 
 Evidencia de escenario y disparador [Sensibilidad](../../resultados/sensibilidad.md) · [Integración ENFEN](../../src/cuotaflex/integraciones/README_ENFEN.md)
 
@@ -60,7 +60,7 @@ Evidencia por rubro [Resumen de resultados](../../resultados/resumen.json)
 
 ### 10 · ¿Qué pasa si el cliente ahorra más o menos de lo previsto?
 
-Evaluamos distintos niveles de gasto del sobrante mensual, desde ahorrar todo hasta gastar una parte considerable. El riesgo absoluto cambia con ese supuesto. CuotaFlex mantuvo una tasa de default menor que la fija en los niveles probados. En un piloto conviene contrastar el supuesto de ahorro con la evidencia disponible y volver a ejecutar la sensibilidad.
+Evaluamos distintos niveles de gasto del sobrante mensual, desde ahorrar todo hasta gastar una parte considerable. El riesgo absoluto cambia con ese supuesto. Thinku mantuvo una tasa de default menor que la fija en los niveles probados. En un piloto conviene contrastar el supuesto de ahorro con la evidencia disponible y volver a ejecutar la sensibilidad.
 
 Evidencia de escenarios [Sensibilidad](../../resultados/sensibilidad.md)
 
@@ -98,7 +98,7 @@ Evidencia de estimación [Backtest](../../resultados/backtest.md) · [Caso E003]
 
 ### 16 · ¿Quién toma la decisión crediticia?
 
-CuotaFlex genera una propuesta auditable. El asesor y los responsables de crédito conservan la decisión de acuerdo con las políticas de la Caja. La bitácora muestra qué modalidad se comparó, qué condiciones limitaron la oferta y qué cifra produjo el recálculo. El piloto debería medir también cuándo y por qué un asesor modifica una propuesta.
+Thinku genera una propuesta auditable. El asesor y los responsables de crédito conservan la decisión de acuerdo con las políticas de la Caja. La bitácora muestra qué modalidad se comparó, qué condiciones limitaron la oferta y qué cifra produjo el recálculo. El piloto debería medir también cuándo y por qué un asesor modifica una propuesta.
 
 Evidencia de la decisión [Caso E001](https://github.com/Defartion/Hackathon-Caja-Trujillo/blob/fase-3/lote-b-qa/docs/demo/CASOS_ESTRELLA.md#e001--rosa-agricultora-de-arroz-en-chepén)
 

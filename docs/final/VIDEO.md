@@ -19,7 +19,7 @@ alerta del ENFEN en la app del cliente y cartera completa en el tablero.
 
 | Tiempo | Pantalla | Qué pasa | Subtítulo (resumen) |
 |---|---|---|---|
-| 0:00 | Portada | CuotaFlex · Cuotas que se adaptan al flujo del negocio | Recorrido de respaldo de la demo |
+| 0:00 | Portada | Thinku · Cuotas que se adaptan al flujo del negocio | Recorrido de respaldo de la demo |
 | 0:05 | **1 · Asesor**, bandeja | Solicitudes sintéticas de La Libertad | La bandeja del asesor |
 | 0:11 | Ficha de C00006 | Negocio agrícola en Chepén: pide S/ 4,900 a 18 meses | Pronóstico de ventas con banda p10–p90 |
 | 0:21 | Propuesta | S/ 3,600 a 24 meses | La cuota cabe en la capacidad de pago del escenario conservador |
@@ -67,7 +67,7 @@ node docs/final/video/grabar_video.mjs --asesor E001 --chat E003 --cliente E002 
    Con `ENFEN_MODO=demo` también funciona: el script activa la alerta de demo antes de la app del cliente.
 2. Apps compiladas: en `web/asesor`, `web/cliente` y `web/tablero`, `npm run build` y
    `npx vite preview --port 5173` (`5174` y `5175` respectivamente).
-3. `node docs/final/video/grabar_video.mjs`: el MP4 y el `.srt` quedan en `~/Videos/CuotaFlex`
+3. `node docs/final/video/grabar_video.mjs`: el MP4 y el `.srt` quedan en `~/Videos/Thinku`
    (`--salida` para cambiarlo). Necesita Edge o Chrome y `ffmpeg` en el PATH.
 
 El script ([`video/grabar_video.mjs`](video/grabar_video.mjs)) maneja el navegador sin interfaz con el

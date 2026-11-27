@@ -1,11 +1,11 @@
-# CuotaFlex · Cuotas que se adaptan al flujo del negocio
+# Thinku · Cuotas que se adaptan al flujo del negocio
 
 **Cajathón 2026 · Caja Trujillo · Eje 4 (Inclusión financiera y resiliencia) · Reto NEG-01**
 
 > ¿Cómo podríamos ofrecer alternativas de pago que se ajusten a las variaciones de ingresos de los
 > microempresarios, sin comprometer su capacidad de pago ni la sostenibilidad financiera de Caja Trujillo?
 
-CuotaFlex es un motor que, para cada solicitud de crédito:
+Thinku es un motor que, para cada solicitud de crédito:
 
 1. **Pronostica** las ventas del negocio con incertidumbre (p10/p25/p50/p90) combinando historial en la Caja,
    estacionalidad de negocios similares y la observación del asesor.
@@ -22,7 +22,7 @@ CuotaFlex es un motor que, para cada solicitud de crédito:
 600 créditos × 200 escenarios de ingresos y El Niño, con las mismas trayectorias para ambas estrategias
 (`python scripts/simular.py`):
 
-| Indicador | Cuota fija | CuotaFlex completo | Solo cronograma |
+| Indicador | Cuota fija | Thinku completo | Solo cronograma |
 |---|---|---|---|
 | Créditos con atraso > 30 días | 16.3% | **7.3%** (-55%) | 14.3% (-12%) |
 | Default (3 cuotas impagas) | 8.5% | **3.4%** (-60%) | 7.7% (-10%) |
@@ -43,7 +43,7 @@ src/cuotaflex/
   politica.py               elegibilidad, sobreendeudamiento, producto, validación
   optimizador.py            cronograma óptimo (CVXPY + HiGHS, MILP)
   agente.py                 agente asesor: orquesta, replanifica y explica (LLM opcional)
-  simulacion.py             Monte Carlo cuota fija vs. CuotaFlex
+  simulacion.py             Monte Carlo cuota fija vs. Thinku
   cuentas.py                cuentas con correo y contraseña (además del PIN por rol)
   cronograma.py             vencimientos, desglose y pagos de cada cuota (en orden o adelantados)
   api/main.py               API compatible con Fineract (+ aplazamiento)

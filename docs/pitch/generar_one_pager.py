@@ -1,4 +1,4 @@
-"""Genera el resumen impreso de CuotaFlex a partir del resultado calibrado.
+"""Genera el resumen impreso de Thinku a partir del resultado calibrado.
 
 Desde la raíz del repositorio: python docs/pitch/generar_one_pager.py
 Requiere ReportLab (python -m pip install reportlab).
@@ -81,7 +81,7 @@ def tabla_impacto(pdf, completo):
     rectangulo(pdf, x_fija + 17, 257, DERECHA - x_fija - 17, 178, VERDE_CLARO)
     texto(pdf, MARGEN + 4, 276, "Indicador", 10, negrita=True, color=SECUNDARIO)
     texto(pdf, x_fija, 276, "Cuota fija", 10, negrita=True, color=SECUNDARIO, alinear="derecha")
-    texto(pdf, x_flex, 276, "CuotaFlex", 10, negrita=True, color=VERDE, alinear="derecha")
+    texto(pdf, x_flex, 276, "Thinku", 10, negrita=True, color=VERDE, alinear="derecha")
     for indice, (etiqueta, clave, formato) in enumerate(filas):
         y = 310 + indice * 37
         regla(pdf, y - 21)
@@ -107,20 +107,18 @@ def generar():
     resumen = json.loads((RAIZ / "resultados/resumen.json").read_text(encoding="utf-8"))
     destino = Path(__file__).with_name("one-pager-final.pdf")
     pdf = canvas.Canvas(str(destino), pagesize=A4, pageCompression=1, invariant=1)
-    pdf.setTitle("CuotaFlex | Resumen para el jurado")
-    pdf.setAuthor("Equipo CuotaFlex")
+    pdf.setTitle("Thinku | Resumen para el jurado")
+    pdf.setAuthor("Equipo Thinku")
     pdf.setSubject("Cajathón 2026 | Impacto en una cartera sintética calibrada")
     rectangulo(pdf, 0, 0, ANCHO, ALTO, PAPEL)
 
     rectangulo(pdf, MARGEN, 33, 29, 3.5, ROJO)
     texto(pdf, MARGEN, 54, "CAJATHÓN 2026  /  DESAFÍO NEG-01", 9, negrita=True, color=SECUNDARIO)
     texto(pdf, DERECHA, 54, "RESUMEN PARA EL JURADO", 9, negrita=True, color=SECUNDARIO, alinear="derecha")
-    texto(pdf, MARGEN - 3, 112, "Cuota", 51, negrita=True)
-    marca = stringWidth("Cuota", "Helvetica-Bold", 51)
-    texto(pdf, MARGEN - 3 + marca, 112, "Flex", 51, negrita=True, color=ROJO)
+    texto(pdf, MARGEN - 3, 112, "Thinku", 51, negrita=True)
     texto(pdf, MARGEN, 144, "Cuotas que se adaptan al flujo del negocio", 20, negrita=True)
     parrafo(pdf, MARGEN, 174,
-            "En la demo, Rosa cultiva arroz en Chepén y tiene más liquidez en cosecha. CuotaFlex ayuda al asesor "
+            "En la demo, Rosa cultiva arroz en Chepén y tiene más liquidez en cosecha. Thinku ayuda al asesor "
             "a programar cuotas más bajas en siembra y más altas cuando el negocio vende más.",
             CONTENIDO, tamano=11.5, interlinea=15.5)
 
@@ -154,7 +152,7 @@ def generar():
             CONTENIDO, tamano=10, interlinea=13)
 
     regla(pdf, 717)
-    texto(pdf, MARGEN, 743, "Repositorio de CuotaFlex", 16, negrita=True)
+    texto(pdf, MARGEN, 743, "Repositorio de Thinku", 16, negrita=True)
     texto(pdf, MARGEN, 763, "Código, metodología, demo y evidencias de la final.", 10, color=SECUNDARIO)
     enlace = "github.com/Defartion/Hackathon-Caja-Trujillo"
     texto(pdf, MARGEN, 784, enlace, 9.5, color=VERDE)

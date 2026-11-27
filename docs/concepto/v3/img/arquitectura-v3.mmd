@@ -21,7 +21,7 @@ config:
       top: 4
       bottom: 16
 ---
-%% Fuente de docs/concepto/v3/img/arquitectura-v3.png (CuotaFlex · concepto v3 · NEG-01)
+%% Fuente de docs/concepto/v3/img/arquitectura-v3.png (Thinku · concepto v3 · NEG-01)
 %% Sigue docs/fases/fase-4/CONTRATOS.md: /ciclo/estimar (lote B) y /plan/proponer (lote A).
 %% Regenerar desde docs/concepto/v3/img/:
 %%   npx -y @mermaid-js/mermaid-cli -i arquitectura-v3.mmd -o arquitectura-v3.png -b white -s 2 -w 1500
@@ -32,7 +32,7 @@ flowchart TB
     fuentes["Fuentes públicas del sector y la zona<br/>MIDAGRI · BCRP · INEI · PRODUCE<br/>SENAMHI · ENFEN · SENASA · ANA<br/>y calendarios comerciales"]
   end
 
-  subgraph motor["CuotaFlex · API"]
+  subgraph motor["Thinku · API"]
     direction LR
     ciclo["Modelo de ciclo<br/>etapas cima, normal y valle<br/>UN p10 · p50 · p90 por mes"]
     plan["Constructor del plan<br/>Cuota/UN ≤ factor en cada etapa<br/>TED 360 · seguros · prelación · TCEA"]

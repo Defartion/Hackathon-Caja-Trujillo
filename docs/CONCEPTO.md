@@ -1,4 +1,4 @@
-# Concept Solution · CuotaFlex
+# Concept Solution · Thinku
 
 Este archivo se mantiene solo como puntero. El concepto vigente está en [`docs/concepto/`](concepto/):
 

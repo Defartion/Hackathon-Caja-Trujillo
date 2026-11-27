@@ -6,7 +6,7 @@
 
 ## 1. En una frase (para el pitch)
 
-Antes de la final construimos el motor de CuotaFlex, sus integraciones (Fineract y ENFEN), el agente y las
+Antes de la final construimos el motor de Thinku, sus integraciones (Fineract y ENFEN), el agente y las
 tres apps, siempre con datos sintéticos. **En la final construimos un módulo nuevo: pago por ventas y pago a
 cosecha.** Todo usa librerías de código abierto con licencias permisivas.
 

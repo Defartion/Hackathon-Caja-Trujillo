@@ -1,4 +1,4 @@
-# CuotaFlex
+# Thinku
 
 **Cuotas que se adaptan al flujo del negocio** · Cajathón 2026 · Desafío NEG-01 · Concepto v3
 

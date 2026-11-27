@@ -13,7 +13,7 @@ Se inspira en Shopify Capital, donde el comerciante devuelve el financiamiento c
 ventas, pero aquí sigue siendo un **crédito con TEA**: el interés corre sobre el saldo y el valor presente
 de los pagos cierra el crédito.
 
-## 2. Por qué es la extensión natural de CuotaFlex
+## 2. Por qué es la extensión natural de Thinku
 
 | Hoy (fases 0 a 2) | El módulo en vivo |
 |---|---|
@@ -97,7 +97,7 @@ el pronóstico mes a mes.
 
 Antes de firmar, la app muestra la TEA, `r`, el piso, el techo, el plazo esperado y el **costo total en
 tres escenarios** (ventas bajas, normales y altas), además del pago de cierre si lo hubiera. Ninguna cifra
-se promete: son estimaciones, como en el resto de CuotaFlex.
+se promete: son estimaciones, como en el resto de Thinku.
 
 ## 4. Encaje en el motor
 
