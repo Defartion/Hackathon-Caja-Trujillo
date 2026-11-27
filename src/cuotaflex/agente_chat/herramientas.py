@@ -36,7 +36,7 @@ class Bitacora(Argumentos):
 
 ESQUEMAS = {
     "recalcular_propuesta": (Recalcular, "Simula cambios de monto, plazo o ajuste. Usa únicamente cambios pedidos."),
-    "simular_cliente": (Argumentos, "Compara el riesgo de la cuota fija y CuotaFlex para la propuesta actual."),
+    "simular_cliente": (Argumentos, "Compara el riesgo de la cuota fija y Thinku para la propuesta actual."),
     "consultar_politica": (Politica, "Consulta la política vigente. Usa aplazamiento para estimar su costo."),
     "explicar_paso_bitacora": (Bitacora, "Explica el paso indicado por su índice en la bitácora de esta propuesta."),
 }
@@ -107,7 +107,7 @@ class Herramientas:
         for producto in (fija, flex):
             producto.pop("cuotas")
         texto = (f"En {resultados['n_escenarios']} escenarios, la mora simulada fue "
-                 f"{fija['mora30']:.2%} con cuota fija y {flex['mora30']:.2%} con CuotaFlex. "
+                 f"{fija['mora30']:.2%} con cuota fija y {flex['mora30']:.2%} con Thinku. "
                  f"El incumplimiento simulado fue {fija['default']:.2%} y {flex['default']:.2%}, respectivamente.")
         return {**resultados, "motivo": texto}
 

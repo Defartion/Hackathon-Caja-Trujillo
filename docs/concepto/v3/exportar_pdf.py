@@ -14,7 +14,7 @@ SALIDA = CONCEPTO / "export" / "CuotaFlex-Solution-Concept-v3.pdf"
 ESTILO_V3 = """
 @page {
   margin: 11mm 14mm 13mm;
-  @bottom-left { content: "CuotaFlex · Solution Concept v3 · Cajathón 2026 · NEG-01"; }
+  @bottom-left { content: "Thinku · Solution Concept v3 · Cajathón 2026 · NEG-01"; }
 }
 
 html { font-size: 10.5pt; }
@@ -65,7 +65,7 @@ def main() -> None:
     css = (CONCEPTO.parent / "export" / "estilo-pdf.css").read_text(encoding="utf-8")
     html = (
         '<!doctype html><html lang="es"><meta charset="utf-8">'
-        '<title>CuotaFlex · Solution Concept v3</title>'
+        '<title>Thinku · Solution Concept v3</title>'
         f"<style>{css}{ESTILO_V3}</style><body>{renderizar_markdown()}</body></html>"
     )
     # Chromium carga las imágenes del repositorio desde este archivo local.

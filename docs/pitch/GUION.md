@@ -1,4 +1,4 @@
-# Guion de la final · CuotaFlex
+# Guion de la final · Thinku
 
 La versión principal dura **6 min 20 s**, incluida la demo. La versión corta dura **3 min**. Las franjas reservan tiempo para clics, pausas y cambios de voz. Los nombres identifican el reparto propuesto para el ensayo.
 
@@ -12,7 +12,7 @@ Antes de salir, abre la presentación y las pestañas del asesor, cliente y tabl
 
 ### 0:40–1:20 · Stefano · Láminas 2 y 3
 
-> En La Libertad, la estacionalidad también afecta a la pesca y al comercio de campaña. La mora de microempresa de cajas municipales observada en la referencia SBS estuvo entre 5 % y 5,7 % en 2026. Es una medición de cartera en un mes. Nuestra simulación cuenta atrasos a lo largo del crédito. El comunicado del ENFEN del trece de noviembre mantuvo la Alerta de El Niño Costero. CuotaFlex adapta el calendario al flujo del negocio con cuota fija, fija con aplazamientos o estacional, según lo que el motor determine para cada solicitud.
+> En La Libertad, la estacionalidad también afecta a la pesca y al comercio de campaña. La mora de microempresa de cajas municipales observada en la referencia SBS estuvo entre 5 % y 5,7 % en 2026. Es una medición de cartera en un mes. Nuestra simulación cuenta atrasos a lo largo del crédito. El comunicado del ENFEN del trece de noviembre mantuvo la Alerta de El Niño Costero. Thinku adapta el calendario al flujo del negocio con cuota fija, fija con aplazamientos o estacional, según lo que el motor determine para cada solicitud.
 
 ### 1:20–2:00 · Sebastián · Lámina 4
 
@@ -50,7 +50,7 @@ Para la versión corta, deja las fichas de Rosa y Luis abiertas junto al présta
 
 ### 0:00–0:30 · André · Gancho
 
-> Rosa cultiva arroz en Chepén. Durante la siembra tiene gastos y pocas ventas. En cosecha recibe gran parte de sus ingresos. La cuota fija le pide el mismo pago cada mes. CuotaFlex estima el flujo, compara modalidades de crédito y ajusta el cronograma a la capacidad de pago. La bitácora le permite al asesor revisar el cálculo antes de tomar una decisión.
+> Rosa cultiva arroz en Chepén. Durante la siembra tiene gastos y pocas ventas. En cosecha recibe gran parte de sus ingresos. La cuota fija le pide el mismo pago cada mes. Thinku estima el flujo, compara modalidades de crédito y ajusta el cronograma a la capacidad de pago. La bitácora le permite al asesor revisar el cálculo antes de tomar una decisión.
 
 ### 0:30–1:35 · Joaquín · Demo E001, E002 y E003
 
@@ -58,7 +58,7 @@ Para la versión corta, deja las fichas de Rosa y Luis abiertas junto al présta
 
 ### 1:35–2:22 · Sebastián · Impacto y robustez
 
-> Sobre seiscientos créditos sintéticos en doscientos escenarios, el default baja de 4,76 % a 2,05 % en la simulación completa. Solo con el cronograma, manteniendo monto y plazo, llega a 3,45 %. El margen neto sobre cartera sube de 19,24 % a 25,69 % con menor colocación. También probamos qué ocurre si sube la volatilidad, si cambia el ahorro o si El Niño se vuelve más probable. CuotaFlex tuvo menor default en los escenarios analizados. El piloto mediría si el efecto aparece en la cartera real.
+> Sobre seiscientos créditos sintéticos en doscientos escenarios, el default baja de 4,76 % a 2,05 % en la simulación completa. Solo con el cronograma, manteniendo monto y plazo, llega a 3,45 %. El margen neto sobre cartera sube de 19,24 % a 25,69 % con menor colocación. También probamos qué ocurre si sube la volatilidad, si cambia el ahorro o si El Niño se vuelve más probable. Thinku tuvo menor default en los escenarios analizados. El piloto mediría si el efecto aparece en la cartera real.
 
 ### 2:22–3:00 · Stefano y André · Integraciones, piloto y cierre
 
@@ -68,7 +68,7 @@ Para la versión corta, deja las fichas de Rosa y Luis abiertas junto al présta
 
 **André · 2:42–3:00**
 
-> El siguiente paso es un piloto controlado en La Libertad. La Caja revisaría la política, supervisaría al asesor y mediría colocación, atraso, rentabilidad y experiencia del cliente. CuotaFlex ayuda a elegir una propuesta que el negocio pueda sostener durante su campaña.
+> El siguiente paso es un piloto controlado en La Libertad. La Caja revisaría la política, supervisaría al asesor y mediría colocación, atraso, rentabilidad y experiencia del cliente. Thinku ayuda a elegir una propuesta que el negocio pueda sostener durante su campaña.
 
 ## Referencias para el ensayo
 

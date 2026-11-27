@@ -48,7 +48,7 @@ function Tip({ active, payload }: { active?: boolean; payload?: { payload: Punto
         <span className="muestra fija" /> Fija: {entero(p.fija)} créditos
       </div>
       <div className="tt-fila">
-        <span className="muestra flex" /> CuotaFlex: {entero(p.flex)} créditos
+        <span className="muestra flex" /> Thinku: {entero(p.flex)} créditos
       </div>
     </div>
   );
@@ -105,7 +105,7 @@ export default function GraficoHistograma({ h }: { h: HistogramaVpn }) {
         <Area
           type="stepAfter"
           dataKey="flex"
-          name="CuotaFlex"
+          name="Thinku"
           stroke={COLOR_FLEX}
           strokeWidth={2}
           fill={COLOR_FLEX}
@@ -124,7 +124,7 @@ export default function GraficoHistograma({ h }: { h: HistogramaVpn }) {
         <tr>
           <th>Ganancia por crédito (VPN)</th>
           <th className="num">Fija</th>
-          <th className="num">CuotaFlex</th>
+          <th className="num">Thinku</th>
         </tr>
       </thead>
       <tbody>

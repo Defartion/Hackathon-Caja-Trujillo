@@ -55,7 +55,7 @@ const MIME: Record<Formato, string> = {
 const MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "set", "oct", "nov", "dic"];
 const NUMERO = new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const ENTERO = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
-const NOTA_DATOS = "Datos 100% sintéticos · CuotaFlex, Cajathón 2026";
+const NOTA_DATOS = "Datos 100% sintéticos · Thinku, Cajathón 2026";
 
 const dos = (n: number) => String(n).padStart(2, "0");
 const vacio = (v: unknown) => v === null || v === undefined || v === "" || (typeof v === "number" && !Number.isFinite(v));
@@ -284,7 +284,7 @@ function xlsx(doc: Documento): Uint8Array {
     ["_rels/.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/></Relationships>`],
     ["docProps/core.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><dc:title>${xml(doc.titulo)}</dc:title><dc:creator>CuotaFlex</dc:creator><dcterms:created xsi:type="dcterms:W3CDTF">${new Date().toISOString().replace(/\.\d+Z$/, "Z")}</dcterms:created></cp:coreProperties>`],
+<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><dc:title>${xml(doc.titulo)}</dc:title><dc:creator>Thinku</dc:creator><dcterms:created xsi:type="dcterms:W3CDTF">${new Date().toISOString().replace(/\.\d+Z$/, "Z")}</dcterms:created></cp:coreProperties>`],
     ["xl/workbook.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${hojas.map((h, i) => `<sheet name="${xml(h.nombre)}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`).join("")}</sheets>${doc.tablas.length ? `<definedNames>${doc.tablas.map((t, i) => `<definedName name="_xlnm._FilterDatabase" localSheetId="${i + 1}" hidden="1">'${xml(hojas[i + 1].nombre).replace(/'/g, "''")}'!$A$1:$${columnaExcel(t.columnas.length - 1)}$${Math.max(t.filas.length + 1, 1)}</definedName>`).join("")}</definedNames>` : ""}</workbook>`],
     ["xl/_rels/workbook.xml.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -515,12 +515,11 @@ function pdf(doc: Documento): Uint8Array {
     paginas.push(ops);
     if (paginas.length === 1) {
       rect(0, 0, W, 50, ROJO);
-      texto("Cuota", M, 31, 17, [1, 1, 1], true);
-      texto("Flex", M + anchoTexto("Cuota", 17, true), 31, 17, [1, 0.83, 0.855], true);
+      texto("Thinku", M, 31, 17, [1, 1, 1], true);
       textoDerecha("Caja Trujillo · Cajathón 2026", W - M, 30, 9, [1, 0.88, 0.9]);
       y = 82;
     } else {
-      texto("CuotaFlex", M, 30, 9, ROJO, true);
+      texto("Thinku", M, 30, 9, ROJO, true);
       textoDerecha(recortar(titulo, util - 80, 9), W - M, 30, 9, GRIS);
       linea(M, 38, W - M, LINEA, 0.6);
       y = 62;
@@ -627,7 +626,7 @@ function pdf(doc: Documento): Uint8Array {
   objetos.push("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>");
   const d = new Date();
   const fechaPdf = `D:${d.getFullYear()}${dos(d.getMonth() + 1)}${dos(d.getDate())}${dos(d.getHours())}${dos(d.getMinutes())}${dos(d.getSeconds())}`;
-  objetos.push(`<< /Title ${textoInfo(doc.titulo)} /Creator (CuotaFlex) /Producer (CuotaFlex) /CreationDate (${fechaPdf}) >>`);
+  objetos.push(`<< /Title ${textoInfo(doc.titulo)} /Creator (Thinku) /Producer (Thinku) /CreationDate (${fechaPdf}) >>`);
   paginas.forEach((p, i) => {
     const contenido = p.join("\n");
     objetos.push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${W} ${H}] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents ${7 + i * 2} 0 R >>`);
@@ -660,8 +659,8 @@ export function generar(doc: Documento, formato: Formato): Blob {
 export function nombreArchivo(doc: Documento, formato: Formato): string {
   const base = doc.archivo
     .normalize("NFD").replace(/[̀-ͯ]/g, "")
-    .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "cuotaflex";
-  return `cuotaflex-${base}-${iso(new Date())}.${formato}`;
+    .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "thinku";
+  return `thinku-${base}-${iso(new Date())}.${formato}`;
 }
 
 /** Genera el archivo y lo descarga; devuelve el nombre usado. */

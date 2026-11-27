@@ -121,7 +121,7 @@ export default function GraficoProductos({ mix }: { mix: Resumen['mix_productos'
 
   return (
     <TarjetaGrafico
-      titulo="Productos que asigna CuotaFlex"
+      titulo="Productos que asigna Thinku"
       subtitulo="La cuota fija queda para quien no accede a flexibilidad (historial o sobreendeudamiento)"
       grafico={grafico}
       tabla={tabla}

@@ -25,6 +25,7 @@ import Avisos from './components/Avisos';
 import NavSupervisor from './components/NavSupervisor';
 import type { Vista } from './components/NavSupervisor';
 import Marca from './marca';
+import { useGuardado } from './apariencia';
 import MenuExportar from './MenuExportar';
 import { documentoCorrida } from './exportarCorrida';
 
@@ -48,6 +49,9 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
 
   const [corridas, setCorridas] = useState<Corrida[]>([]);
+  // Columnas plegables: el menú (misma preferencia que en la app del asesor) y el panel de controles.
+  const [menu, setMenu] = useGuardado('cuotaflex.menu', 'abierto', ['abierto', 'plegado'] as const);
+  const [controles, setControles] = useGuardado('cuotaflex.tablero.controles', 'abierto', ['abierto', 'plegado'] as const);
   const [mostrada, setMostrada] = useState<number | null>(null);
   const contador = useRef(0);
   const medidos = useRef<Record<string, number>>({});
@@ -188,7 +192,7 @@ export default function App() {
         <div className="cab-sep" aria-hidden="true" />
         <div>
           <div className="titulo-tablero">Tablero de simulación</div>
-          <div className="subtitulo-tablero">Cuota fija vs. CuotaFlex en una cartera sintética de La Libertad</div>
+          <div className="subtitulo-tablero">Cuota fija vs. Thinku en una cartera sintética de La Libertad</div>
         </div>
         <div className={`estado-api ${estadoError ? 'error' : ''}`} role="status">
           {estado}
@@ -196,8 +200,16 @@ export default function App() {
         <EstadoEnfen />
       </header>
 
-      <div className={`cuerpo ${vista === 'simular' ? '' : 'sin-panel'}`}>
-        <NavSupervisor vista={vista} onVista={setVista} />
+      <div
+        className={`cuerpo ${vista === 'simular' ? '' : 'sin-panel'} ${menu === 'plegado' ? 'nav-plegada' : ''} ${
+          controles === 'plegado' ? 'panel-plegado' : ''}`}
+      >
+        <NavSupervisor
+          vista={vista}
+          onVista={setVista}
+          plegado={menu === 'plegado'}
+          onPlegar={() => setMenu(menu === 'plegado' ? 'abierto' : 'plegado')}
+        />
         {vista !== 'simular' ? (
           <main className="principal">{vista === 'alerta' ? <AlertaNino /> : <Avisos />}</main>
         ) : (
@@ -220,6 +232,8 @@ export default function App() {
             onModo={setReplanificar}
             onTamano={setTamano}
             onSimular={() => void ejecutar(valores, activo)}
+            plegado={controles === 'plegado'}
+            onPlegar={() => setControles(controles === 'plegado' ? 'abierto' : 'plegado')}
           />
         ) : (
           <aside className="panel" />
@@ -275,7 +289,7 @@ export default function App() {
               ) : (
                 <div className="vacio">
                   <h2>Elige un escenario o pulsa Simular</h2>
-                  <p>Compara la cuota fija con CuotaFlex sobre una cartera sintética.</p>
+                  <p>Compara la cuota fija con Thinku sobre una cartera sintética.</p>
                   <button
                     type="button"
                     className="btn-primario"

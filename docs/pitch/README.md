@@ -1,4 +1,4 @@
-# Pitch de CuotaFlex · Final del Cajathón
+# Pitch de Thinku · Final del Cajathón
 
 Presentación de 12 láminas para acompañar la demo. Las cifras corresponden a la simulación calibrada de la fase 2 con clientes sintéticos. El estado de la alerta se cita con la fecha del comunicado.
 

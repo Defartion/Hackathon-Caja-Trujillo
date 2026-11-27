@@ -78,7 +78,7 @@ def test_asesor_y_cliente_prestamo_de_rosa(demo, explorador, captura, comprobar)
 
     asesor.evaluate("window.scrollTo(0, 0)")
     asesor.get_by_text("Pregúntale al agente", exact=True).click()
-    chat = asesor.get_by_role("complementary", name="Agente de CuotaFlex")
+    chat = asesor.get_by_role("complementary", name="Agente de Thinku")
     chat.get_by_role("button", name="¿Y a 24 meses?", exact=True).click()
     expect(chat.get_by_text("✓ Cifras verificadas")).to_be_visible(timeout=20_000)
     expect(chat.get_by_text("Recalculó a 24 meses")).to_be_visible()
@@ -165,7 +165,7 @@ def test_asesor_explica_la_reduccion_del_monto_de_luis(demo, explorador, captura
 
     asesor.evaluate("window.scrollTo(0, 0)")
     asesor.get_by_text("Pregúntale al agente", exact=True).click()
-    chat = asesor.get_by_role("complementary", name="Agente de CuotaFlex")
+    chat = asesor.get_by_role("complementary", name="Agente de Thinku")
     chat.get_by_role("button", name="¿Por qué bajó el monto?", exact=True).click()
     expect(chat.get_by_text("✓ Cifras verificadas")).to_be_visible(timeout=20_000)
     respuesta = chat.get_by_text(re.compile(r"redujo el monto solicitado", re.IGNORECASE))

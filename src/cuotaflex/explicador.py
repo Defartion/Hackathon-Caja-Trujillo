@@ -395,7 +395,7 @@ def explicar(
         )
         salida = llm.completar(
             sistema=(
-                f"Reescribe el borrador con los datos de la propuesta CuotaFlex. {tono} "
+                f"Reescribe el borrador con los datos de la propuesta Thinku. {tono} "
                 "Usa dígitos para cantidades y explicita la unidad de cada cifra. "
                 + ("Mantén el costo de aplazar cuando corresponda. " if MOSTRAR_CREDITO_VIGENTE else
                    "No ofrezcas aplazamientos ni alivios: el plan es fijo desde el desembolso. ")

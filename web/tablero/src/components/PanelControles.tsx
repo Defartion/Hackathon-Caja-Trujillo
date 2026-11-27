@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { TAMANOS } from '../api';
 import type { Escenario, ParametroEditable, TamanoId } from '../api';
+import { IconoPanel, useGuardado } from '../apariencia';
 import Deslizador from './Deslizador';
 
 interface Props {
@@ -20,6 +21,34 @@ interface Props {
   onModo: (replanificar: boolean) => void;
   onTamano: (t: TamanoId) => void;
   onSimular: () => void;
+  /** Panel reducido a una columna angosta para dar más espacio a los resultados. */
+  plegado: boolean;
+  onPlegar: () => void;
+}
+
+/** Título de una sección que se abre y se cierra; cerrada, muestra un resumen a la derecha. */
+function Acordeon({ abierto, onClick, resumen, children }: {
+  abierto: boolean; onClick: () => void; resumen?: string; children: ReactNode;
+}) {
+  return (
+    <button type="button" className="panel-acordeon" aria-expanded={abierto} onClick={onClick}>
+      <svg className="panel-acordeon__flecha" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M6 9l6 6 6-6" />
+      </svg>
+      <span className="panel-acordeon__titulo">{children}</span>
+      {!abierto && resumen && <span className="panel-acordeon__resumen">{resumen}</span>}
+    </button>
+  );
+}
+
+function BotonPlegar({ plegado, onPlegar }: { plegado: boolean; onPlegar: () => void }) {
+  const texto = plegado ? 'Mostrar los controles' : 'Plegar los controles';
+  return (
+    <button type="button" className="panel-plegar" aria-expanded={!plegado} aria-label={texto} title={texto} onClick={onPlegar}>
+      <IconoPanel abierto={!plegado} />
+    </button>
+  );
 }
 
 export default function PanelControles(p: Props) {
@@ -28,14 +57,50 @@ export default function PanelControles(p: Props) {
   const activo = p.escenarios.find((e) => e.id === p.escenarioActivo);
   const [avanzado, setAvanzado] = useState(false);
   const abierto = avanzado || p.personalizado;
+  const [escenarios, setEscenarios] = useGuardado('cuotaflex.tablero.escenarios', 'abierto', ['abierto', 'cerrado'] as const);
+  const verEscenarios = escenarios === 'abierto';
+  const nombreActual = activo ? activo.nombre : p.personalizado ? 'Personalizado' : 'Base';
+  const textoSimular = p.corriendo ? `Simulando… ${p.segundos.toFixed(1)} s` : p.personalizado ? 'Simular con mis ajustes' : 'Volver a simular';
+
+  if (p.plegado) {
+    return (
+      <aside className="panel panel--plegado" aria-label="Controles de la simulación">
+        <BotonPlegar plegado onPlegar={p.onPlegar} />
+        <button type="button" className="panel-rotulo" onClick={p.onPlegar} title="Mostrar los controles">
+          <span className="panel-rotulo__texto">Escenario: {nombreActual}</span>
+        </button>
+        <button
+          type="button"
+          className="btn-simular-mini"
+          disabled={p.corriendo}
+          aria-label={textoSimular}
+          title={textoSimular}
+          onClick={p.onSimular}
+        >
+          {p.corriendo ? (
+            <span className="btn-simular-mini__giro" aria-hidden="true" />
+          ) : (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" /></svg>
+          )}
+        </button>
+      </aside>
+    );
+  }
 
   return (
     <aside className="panel" aria-label="Controles de la simulación">
       <div className="panel-scroll">
         <section className="seccion">
-          <div className="seccion-cab">
-            <h2 className="seccion-titulo">1. Elige un escenario</h2>
+          <div className="seccion-cab panel-cab">
+            <h2 className="seccion-titulo">
+              <Acordeon abierto={verEscenarios} onClick={() => setEscenarios(verEscenarios ? 'cerrado' : 'abierto')} resumen={nombreActual}>
+                1. Elige un escenario
+              </Acordeon>
+            </h2>
+            <BotonPlegar plegado={false} onPlegar={p.onPlegar} />
           </div>
+          {verEscenarios && (
+          <>
           <p className="esc-ayuda">Cada botón simula la cartera al instante.</p>
           <div className="escenarios">
             {p.escenarios.map((e) => (
@@ -58,18 +123,16 @@ export default function PanelControles(p: Props) {
                 ? 'Personalizado: ajustaste parámetros respecto a la base.'
                 : 'Parámetros base, sin cambios.'}
           </p>
+          </>
+          )}
         </section>
 
         <section className="seccion">
-          <button
-            type="button"
-            className="avanzado-toggle"
-            aria-expanded={abierto}
-            onClick={() => setAvanzado(!abierto)}
-          >
-            <span>2. Ajustes avanzados (opcional)</span>
-            <span aria-hidden="true">{abierto ? '▾' : '▸'}</span>
-          </button>
+          <h2 className="seccion-titulo">
+            <Acordeon abierto={abierto} onClick={() => setAvanzado(!abierto)} resumen={p.personalizado ? 'Con cambios' : 'Opcional'}>
+              2. Ajustes avanzados
+            </Acordeon>
+          </h2>
           {!abierto && (
             <p className="esc-ayuda">
               Cambia reglas de flexibilidad, capacidad de pago, modo y tamaño de la simulación.
@@ -163,7 +226,7 @@ export default function PanelControles(p: Props) {
 
       <div className="panel-fijo">
         <button type="button" className="btn-simular" disabled={p.corriendo} onClick={p.onSimular}>
-          {p.corriendo ? `Simulando… ${p.segundos.toFixed(1)} s` : p.personalizado ? 'Simular con mis ajustes' : 'Volver a simular'}
+          {textoSimular}
           {p.corriendo && <span className="progreso" style={{ width: `${p.progreso}%` }} />}
         </button>
       </div>

@@ -1,4 +1,4 @@
-# Concepto v3 de CuotaFlex
+# Concepto v3 de Thinku
 
 [Concepto editable](CONCEPT_SOLUTION.md) · [PDF](export/CuotaFlex-Solution-Concept-v3.pdf) · [Resumen editable](one-pager.md)
 

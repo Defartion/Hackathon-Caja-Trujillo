@@ -1,4 +1,4 @@
-# CuotaFlex · Solution Concept
+# Thinku · Solution Concept
 
 **Cajathón 2026 · Caja Trujillo · Eje 4 de inclusión financiera y resiliencia · Desafío NEG-01**
 
@@ -6,7 +6,7 @@ Equipo Sabado de paz (CJT-WG3TXH) · Versión 3 · 25 de noviembre de 2026 · Aj
 
 ## Resumen ejecutivo
 
-CuotaFlex es la herramienta del Asesor de Negocios para créditos nuevos de clientes con ingresos estacionales. Estima el ciclo económico del cliente con el patrón de su sector y su zona, tomado de fuentes públicas y ajustado con lo que el asesor levanta en campo, sin usar el historial de pagos. Con ese ciclo construye desde el inicio un plan de cuotas y periodos variables que cumple Cuota/UN ≤ factor del producto en cada etapa, con los costos de la Caja: TED base 360, seguros, prelación y TCEA. El Asesor de Riesgos y el comité ven el ciclo, las cuotas, Cuota/UN por etapa, los supuestos y la comparación con la cuota fija en escenarios adversos. En 600 clientes sintéticos, el prototipo actual baja de 45.8% a 34.3% los clientes con alguna etapa sobre el factor 0.85. El motor de la final lo impone en todas las etapas.
+Thinku es la herramienta del Asesor de Negocios para créditos nuevos de clientes con ingresos estacionales. Estima el ciclo económico del cliente con el patrón de su sector y su zona, tomado de fuentes públicas y ajustado con lo que el asesor levanta en campo, sin usar el historial de pagos. Con ese ciclo construye desde el inicio un plan de cuotas y periodos variables que cumple Cuota/UN ≤ factor del producto en cada etapa, con los costos de la Caja: TED base 360, seguros, prelación y TCEA. El Asesor de Riesgos y el comité ven el ciclo, las cuotas, Cuota/UN por etapa, los supuestos y la comparación con la cuota fija en escenarios adversos. En 600 clientes sintéticos, el prototipo actual baja de 45.8% a 34.3% los clientes con alguna etapa sobre el factor 0.85. El motor de la final lo impone en todas las etapas.
 
 ## 1. Problema abordado
 
@@ -20,9 +20,9 @@ CuotaFlex es la herramienta del Asesor de Negocios para créditos nuevos de clie
 
 ## 2. Concepto de solución
 
-CuotaFlex trabaja sobre **créditos nuevos**: admisión, ampliación o recuperación. El plan se define antes del desembolso y no cambia durante el crédito. Modificar un crédito vigente sería una reprogramación, que queda fuera del alcance del reto.
+Thinku trabaja sobre **créditos nuevos**: admisión, ampliación o recuperación. El plan se define antes del desembolso y no cambia durante el crédito. Modificar un crédito vigente sería una reprogramación, que queda fuera del alcance del reto.
 
-| Usuario | Qué hace en CuotaFlex |
+| Usuario | Qué hace en Thinku |
 |---|---|
 | Asesor de Negocios | Levanta en campo las ventas por temporada, los costos, los gastos, la carga familiar y las evidencias. Estima el ciclo y propone el plan en la misma herramienta, en tres pasos: negocio, ciclo estimado, y crédito y plan. |
 | Asesor de Riesgos | Valida el ciclo, los supuestos, Cuota/UN por etapa y el estrés frente a la cuota fija. Deja su decisión en el expediente: aprobar, observar con un comentario o rechazar. |
@@ -85,7 +85,7 @@ Las cifras son del **prototipo actual** (motor de la fase 2), sobre 600 clientes
 
 ## 4. Enfoque tecnológico
 
-CuotaFlex no es un tablero ni un chatbot: estima un ciclo con incertidumbre, optimiza un plan con restricciones de riesgo y explica cada cifra después de verificarla.
+Thinku no es un tablero ni un chatbot: estima un ciclo con incertidumbre, optimiza un plan con restricciones de riesgo y explica cada cifra después de verificarla.
 
 1. **Modelo de ciclo.** Combina el patrón del sector y la zona con la captura del asesor. El catálogo tiene 16 combinaciones de actividad y zona en seis provincias de La Libertad, construidas con fuentes públicas como MIDAGRI, BCRP, INEI, PRODUCE, SENAMHI, ENFEN, SENASA, ANA, el Gobierno Regional y los calendarios comerciales de las municipalidades. Entrega la UN de cada mes con cuantiles calibrados y no usa el historial de pagos. En su validación sintética, con 640 clientes y 7,680 meses, el intervalo p10 a p90 cubrió el **79.8%** de los meses, dentro del rango aceptado de 75% a 85%, y el MAPE de ventas p50 fue **18.5%**; el pronóstico de la fase 2 había logrado 79.5% y 16.5% en su [backtest][backtest]. El error relativo de la UN crece cuando la UN se acerca a cero, por eso el plan usa la banda y los escenarios adversos, no solo la mediana. [Fuentes y validación del ciclo][ciclo].
 2. **Constructor del plan.** Con CVXPY y HiGHS, la restricción dura es cuota ≤ factor × UN esperada en cada etapa, con cuota 0 si la UN es ≤ 0. La deuda termina en 0 y hay un máximo de meses de gracia. El objetivo minimiza el costo total, interés más seguros, lo que concentra la amortización en la cima, y suma una penalidad por cada sol que la cuota excedería la capacidad en los escenarios adversos; en menor medida evita la gracia y los saltos bruscos entre periodos. Aplica la TED por días, los seguros, la prelación y los pendientes, y calcula la TCEA. La cuota fija de comparación sale del mismo motor, para que la comparación sea justa.
@@ -93,7 +93,7 @@ CuotaFlex no es un tablero ni un chatbot: estima un ciclo con incertidumbre, opt
 4. **Agente para el asesor y el comité.** Explica por qué cada cuota tiene ese monto, compara con la cuota fija, prueba escenarios y redacta una justificación para el comité. Las preguntas frecuentes permiten un LLM externo vía API para la demo. Toda cifra sale del contrato o de una herramienta y se verifica antes de mostrarse, y hay un modo sin conexión con plantillas.
 5. **Integración opcional.** Fineract sirve para demostrar que un core puede recibir un cronograma variable. El prototipo no se conecta a la Caja.
 
-![Arquitectura de CuotaFlex v3: entradas sin datos internos, modelo de ciclo, constructor del plan, escenarios adversos y decisión del comité](img/arquitectura-v3.png)
+![Arquitectura de Thinku v3: entradas sin datos internos, modelo de ciclo, constructor del plan, escenarios adversos y decisión del comité](img/arquitectura-v3.png)
 
 *Figura 2. Arquitectura del concepto v3, según los contratos de la fase 4. [Fuente del diagrama](img/arquitectura-v3.mmd) · [Contratos][contratos].*
 

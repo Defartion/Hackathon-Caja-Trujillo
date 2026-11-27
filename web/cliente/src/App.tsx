@@ -354,7 +354,7 @@ export default function App() {
           <section className="empty-state">
             <div className="empty-state__icon"><WalletCards size={28} aria-hidden="true" /></div>
             <h1>{cuenta ? `Hola, ${cuenta}` : 'Hola, qué gusto verte'}</h1>
-            <p>Crea un crédito de demo para consultar sus cuotas y probar cómo funciona CuotaFlex.</p>
+            <p>Crea un crédito de demo para consultar sus cuotas y probar cómo funciona Thinku.</p>
           </section>
         )}
         {listo && (

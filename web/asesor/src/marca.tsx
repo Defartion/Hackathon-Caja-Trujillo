@@ -1,4 +1,4 @@
-// Marca de CuotaFlex y "ritmo de cuotas" (copia idéntica en las 3 apps; ver tests/test_web_tema.py).
+// Marca de Thinku y "ritmo de cuotas" (copia idéntica en las 3 apps; ver tests/test_web_tema.py).
 // El símbolo son cuotas que suben y bajan con la temporada: la idea central del producto.
 
 // Ejemplo ilustrativo: un productor de arroz en Chepén, con cosecha en junio y julio.
@@ -24,9 +24,7 @@ export default function Marca({ invertida = false, tam = 30 }: { invertida?: boo
   return (
     <span className={`cf-marca ${invertida ? "cf-marca--invertida" : ""}`} translate="no">
       <Simbolo tam={tam} invertido={invertida} />
-      <span className="cf-marca__nombre">
-        Cuota<span className="cf-marca__flex">Flex</span>
-      </span>
+      <span className="cf-marca__nombre">Thinku</span>
     </span>
   );
 }
@@ -36,7 +34,7 @@ export function Ritmo() {
   return (
     <figure className="cf-ritmo" aria-labelledby="cf-ritmo-desc">
       <figcaption id="cf-ritmo-desc" className="cf-ritmo__leyenda">
-        <span><i className="barra" aria-hidden="true" /> Cuotas CuotaFlex de un arrocero de Chepén, de enero a diciembre</span>
+        <span><i className="muestra-barra" aria-hidden="true" /> Cuotas con Thinku de un arrocero de Chepén, de enero a diciembre</span>
         <span><i className="linea" aria-hidden="true" /> Cuota fija</span>
       </figcaption>
       <div className="cf-ritmo__lienzo" aria-hidden="true">

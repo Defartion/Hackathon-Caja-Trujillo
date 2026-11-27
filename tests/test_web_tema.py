@@ -71,3 +71,12 @@ def test_el_tema_oscuro_redefine_los_colores_que_usan_las_apps():
     deben_cambiar = {v for v in variables(claro) if v.startswith(("--cf-gris", "--cf-graf", "--cf-superficie"))}
     deben_cambiar |= {"--cf-tinta", "--cf-fondo", "--cf-elevada", "--cf-lateral", "--cf-rojo-texto"}
     assert deben_cambiar <= variables(oscuro), sorted(deben_cambiar - variables(oscuro))
+
+
+def test_el_nombre_visible_del_sistema_es_thinku():
+    marca = (RAIZ / "web" / "asesor" / "src" / "marca.tsx").read_text(encoding="utf-8")
+    assert '<span className="cf-marca__nombre">Thinku</span>' in marca
+    paginas = [RAIZ / "public" / "index.html", *(RAIZ / "web" / app / "index.html" for app in APPS)]
+    for pagina in paginas:
+        titulo = re.search(r"<title>(.*?)</title>", pagina.read_text(encoding="utf-8")).group(1)
+        assert titulo.startswith("Thinku · "), f"{pagina.relative_to(RAIZ)}: {titulo}"

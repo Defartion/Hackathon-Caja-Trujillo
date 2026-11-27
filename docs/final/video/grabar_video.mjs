@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Video de respaldo de CuotaFlex (1920x1080, ~3 min): asesor → chat → core → cliente → alerta ENFEN → tablero.
+// Video de respaldo de Thinku (1920x1080, ~3 min): asesor → chat → core → cliente → alerta ENFEN → tablero.
 //
 // Requisitos (todo local y con datos sintéticos):
 //   API:   ENFEN_MODO=oficial PYTHONPATH=src uvicorn cuotaflex.api.main:app --port 8000
@@ -7,7 +7,7 @@
 //   Apps:  en web/asesor, web/cliente y web/tablero: npm run build && npx vite preview --port 5173 | 5174 | 5175
 //   Edge o Chrome instalados y ffmpeg en el PATH.
 //
-// Uso:  node docs/final/video/grabar_video.mjs [--salida ~/Videos/CuotaFlex] [--asesor C00006] [--chat C00006] [--cliente C00003]
+// Uso:  node docs/final/video/grabar_video.mjs [--salida ~/Videos/Thinku] [--asesor C00006] [--chat C00006] [--cliente C00003]
 //       Tras la integración de la fase 3: --asesor E001 --chat E003 --cliente E002 (casos estrella del lote B).
 //
 // Graba con el Chrome DevTools Protocol (Page.startScreencast), arma el MP4 con ffmpeg y le incrusta los
@@ -21,7 +21,7 @@ import { parseArgs } from 'node:util';
 
 const { values: op } = parseArgs({
   options: {
-    salida: { type: 'string', default: join(homedir(), 'Videos', 'CuotaFlex') },
+    salida: { type: 'string', default: join(homedir(), 'Videos', 'Thinku') },
     nombre: { type: 'string', default: 'cuotaflex-video-respaldo' },
     asesor: { type: 'string', default: 'C00006' }, // ficha: pronóstico, selección por simulación y riesgo
     chat: { type: 'string' }, // solicitud del chat (por defecto, la misma de la ficha)
@@ -319,7 +319,7 @@ async function leerFicha() {
 
 async function leerIndicadores() {
   const t = await texto();
-  const r = t.match(/Default \(3 cuotas impagas\)[\s\S]{0,60}?Fija\s*([\d.,]+\s?%)[\s\S]{0,40}?CuotaFlex\s*([\d.,]+\s?%)/);
+  const r = t.match(/Default \(3 cuotas impagas\)[\s\S]{0,60}?Fija\s*([\d.,]+\s?%)[\s\S]{0,40}?Thinku\s*([\d.,]+\s?%)/);
   return r ? { fija: r[1].replace(/\s/g, ''), flex: r[2].replace(/\s/g, '') } : null;
 }
 
@@ -364,7 +364,7 @@ async function guion(cartera, enfen) {
   await desplazar('Riesgo simulado');
   await resaltar('Riesgo simulado', 3500);
   subtitulo(ficha.defaultFija
-    ? `Default simulado: ${ficha.defaultFija} con la cuota fija → ${ficha.defaultFlex} con CuotaFlex, en los mismos escenarios.`
+    ? `Default simulado: ${ficha.defaultFija} con la cuota fija → ${ficha.defaultFlex} con Thinku, en los mismos escenarios.`
     : 'El riesgo simulado baja frente a la cuota fija, en los mismos escenarios.');
   await esperar(6000);
 
@@ -472,19 +472,19 @@ async function guion(cartera, enfen) {
   await rotulo('6 · ¿Y en toda la cartera?');
   await clic('Completo', '[aria-labelledby="lbl-tam"] button');
   await clic('Base', 'button.btn-esc');
-  subtitulo('Simulación de la cartera: cuota fija contra CuotaFlex con las mismas trayectorias de ventas y El Niño.');
+  subtitulo('Simulación de la cartera: cuota fija contra Thinku con las mismas trayectorias de ventas y El Niño.');
   await esperarA("document.body.innerText.includes('Corrida #1') && !document.querySelector('.resultados.cargando')", 300000);
   await esperar(2500);
   const base = await leerIndicadores();
-  subtitulo(base ? `600 créditos × 200 escenarios: default de ${base.fija} con la cuota fija → ${base.flex} con CuotaFlex.`
-    : 'El default de la cartera baja con CuotaFlex.');
+  subtitulo(base ? `600 créditos × 200 escenarios: default de ${base.fija} con la cuota fija → ${base.flex} con Thinku.`
+    : 'El default de la cartera baja con Thinku.');
   await esperar(6500);
   await clic('Año El Niño', 'button.btn-esc');
   await esperarA("document.body.innerText.includes('Corrida #2') && !document.querySelector('.resultados.cargando')", 300000);
   await esperar(2500);
   const nino = await leerIndicadores();
-  subtitulo(nino ? `Si hubiera El Niño todos los años: ${nino.fija} con la cuota fija → ${nino.flex} con CuotaFlex.`
-    : 'Aun con El Niño, CuotaFlex reduce el default.');
+  subtitulo(nino ? `Si hubiera El Niño todos los años: ${nino.fija} con la cuota fija → ${nino.flex} con Thinku.`
+    : 'Aun con El Niño, Thinku reduce el default.');
   await esperar(6500);
 
   subtitulo(null);
