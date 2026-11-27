@@ -60,7 +60,7 @@ def con_cuentas(demo, tmp_path_factory):
     try:
         api.iniciar()
         apps = {}
-        for app in ("cliente", "asesor"):
+        for app in ("cliente", "asesor", "tablero"):
             proyecto = RAIZ / "web" / app
             vite = proyecto / "node_modules" / "vite" / "bin" / "vite.js"
             destino = carpeta / app
@@ -76,6 +76,7 @@ def con_cuentas(demo, tmp_path_factory):
             preview.iniciar()
             servicios.append(preview)
             apps[app] = url
+        apps["api"] = url_api
         yield apps
     finally:
         for s in reversed(servicios):
@@ -88,8 +89,10 @@ def test_cliente_crea_su_cuenta_sale_y_vuelve_a_entrar(con_cuentas, explorador, 
     pagina = contexto.new_page()
     pagina.set_viewport_size({"width": 430, "height": 900})
     pagina.goto(con_cuentas["cliente"])
-    expect(pagina.get_by_role("heading", name="Ingresa a tu cuenta")).to_be_visible()
+    expect(pagina.get_by_role("heading", name="Entra con tu código")).to_be_visible()  # fase 4: llave por defecto
     expect(pagina.get_by_role("heading", name="Tu crédito, a tu ritmo")).to_be_visible()
+    pagina.get_by_role("button", name="Ingresar con correo y contraseña").click()
+    expect(pagina.get_by_role("heading", name="Ingresa a tu cuenta")).to_be_visible()
 
     pagina.get_by_role("tab", name="Crear cuenta").click()
     expect(pagina.get_by_label("Código de autorización")).to_have_count(0)  # el cliente se registra solo
@@ -102,7 +105,8 @@ def test_cliente_crea_su_cuenta_sale_y_vuelve_a_entrar(con_cuentas, explorador, 
     pagina.get_by_role("button", name="Abrir menú").click()
     expect(pagina.get_by_role("menu").get_by_text("Rosa Quispe Vela")).to_be_visible()
     pagina.get_by_role("menuitem", name="Salir").click()
-    expect(pagina.get_by_role("heading", name="Ingresa a tu cuenta")).to_be_visible()
+    expect(pagina.get_by_role("heading", name="Entra con tu código")).to_be_visible()
+    pagina.get_by_role("button", name="Ingresar con correo y contraseña").click()
 
     pagina.get_by_label("Correo").fill("ROSA.e2e@ejemplo.pe")
     pagina.get_by_label("Contraseña", exact=True).fill("ArrozChepen2026")
@@ -115,15 +119,16 @@ def test_asesor_entra_con_pin_y_crea_su_cuenta_con_el_codigo(con_cuentas, explor
     expect = comprobar
     pagina = contexto.new_page()
     pagina.goto(con_cuentas["asesor"])
-    pagina.get_by_role("button", name="Entrar con el PIN de asesor").click()
-    pagina.get_by_label("PIN de asesor").fill("1111")
+    pagina.get_by_role("button", name="Entrar con el PIN general de asesor (demo)").click()
+    pagina.get_by_label("PIN general de asesor").fill("1111")
     pagina.get_by_role("button", name="Entrar", exact=True).click()
     expect(pagina.get_by_role("heading", name="Bandeja de solicitudes")).to_be_visible(timeout=15_000)
     menu = pagina.get_by_role("complementary", name="Menú principal")
     expect(menu.get_by_text("Sesión con PIN")).to_be_visible()
     menu.get_by_role("button", name="Salir").click()
 
-    expect(pagina.get_by_role("heading", name="Ingresa a tu cuenta")).to_be_visible()
+    expect(pagina.get_by_role("heading", name="Ingresa con tu usuario")).to_be_visible()
+    pagina.get_by_role("button", name="Ingresar con correo y contraseña").click()
     pagina.get_by_role("tab", name="Crear cuenta").click()
     pagina.get_by_label("Nombre completo").fill("Ana Torres Rojas")
     pagina.get_by_label("Correo").fill("ana.e2e@caja.pe")
@@ -140,6 +145,7 @@ def test_cliente_ve_su_cuenta_en_el_perfil(con_cuentas, explorador, comprobar):
     pagina = contexto.new_page()
     pagina.set_viewport_size({"width": 430, "height": 900})
     pagina.goto(con_cuentas["cliente"])
+    pagina.get_by_role("button", name="Ingresar con correo y contraseña").click()
     pagina.get_by_role("tab", name="Crear cuenta").click()
     pagina.get_by_label("Nombre completo").fill("Teresa Vargas Ruiz")
     pagina.get_by_label("Correo").fill("teresa.e2e@ejemplo.pe")
@@ -155,3 +161,83 @@ def test_cliente_ve_su_cuenta_en_el_perfil(con_cuentas, explorador, comprobar):
     comprobar(datos).to_contain_text("Correo y contraseña")
     pagina.get_by_role("button", name="Volver al inicio").click()
     comprobar(pagina.get_by_role("heading", name="Hola, Teresa")).to_be_visible()
+
+
+def _api(url: str, metodo: str, ruta: str, token: str | None = None, cuerpo: dict | None = None) -> dict:
+    import json
+    import urllib.request
+
+    pedido = urllib.request.Request(
+        url + ruta, method=metodo, data=None if cuerpo is None else json.dumps(cuerpo).encode(),
+        headers={"Content-Type": "application/json", **({"Authorization": f"Bearer {token}"} if token else {})})
+    abridor = urllib.request.build_opener(urllib.request.ProxyHandler({}))  # localhost, sin proxy
+    with abridor.open(pedido, timeout=120) as r:
+        return json.loads(r.read())
+
+
+def test_llaves_personales_de_punta_a_punta(con_cuentas, explorador, comprobar):
+    """Fase 4: el supervisor crea la llave de una asesora, ella ve el código del cliente y el cliente entra con él
+    a SU préstamo. Al desactivarla, su sesión se corta."""
+    contexto, _ = explorador
+    expect = comprobar
+    api = con_cuentas["api"]
+    general = _api(api, "POST", "/auth/login", cuerpo={"rol": "cliente", "pin": "2222"})["token"]
+    prestamo = _api(api, "POST", "/cliente/demo-seed", token=general)["loanId"]  # Rosa Salazar, desembolsado
+
+    # 1. El supervisor entra con el PIN general (demo) y crea la llave de Ana en Equipo
+    sup = contexto.new_page()
+    sup.goto(con_cuentas["tablero"])
+    expect(sup.get_by_role("heading", name="Ingresa con tu usuario")).to_be_visible()
+    sup.get_by_role("button", name="Entrar con el PIN general de supervisor (demo)").click()
+    sup.get_by_label("PIN general de supervisor").fill("3333")
+    sup.get_by_role("button", name="Entrar", exact=True).click()
+    sup.get_by_role("button", name="Equipo").click()
+    expect(sup.get_by_role("heading", name="Equipo", exact=True)).to_be_visible(timeout=15_000)
+    sup.get_by_label("Nombre completo").fill("Ana Torres Rojas")
+    sup.get_by_role("button", name="Crear su llave").click()
+    tarjeta = sup.locator(".llave-nueva")
+    expect(tarjeta).to_contain_text("ana.torres")
+    pin = tarjeta.locator(".llave-nueva__pin").inner_text().replace(" ", "")
+    assert len(pin) == 6 and pin.isdigit()
+    expect(sup.get_by_role("cell", name="Ana Torres Rojas")).to_be_visible()
+
+    # 2. Ana entra al asesor con su usuario y PIN y ve el código del cliente en el detalle del préstamo
+    ana = contexto.new_page()
+    ana.goto(con_cuentas["asesor"])
+    ana.get_by_label("Usuario").fill("ana.torres")
+    ana.get_by_label("PIN personal").fill(pin)
+    ana.get_by_role("button", name="Entrar", exact=True).click()
+    expect(ana.get_by_role("heading", name="Bandeja de solicitudes")).to_be_visible(timeout=15_000)
+    expect(ana.get_by_role("complementary", name="Menú principal").get_by_text("Ana Torres Rojas")).to_be_visible()
+    ana.goto(f"{con_cuentas['asesor']}/prestamos/{prestamo}")
+    acceso = ana.get_by_label("Código de acceso del cliente")
+    acceso.get_by_role("button", name="Mostrar código").click()
+    codigo = acceso.locator(".codigo-cliente__digitos").inner_text().replace(" ", "")
+    assert len(codigo) == 6 and codigo.isdigit()
+
+    # 3. El cliente entra con su número de préstamo y su código, y solo ve su préstamo
+    cli = contexto.new_page()
+    cli.set_viewport_size({"width": 430, "height": 900})
+    cli.goto(f"{con_cuentas['cliente']}/?loanId=999")
+    expect(cli.get_by_role("heading", name="Entra con tu código")).to_be_visible()
+    cli.get_by_label("Número de préstamo").fill(str(prestamo))
+    cli.get_by_label("Código de acceso").fill(codigo)  # el código equivocado se prueba en test_fase4_llaves.py
+    cli.get_by_role("button", name="Entrar", exact=True).click()
+    expect(cli.get_by_role("heading", name="Hola, Rosa")).to_be_visible(timeout=15_000)
+    assert f"loanId={prestamo}" in cli.url  # el número del enlace se corrige a su préstamo
+
+    # 4. El supervisor desactiva a Ana: su sesión se corta al siguiente pedido. Se comprueba contra la API con
+    #    el token de su pestaña, para no dejar un 401 en la consola del navegador (la prueba los vigila).
+    token_ana = ana.evaluate("sessionStorage.getItem('cuotaflex_token.asesor')")
+    assert _api(api, "GET", "/motor/prestamos", token=token_ana) is not None
+    fila = sup.get_by_role("row", name="Ana Torres Rojas")
+    fila.get_by_role("button", name="Desactivar").click()
+    fila.get_by_role("button", name="Sí, desactivar").click()
+    expect(fila.get_by_text("Desactivado")).to_be_visible()
+    import urllib.error
+
+    with pytest.raises(urllib.error.HTTPError) as cortado:
+        _api(api, "GET", "/motor/prestamos", token=token_ana)
+    assert cortado.value.code == 401
+    ana.close()
+
