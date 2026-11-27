@@ -107,7 +107,11 @@ def desactualizada() -> bool:
         return False
     from . import almacen
 
-    return almacen.leer(_CLAVE_VERSION) != _version_local
+    try:
+        return almacen.leer(_CLAVE_VERSION) != _version_local
+    except almacen.ErrorAlmacen as e:  # Upstash caído: se sigue con lo que hay en memoria
+        print(f"[persistencia] no se pudo revisar la versión en Upstash: {e}")
+        return False
 
 
 def guardar(db: dict[str, dict], siguiente_id: int) -> None:

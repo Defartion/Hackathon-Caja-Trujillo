@@ -122,3 +122,16 @@ def test_cuentas_en_upstash(upstash):
     assert cuentas.ingresar("ROSA@ejemplo.pe", "arroz2026")["id"] == c["id"]
     cuentas.borrar_todo()
     assert cuentas.buscar("rosa@ejemplo.pe") is None
+
+
+def test_upstash_caido_no_rompe_las_solicitudes(upstash, monkeypatch):
+    monkeypatch.setenv("CUOTAFLEX_PERSISTENCIA", "1")
+
+    def caido(pedido):
+        return httpx.Response(503, json={"error": "fuera de servicio"})
+
+    monkeypatch.setattr(almacen, "_cliente_http", httpx.Client(transport=httpx.MockTransport(caido)))
+    assert persistencia.desactualizada() is False
+    from cuotaflex.api import main as api
+
+    api.guardar_instantanea()  # no lanza: deja un aviso en el log

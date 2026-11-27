@@ -44,7 +44,10 @@ def siguiente_id() -> int:
 def guardar_instantanea() -> None:
     if persistencia.activa():
         with _candado_db:
-            persistencia.guardar(DB, siguiente_id())
+            try:
+                persistencia.guardar(DB, siguiente_id())
+            except Exception as e:  # p. ej. Upstash caído: la operación ya se hizo en memoria, no se rompe la respuesta
+                print(f"[persistencia] no se pudo guardar la instantánea: {e}")
 
 
 def cargar_instantanea() -> None:
