@@ -2,7 +2,7 @@
 // La elección se guarda en localStorage ("cuotaflex.tema": "claro" | "oscuro"); sin elección se sigue al
 // sistema. Un script en línea de cada index.html aplica el tema antes de pintar para que la página no parpadee,
 // y al imprimir se usa siempre el tema claro.
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 
 export type Preferencia = "claro" | "oscuro" | "sistema";
 export type Tema = "claro" | "oscuro";
@@ -86,6 +86,42 @@ export function useTema(): { preferencia: Preferencia; tema: Tema } {
   }, []);
 
   return { preferencia, tema: preferencia === "sistema" ? sistema : preferencia };
+}
+
+/**
+ * Preferencia de pantalla guardada en localStorage (menú plegado, columnas visibles, densidad…).
+ * `validos` descarta valores viejos o ajenos que hubiera en el almacenamiento.
+ */
+export function useGuardado<T extends string>(clave: string, inicial: T, validos?: readonly T[]): [T, (valor: T) => void] {
+  const [valor, setValor] = useState<T>(() => {
+    try {
+      const guardado = localStorage.getItem(clave);
+      return guardado !== null && (!validos || (validos as readonly string[]).includes(guardado)) ? (guardado as T) : inicial;
+    } catch {
+      return inicial;
+    }
+  });
+  const guardar = useCallback((nuevo: T) => {
+    setValor(nuevo);
+    try {
+      localStorage.setItem(clave, nuevo);
+    } catch {
+      /* sin almacenamiento: dura lo que la pestaña */
+    }
+  }, [clave]);
+  return [valor, guardar];
+}
+
+/** Icono de los botones que pliegan o despliegan una columna (menú lateral, panel de controles). */
+export function IconoPanel({ abierto }: { abierto: boolean }) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
+      strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+      <rect x="3" y="4" width="18" height="16" rx="2.5" />
+      <path d="M9.5 4v16" />
+      <path d={abierto ? "M16 10l-2 2 2 2" : "M14 10l2 2-2 2"} />
+    </svg>
+  );
 }
 
 // Colores de datos que tema.css cambia en el tema oscuro (ver las reglas :is(.recharts-wrapper, .cf-graf)).

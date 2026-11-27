@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import Marca from "./marca";
-import { BotonTema } from "./apariencia";
+import { BotonTema, IconoPanel, useGuardado } from "./apariencia";
 import { cerrarSesion, iniciales, usuarioSesion } from "./sesion";
 
 const ICONOS: Record<string, string> = {
@@ -50,12 +50,15 @@ export default function Lateral({ rol, opciones, children }: { rol: string; opci
   const { pathname } = useLocation();
   useEffect(() => setAbierto(false), [pathname]);
   const usuario = usuarioSesion("asesor");
+  // En escritorio el menú se puede plegar a una columna de iconos; la elección se recuerda.
+  const [menu, setMenu] = useGuardado("cuotaflex.menu", "abierto", ["abierto", "plegado"] as const);
+  const plegado = menu === "plegado";
 
   const activa = (o: Opcion) =>
     o.ruta === "/" ? pathname === "/" || (o.incluye ?? []).some((r) => pathname.startsWith(r)) : pathname.startsWith(o.ruta);
 
   return (
-    <div className={`shell ${abierto ? "menu-abierto" : ""}`}>
+    <div className={`shell ${abierto ? "menu-abierto" : ""} ${plegado ? "menu-plegado" : ""}`}>
       <header className="barra-movil">
         <button type="button" className="btn-menu" aria-label="Abrir menú" aria-expanded={abierto} onClick={() => setAbierto(!abierto)}>
           ☰
@@ -66,7 +69,19 @@ export default function Lateral({ rol, opciones, children }: { rol: string; opci
 
       <aside className="lateral" aria-label="Menú principal">
         <div className="lateral-cab">
-          <Marca />
+          <div className="lateral-cab__fila">
+            <Marca />
+            <button
+              type="button"
+              className="lateral-plegar"
+              aria-expanded={!plegado}
+              aria-label={plegado ? "Mostrar el menú completo" : "Plegar el menú"}
+              title={plegado ? "Mostrar el menú completo" : "Plegar el menú"}
+              onClick={() => setMenu(plegado ? "abierto" : "plegado")}
+            >
+              <IconoPanel abierto={!plegado} />
+            </button>
+          </div>
           <div className="rol">{rol}</div>
         </div>
         <nav>
@@ -74,7 +89,7 @@ export default function Lateral({ rol, opciones, children }: { rol: string; opci
             {opciones.map((o) =>
               o.pronto ? (
                 <li key={o.ruta}>
-                  <span className="opcion deshabilitada" aria-disabled="true" title="Disponible al integrar la fase 4">
+                  <span className="opcion deshabilitada" aria-disabled="true" title={`${o.texto}: disponible al integrar la fase 4`}>
                     <span className="icono"><Icono nombre={o.icono} /></span>
                     <span className="textos">
                       <span className="t">{o.texto}</span>
@@ -85,7 +100,12 @@ export default function Lateral({ rol, opciones, children }: { rol: string; opci
                 </li>
               ) : (
                 <li key={o.ruta}>
-                  <NavLink to={o.ruta} className={() => `opcion ${activa(o) ? "activa" : ""}`} aria-current={activa(o) ? "page" : undefined}>
+                  <NavLink
+                    to={o.ruta}
+                    className={() => `opcion ${activa(o) ? "activa" : ""}`}
+                    aria-current={activa(o) ? "page" : undefined}
+                    title={plegado ? o.texto : undefined}
+                  >
                     <span className="icono"><Icono nombre={o.icono} /></span>
                     <span className="textos">
                       <span className="t">{o.texto}</span>
@@ -99,7 +119,7 @@ export default function Lateral({ rol, opciones, children }: { rol: string; opci
         </nav>
         <div className="lateral-pie">
           {usuario && (
-            <div className="usuario">
+            <div className="usuario" title={plegado ? usuario.nombre ?? "Sesión con PIN" : undefined}>
               <span className={`usuario__avatar ${usuario.nombre ? "" : "pin"}`} aria-hidden="true">
                 {iniciales(usuario.nombre)}
               </span>
@@ -111,13 +131,13 @@ export default function Lateral({ rol, opciones, children }: { rol: string; opci
           )}
           <BotonTema className="opcion-sec" texto />
           {import.meta.env.BASE_URL !== "/" && (
-            <a className="opcion-sec" href="/">
-              <Icono nombre="rol" /> Cambiar de rol
+            <a className="opcion-sec" href="/" title={plegado ? "Cambiar de rol" : undefined}>
+              <Icono nombre="rol" /> <span className="opcion-sec__texto">Cambiar de rol</span>
             </a>
           )}
           {usuario && (
-            <button type="button" className="opcion-sec" onClick={() => cerrarSesion("asesor")}>
-              <Icono nombre="salir" /> Salir
+            <button type="button" className="opcion-sec" onClick={() => cerrarSesion("asesor")} title={plegado ? "Salir" : undefined}>
+              <Icono nombre="salir" /> <span className="opcion-sec__texto">Salir</span>
             </button>
           )}
           <div className="nota-pie">Datos 100% sintéticos</div>

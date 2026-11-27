@@ -210,7 +210,7 @@ export default function ChatAgente({ cliente, deshabilitado = false }: { cliente
 const estilos = `
   .chat-agente {
     position: fixed;
-    inset-inline-end: max(16px, calc((100vw - 1272px) / 2));
+    inset-inline-end: max(16px, calc((100vw - var(--ancho-lateral, 264px) - 1600px) / 2 + 24px));
     inset-block-end: max(16px, env(safe-area-inset-bottom));
     z-index: 8;
     width: max-content;

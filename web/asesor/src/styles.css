@@ -14,7 +14,7 @@ button { font: inherit; cursor: pointer; }
 .barra .marca { font-weight: 780; font-size: 18px; letter-spacing: -.02em; }
 .barra .marca span { color: var(--cf-rojo); }
 .barra .sub { color: var(--cf-gris-600); font-size: 13px; }
-.contenido { max-width: 1320px; margin: 0 auto; padding: 28px 32px 64px; }
+.contenido { max-width: 1600px; margin: 0 auto; padding: 28px clamp(20px, 2.4vw, 40px) 64px; }
 
 .tarjeta { background: var(--cf-superficie); border: 1px solid var(--cf-gris-200); border-radius: var(--cf-radio-lg); padding: 20px 22px; }
 .rejilla { display: grid; gap: 18px; }
@@ -186,7 +186,13 @@ a.btn { text-decoration: none; color: var(--cf-tinta); }
 }
 
 /* --- Panel con menú lateral por rol --- */
-.shell { display: grid; grid-template-columns: 264px minmax(0, 1fr); min-height: 100vh; }
+.shell {
+  --ancho-lateral: 264px;
+  display: grid;
+  grid-template-columns: var(--ancho-lateral) minmax(0, 1fr);
+  min-height: 100vh;
+  transition: grid-template-columns var(--cf-medio) var(--cf-curva);
+}
 .shell .contenido { width: 100%; }
 .lateral {
   position: sticky; top: 0; height: 100vh; z-index: 20;
@@ -194,7 +200,19 @@ a.btn { text-decoration: none; color: var(--cf-tinta); }
   background: var(--cf-lateral);
   color: #C3CAD7;
 }
-.lateral-cab { padding: 22px 20px 18px; display: grid; gap: 14px; justify-items: start; }
+.lateral-cab { padding: 22px 14px 18px 20px; display: grid; gap: 14px; justify-items: start; }
+.lateral-cab__fila { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.lateral-plegar {
+  flex: none;
+  display: grid; place-items: center;
+  width: 34px; height: 34px;
+  border: 0; border-radius: 9px;
+  background: none;
+  color: #8E99AE;
+  cursor: pointer;
+  transition: background-color var(--cf-rapido), color var(--cf-rapido);
+}
+.lateral-plegar:hover { background: rgb(255 255 255 / 8%); color: #fff; }
 .lateral .cf-marca, .barra-movil .cf-marca { color: #fff; }
 .lateral .cf-marca__flex { color: #FF8597; }
 .barra-movil .cf-marca { color: var(--cf-tinta); }
@@ -237,8 +255,30 @@ a.btn { text-decoration: none; color: var(--cf-tinta); }
 .nota-pie { font-size: 11.5px; color: #8E99AE; padding: 8px 10px 0; }
 .barra-movil { display: none; }
 .velo { display: none; }
+/* Menú plegado (solo escritorio): una columna de iconos; los textos siguen ahí para lectores de pantalla. */
+@media (min-width: 901px) {
+  .menu-plegado { --ancho-lateral: 76px; }
+  .menu-plegado .lateral-cab { padding: 18px 12px 14px; justify-items: center; }
+  .menu-plegado .lateral-cab__fila { flex-direction: column; gap: 12px; }
+  .menu-plegado .cf-marca__nombre,
+  .menu-plegado .opcion .textos,
+  .menu-plegado .usuario__datos,
+  .menu-plegado .opcion-sec__texto,
+  .menu-plegado .cf-tema-boton__texto {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0;
+    overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+  }
+  .menu-plegado .lateral .rol, .menu-plegado .opcion .pronto, .menu-plegado .nota-pie, .menu-plegado .cf-interruptor { display: none; }
+  .menu-plegado .lateral nav { padding: 8px 12px; }
+  .menu-plegado .opcion { justify-content: center; padding: 11px 0; }
+  .menu-plegado .lateral-pie { padding: 12px 10px 14px; align-items: center; }
+  .menu-plegado .usuario { padding: 4px 0 8px; justify-content: center; }
+  .menu-plegado .opcion-sec, .menu-plegado .lateral .opcion-sec[role="switch"] { width: 44px; height: 40px; padding: 0; justify-content: center; }
+}
+
 @media (max-width: 900px) {
   .shell { grid-template-columns: minmax(0, 1fr); }
+  .lateral-plegar { display: none; }
   .rejilla > * { min-width: 0; }
   .barra-movil { display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 15; background: var(--cf-vidrio); backdrop-filter: blur(8px); border-bottom: 1px solid var(--cf-gris-200); padding: 10px 12px; }
   .btn-menu { display: grid; place-items: center; border: 1px solid var(--cf-gris-300); background: var(--cf-superficie); color: var(--cf-tinta); border-radius: 10px; width: 40px; height: 40px; font-size: 18px; }
@@ -436,3 +476,69 @@ tr.pd-proxima td { background: var(--cf-azul-suave); }
 }
 .tooltip-graf span { color: var(--cf-gris-600); }
 tr.pd-proxima .etiqueta { background: var(--cf-superficie); }
+
+/* ---------- Bandeja: columnas visibles y altura de filas ---------- */
+.selector-columnas { position: relative; }
+.selector-columnas > .btn { display: inline-flex; align-items: center; gap: 8px; }
+.selector-columnas__cuenta {
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--cf-gris-100);
+  color: var(--cf-gris-700);
+  font-size: 12px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+.selector-columnas__panel {
+  position: absolute; right: 0; top: calc(100% + 6px); z-index: 40;
+  width: min(392px, calc(100vw - 32px));
+  display: grid; gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--cf-gris-200);
+  border-radius: 14px;
+  background: var(--cf-superficie);
+  box-shadow: var(--cf-sombra-2);
+  animation: cf-menu-abre 150ms var(--cf-curva);
+}
+.selector-columnas__bloque { margin: 0; padding: 0; border: 0; min-width: 0; }
+.selector-columnas__titulo { display: block; margin: 0 0 8px; padding: 0; font-size: 12.5px; font-weight: 650; color: var(--cf-gris-600); }
+.selector-columnas__vistas { display: flex; flex-wrap: wrap; gap: 6px; }
+.selector-columnas__vistas .chip { min-height: 32px; }
+.selector-columnas__casillas { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+.selector-columnas__casillas label { display: flex; align-items: center; gap: 8px; min-height: 32px; font-size: 13.5px; font-weight: 500; color: var(--cf-tinta); cursor: pointer; }
+.selector-columnas__casillas label.fija { color: var(--cf-gris-600); cursor: default; }
+.selector-columnas__casillas input { width: 16px; height: 16px; min-height: 0; margin: 0; padding: 0; accent-color: var(--cf-azul); }
+.selector-columnas__pie { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; border-top: 1px solid var(--cf-gris-100); }
+.tabla-bandeja.compacta td { padding-top: 6px; padding-bottom: 6px; }
+.tabla-bandeja.compacta .etiqueta { padding-top: 1px; padding-bottom: 1px; }
+.bandeja-cab { align-items: center; margin-bottom: 18px; }
+/* El foco de teclado se dibuja en las celdas: las columnas fijas taparían el contorno de la fila. */
+.tabla-bandeja tbody tr.clic:focus-visible { outline: none; }
+.tabla-bandeja tbody tr.clic:focus-visible > td { box-shadow: inset 0 2px 0 var(--cf-azul), inset 0 -2px 0 var(--cf-azul); }
+.tabla-bandeja tbody tr.clic:focus-visible > td:first-child { box-shadow: inset 2px 0 0 var(--cf-azul), inset 0 2px 0 var(--cf-azul), inset 0 -2px 0 var(--cf-azul); }
+.tabla-bandeja tbody tr.clic:focus-visible > td:last-child { box-shadow: inset -2px 0 0 var(--cf-azul), inset 0 2px 0 var(--cf-azul), inset 0 -2px 0 var(--cf-azul); }
+.bandeja-herramientas { margin-bottom: 14px; }
+/* En escritorio la tabla se desliza si hay muchas columnas: el código y "Ver" se quedan a la vista,
+   y una sombra en el borde avisa que hay más columnas a ese lado. */
+.tabla-desliza { --sombra-desliza: rgb(16 24 40 / 12%); }
+[data-tema="oscuro"] .tabla-desliza { --sombra-desliza: rgb(0 0 0 / 50%); }
+@media (min-width: 721px) {
+  .tabla-bandeja td { white-space: nowrap; }
+  .tabla-bandeja :is(th, td):is(:first-child, :last-child) { position: sticky; z-index: 1; background: var(--cf-superficie); }
+  .tabla-bandeja :is(th, td):first-child { left: 0; }
+  .tabla-bandeja :is(th, td):last-child { right: 0; }
+  .tabla-bandeja tbody tr.clic:hover > td { background: var(--cf-superficie-alt); }
+  .tabla-bandeja :is(th, td):is(:first-child, :last-child)::after {
+    content: ""; position: absolute; top: 0; bottom: 0; width: 14px;
+    pointer-events: none; opacity: 0; transition: opacity var(--cf-rapido);
+  }
+  .tabla-bandeja :is(th, td):first-child::after { left: 100%; background: linear-gradient(to right, var(--sombra-desliza), transparent); }
+  .tabla-bandeja :is(th, td):last-child::after { right: 100%; background: linear-gradient(to left, var(--sombra-desliza), transparent); }
+  .tabla-desliza.sombra-izq .tabla-bandeja :is(th, td):first-child::after,
+  .tabla-desliza.sombra-der .tabla-bandeja :is(th, td):last-child::after { opacity: 1; }
+}
+@media (max-width: 720px) {
+  .bandeja-cab > .espacio, .bandeja-herramientas > .espacio { display: none; }
+  /* En el teléfono la tabla muestra solo código, rubro y monto: elegir columnas no aplica. */
+  .bandeja-herramientas .selector-columnas { display: none; }
+}
