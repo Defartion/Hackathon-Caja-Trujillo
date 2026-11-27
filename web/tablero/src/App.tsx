@@ -22,6 +22,7 @@ import Indicadores from './components/Indicadores';
 import PanelControles from './components/PanelControles';
 import AlertaNino from './components/AlertaNino';
 import Avisos from './components/Avisos';
+import Equipo from './components/Equipo';
 import NavSupervisor from './components/NavSupervisor';
 import type { Vista } from './components/NavSupervisor';
 import Marca from './marca';
@@ -211,7 +212,9 @@ export default function App() {
           onPlegar={() => setMenu(menu === 'plegado' ? 'abierto' : 'plegado')}
         />
         {vista !== 'simular' ? (
-          <main className="principal">{vista === 'alerta' ? <AlertaNino /> : <Avisos />}</main>
+          <main className="principal">
+            {vista === 'alerta' ? <AlertaNino /> : vista === 'equipo' ? <Equipo /> : <Avisos />}
+          </main>
         ) : (
         <>
         {parametros.length > 0 ? (

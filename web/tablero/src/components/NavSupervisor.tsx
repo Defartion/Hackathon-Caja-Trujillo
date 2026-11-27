@@ -3,12 +3,13 @@ import { pedir } from '../api';
 import { BotonTema, IconoPanel } from '../apariencia';
 import { cerrarSesion, iniciales, usuarioSesion } from '../sesion';
 
-export type Vista = 'simular' | 'alerta' | 'avisos';
+export type Vista = 'simular' | 'alerta' | 'avisos' | 'equipo';
 
 const ICONOS: Record<string, string> = {
   simular: 'M4 20V10M10 20V4M16 20v-7M22 20H2',
   alerta: 'M12 3l10 18H2zM12 10v5M12 18v.5',
   avisos: 'M4 5h16v11H8l-4 4z',
+  equipo: 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75',
   reiniciar: 'M4 12a8 8 0 1 0 3-6.2M4 4v4h4',
   rol: 'M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3',
   salir: 'M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 16l4-4-4-4M14 12H4',
@@ -30,6 +31,7 @@ const OPCIONES: { id: Vista; texto: string; ayuda: string }[] = [
   { id: 'simular', texto: 'Simular cartera', ayuda: 'Cuota fija vs. Thinku' },
   ...(MOSTRAR_CREDITO_VIGENTE ? [{ id: 'alerta' as Vista, texto: 'Alerta El Niño', ayuda: 'Estado y alivio de cuotas' }] : []),
   { id: 'avisos', texto: 'Avisos a clientes', ayuda: 'Recordatorios de pago' },
+  { id: 'equipo', texto: 'Equipo', ayuda: 'Usuarios y PIN personales' },
 ];
 
 
