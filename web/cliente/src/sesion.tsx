@@ -569,7 +569,7 @@ function Acceso({
                 <label htmlFor="acc-pin">
                   {modo === "pin" ? `PIN general de ${rol}` : rol === "cliente" ? "Código de acceso" : "PIN personal"}
                 </label>
-                <div className="acc-pin" data-error={errores.pin ? true : undefined}>
+                <div className="acc-pin" data-casillas={casillas} data-error={errores.pin ? true : undefined}>
                   <input
                     {...props("pin")}
                     className="acc-pin__input"
