@@ -87,8 +87,9 @@ def _cargar_remota(db: dict[str, dict]) -> int:
     global _version_local
     from . import almacen
 
-    _version_local = almacen.leer(_CLAVE_VERSION)
+    version = almacen.leer(_CLAVE_VERSION)
     texto = almacen.leer(_CLAVE_REMOTA)
+    _version_local = version  # solo si ambas lecturas salieron bien; si no, desactualizada() reintenta
     for t in TIPOS:
         db.setdefault(t, {}).clear()
     if not texto:

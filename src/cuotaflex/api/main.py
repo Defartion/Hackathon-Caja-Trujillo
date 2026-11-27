@@ -50,11 +50,19 @@ def guardar_instantanea() -> None:
                 print(f"[persistencia] no se pudo guardar la instantánea: {e}")
 
 
+CARGA_FALLIDA = False  # True si al arrancar no se pudo leer la instantánea (p. ej. Upstash caído)
+
+
 def cargar_instantanea() -> None:
-    global _ids
+    global _ids, CARGA_FALLIDA
     if persistencia.activa():
         with _candado_db:
-            _ids = count(persistencia.cargar(DB))
+            try:
+                _ids = count(persistencia.cargar(DB))
+                CARGA_FALLIDA = False
+            except Exception as e:  # se arranca con lo que haya; desactualizada() recarga cuando vuelva
+                print(f"[persistencia] no se pudo cargar la instantánea: {e}")
+                CARGA_FALLIDA = True
 
 
 @app.middleware("http")
