@@ -46,7 +46,8 @@ APPS = ("asesor", "cliente", "tablero")
 
 def _sembrar_si_vacio() -> None:
     """Tras un arranque en frío la demo nunca queda vacía."""
-    if os.getenv("CUOTAFLEX_SEMBRAR_DEMO", "1") != "1" or api.DB["loans"]:
+    # Si no se pudo leer la instantánea (Upstash caído), no se siembra: sembrar borra la instantánea guardada.
+    if os.getenv("CUOTAFLEX_SEMBRAR_DEMO", "1") != "1" or api.DB["loans"] or api.CARGA_FALLIDA:
         return
     try:
         from cuotaflex.api.routers.admin import reset

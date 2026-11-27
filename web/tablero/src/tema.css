@@ -416,6 +416,9 @@ button, a, input, select, textarea, summary { -webkit-tap-highlight-color: trans
 .acc-pin__casilla.llena::after { content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--cf-tinta); animation: acc-punto 160ms var(--cf-curva); }
 .acc-pin__casilla.activa { border-color: var(--cf-azul); box-shadow: var(--cf-anillo); }
 .acc-pin[data-error="true"] .acc-pin__casilla { border-color: var(--cf-rojo); }
+/* Fase 4: el código o PIN personal tiene 6 dígitos: las casillas se ajustan al ancho en vez de saltar de línea. */
+.acc-pin[data-casillas="6"] { flex-wrap: nowrap; gap: 8px; }
+.acc-pin[data-casillas="6"] .acc-pin__casilla { flex: 1 1 0; width: auto; min-width: 0; max-width: 58px; }
 @keyframes acc-punto { from { transform: scale(.2); } }
 
 .acc-boton {

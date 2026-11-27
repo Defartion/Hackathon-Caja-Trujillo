@@ -6,6 +6,7 @@ import type { Documento } from "../exportar";
 import { fmtPct, fmtS, fmtS0, RUBRO_ETIQUETA } from "../formato";
 import MenuExportar from "../MenuExportar";
 import { ESTADOS, PRODUCTO } from "./Prestamos";
+import CodigoCliente from "../components/CodigoCliente";
 
 const ESTADO_CUOTA: Record<CuotaDetalle["estado"], { texto: string; clase: string }> = {
   pagada: { texto: "Pagada", clase: "baja" },
@@ -240,6 +241,11 @@ export default function PrestamoDetalle() {
             <span>Saldo de capital {fmtS(d.resumen.saldoCapital)}</span>
           </div>
         </div>
+      </section>
+
+      <section className="tarjeta" aria-labelledby="pd-acceso">
+        <h2 id="pd-acceso" className="sr-solo">Acceso del cliente</h2>
+        <CodigoCliente prestamo={d.id} />
       </section>
 
       <div className="pd-columnas">

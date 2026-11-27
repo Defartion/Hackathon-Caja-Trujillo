@@ -44,14 +44,25 @@ def siguiente_id() -> int:
 def guardar_instantanea() -> None:
     if persistencia.activa():
         with _candado_db:
-            persistencia.guardar(DB, siguiente_id())
+            try:
+                persistencia.guardar(DB, siguiente_id())
+            except Exception as e:  # p. ej. Upstash caído: la operación ya se hizo en memoria, no se rompe la respuesta
+                print(f"[persistencia] no se pudo guardar la instantánea: {e}")
+
+
+CARGA_FALLIDA = False  # True si al arrancar no se pudo leer la instantánea (p. ej. Upstash caído)
 
 
 def cargar_instantanea() -> None:
-    global _ids
+    global _ids, CARGA_FALLIDA
     if persistencia.activa():
         with _candado_db:
-            _ids = count(persistencia.cargar(DB))
+            try:
+                _ids = count(persistencia.cargar(DB))
+                CARGA_FALLIDA = False
+            except Exception as e:  # se arranca con lo que haya; desactualizada() recarga cuando vuelva
+                print(f"[persistencia] no se pudo cargar la instantánea: {e}")
+                CARGA_FALLIDA = True
 
 
 @app.middleware("http")
@@ -70,9 +81,13 @@ async def _persistir(request: Request, call_next):
 
 @app.middleware("http")
 async def _autorizar(request: Request, call_next):
-    """Fase 3: con CUOTAFLEX_AUTH=1 cada prefijo exige un rol (ver routers/auth.py)."""
+    """Fase 3: con CUOTAFLEX_AUTH=1 cada prefijo exige un rol (ver routers/auth.py).
+    Fase 4: antes de nada se recarga la instantánea si otra instancia la cambió en Upstash, y las llaves
+    personales (código del préstamo, usuario + PIN) se revisan en cuotaflex/llaves.py."""
     from .routers import auth
 
+    if persistencia.desactualizada():
+        cargar_instantanea()
     if not auth.activa() or request.method == "OPTIONS":
         return await call_next(request)
     ruta = request.url.path
@@ -83,11 +98,17 @@ async def _autorizar(request: Request, call_next):
     if roles == set():
         return await call_next(request)
     encabezado = request.headers.get("authorization", "")
-    rol = auth.verificar_token(encabezado[7:]) if encabezado.lower().startswith("bearer ") else None
-    if rol is None:
-        return JSONResponse({"detail": "Inicia sesión con el PIN de tu rol."}, status_code=401)
+    datos = auth.datos_token(encabezado[7:]) if encabezado.lower().startswith("bearer ") else None
+    if datos is None:
+        return JSONResponse({"detail": "Inicia sesión con tu llave o el PIN de tu rol."}, status_code=401)
+    rol = datos["rol"]
     if roles is not None and rol not in roles:
         return JSONResponse({"detail": f"El rol {rol} no tiene acceso a esta sección."}, status_code=403)
+    from .. import llaves
+
+    problema = llaves.revisar(datos, ruta, request.method)
+    if problema:
+        return JSONResponse({"detail": problema[1]}, status_code=problema[0])
     return await call_next(request)
 agente = AgenteAsesor(metodo_pronostico="perfil")
 
@@ -164,6 +185,9 @@ def crear_prestamo(p: PrestamoIn):
                         "tea": prop["tea"], "producto": prop["producto"], "propuesta": prop,
                         "cuotas": [f["cuota"] for f in prop["cronograma"]],
                         "aplazamientosRestantes": prop["aplazamientos_disponibles"], "pagos": []}
+    from .. import llaves
+
+    llaves.preparar_prestamo(DB["loans"][lid])  # fase 4: llave del cliente (código de 6 dígitos)
     return {"loanId": lid, "resourceId": lid, "producto": prop["producto"], "explicacion": prop["explicacion"]}
 
 

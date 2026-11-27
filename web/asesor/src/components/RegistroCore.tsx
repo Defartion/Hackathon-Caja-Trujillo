@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { api, Cliente, Prestamo, Propuesta } from "../api";
 import { fmtS } from "../formato";
+import CodigoCliente from "./CodigoCliente";
 
 type Estado = { loanId: number; status: string; aviso?: string };
 
@@ -84,6 +85,11 @@ export default function RegistroCore({ cliente, propuesta }: { cliente: Cliente;
             </div>
           </div>
           {estado.aviso && <div className="info" style={{ marginBottom: 10 }}>{estado.aviso}</div>}
+          {estado.status === "Active" && (
+            <div style={{ marginBottom: 12 }}>
+              <CodigoCliente prestamo={estado.loanId} />
+            </div>
+          )}
           <div className="fila">
             {estado.status === "Submitted and pending approval" && (
               <button className="btn btn-primario" disabled={ocupado} onClick={() => comando("approve")}>

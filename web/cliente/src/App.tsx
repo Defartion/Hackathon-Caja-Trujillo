@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import MenuCliente from './MenuCliente'
 import Marca from './marca'
-import { usuarioSesion } from './sesion'
+import { usuarioSesion, vincularPrestamo } from './sesion'
 import {
   CalendarDays, CheckCircle2, CircleHelp, FlaskConical, House, LoaderCircle,
   TriangleAlert, UserRound, WalletCards,
@@ -99,7 +99,17 @@ function PanelDemo({
 
 export default function App() {
   const [idEnUrl] = useState(prestamoEnUrl)
-  const [idInicial] = useState(() => idEnUrl ?? leerPrestamo())
+  // Fase 4: con el código del préstamo (o una cuenta vinculada) la sesión está atada a un préstamo y manda.
+  const [atado] = useState(() => usuarioSesion('cliente')?.prestamo ?? null)
+  const [idInicial] = useState(() => atado ?? idEnUrl ?? leerPrestamo())
+  useEffect(() => {
+    // Si el enlace trae otro número, se corrige: con el código solo se ve el préstamo propio.
+    if (atado !== null && idEnUrl !== null && idEnUrl !== atado) {
+      const url = new URL(window.location.href)
+      url.searchParams.set('loanId', String(atado))
+      window.history.replaceState(null, '', url)
+    }
+  }, [atado, idEnUrl])
   const [id, setId] = useState<number | null>(idInicial)
   const [prestamo, setPrestamo] = useState<Prestamo | null>(null)
   const [cargando, setCargando] = useState(idInicial !== null)
@@ -118,6 +128,11 @@ export default function App() {
   const contenido = useRef<HTMLElement>(null)
   const demo = new URLSearchParams(window.location.search).get('demo') === '1'
   const [cuenta] = useState(() => usuarioSesion('cliente')?.nombre?.trim().split(/\s+/)[0] ?? null)
+  // Cuenta con correo que aún no vincula su préstamo: se le pide el número y el código de su asesor.
+  const [conCuenta] = useState(() => {
+    const u = usuarioSesion('cliente')
+    return !!u?.nombre && u.prestamo === null
+  })
 
   useEffect(() => {
     const controller = new AbortController()
@@ -354,7 +369,11 @@ export default function App() {
           <section className="empty-state">
             <div className="empty-state__icon"><WalletCards size={28} aria-hidden="true" /></div>
             <h1>{cuenta ? `Hola, ${cuenta}` : 'Hola, qué gusto verte'}</h1>
-            <p>Crea un crédito de demo para consultar sus cuotas y probar cómo funciona Thinku.</p>
+            {conCuenta ? (
+              <VincularPrestamo />
+            ) : (
+              <p>Crea un crédito de demo para consultar sus cuotas y probar cómo funciona Thinku.</p>
+            )}
           </section>
         )}
         {listo && (
@@ -445,5 +464,57 @@ export default function App() {
         </nav>
       )}
     </div>
+  )
+}
+
+
+/** Fase 4: la cuenta del cliente se liga a su préstamo con el código de 6 dígitos que le dio el asesor. */
+function VincularPrestamo() {
+  const [prestamo, setPrestamo] = useState('')
+  const [codigo, setCodigo] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [ocupado, setOcupado] = useState(false)
+
+  async function enviar(e: React.FormEvent) {
+    e.preventDefault()
+    if (!/^\d+$/.test(prestamo.trim()) || !/^\d{6}$/.test(codigo)) {
+      setError('Escribe el número de tu préstamo y el código de 6 dígitos.')
+      return
+    }
+    setOcupado(true)
+    setError(null)
+    try {
+      await vincularPrestamo(Number(prestamo.trim()), codigo)
+      const url = new URL(window.location.href)
+      url.searchParams.delete('loanId')
+      window.location.replace(url.toString())
+    } catch (causa) {
+      setError(causa instanceof Error ? causa.message : 'No se pudo vincular. Intenta de nuevo.')
+      setOcupado(false)
+    }
+  }
+
+  return (
+    <form className="vincular" onSubmit={enviar} noValidate>
+      <p>Para ver tu crédito, escribe el número de préstamo y el código de 6 dígitos que te envió tu asesor. Solo lo haces una vez.</p>
+      <label>
+        Número de préstamo
+        <input inputMode="numeric" autoComplete="off" value={prestamo} onChange={e => setPrestamo(e.target.value)} />
+      </label>
+      <label>
+        Código de acceso
+        <input
+          inputMode="numeric"
+          autoComplete="one-time-code"
+          maxLength={6}
+          value={codigo}
+          onChange={e => setCodigo(e.target.value.replace(/\D/g, ''))}
+        />
+      </label>
+      {error && <p className="vincular__error" role="alert">{error}</p>}
+      <button className="button button--primary" disabled={ocupado}>
+        {ocupado ? 'Vinculando…' : 'Ver mi crédito'}
+      </button>
+    </form>
   )
 }

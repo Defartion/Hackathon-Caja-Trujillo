@@ -748,3 +748,10 @@ h1 + .feedback { margin-block-start: .85rem; }
   .schedule-row__flecha, .mini-row__flecha { display: none; }
   .schedule-row__boton, .mini-row { grid-template-columns: auto minmax(0, 1fr) auto; }
 }
+
+/* Fase 4: vincular la cuenta con el préstamo */
+.vincular { display: grid; gap: .8rem; text-align: start; inline-size: min(100%, 24rem); margin-inline: auto; margin-block-start: .5rem; }
+.vincular p { margin: 0; }
+.vincular label { display: grid; gap: .35rem; font-weight: 600; font-size: .9rem; }
+.vincular input { block-size: 2.75rem; padding-inline: .8rem; border: 1px solid var(--cf-gris-300, #d0d5dd); border-radius: var(--cf-radio); background: var(--cf-superficie, #fff); color: inherit; font: inherit; }
+.vincular__error { color: var(--cf-rojo); font-size: .9rem; }

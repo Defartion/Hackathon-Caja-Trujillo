@@ -28,7 +28,7 @@ import time
 import unicodedata
 from datetime import datetime
 
-from . import persistencia
+from . import almacen, persistencia
 
 ROLES = ("asesor", "cliente", "supervisor")
 MIN_CONTRASENA = 8
@@ -155,6 +155,8 @@ def _fila_a_cuenta(fila) -> dict:
 
 def buscar(correo: str) -> dict | None:
     correo = normalizar_correo(correo)
+    if almacen.remoto():  # fase 4: en Vercel, Upstash para que las cuentas no se borren
+        return almacen.leer_json(f"cuenta:{correo}")
     if persistencia.activa():
         with _candado, _conectar() as con:
             fila = con.execute("SELECT id, correo, nombre, rol, hash, creado FROM cuentas WHERE correo = ?",
@@ -167,6 +169,15 @@ def buscar(correo: str) -> dict | None:
 
 def _guardar_nueva(correo: str, nombre: str, rol: str, h: str) -> dict:
     creado = datetime.now().isoformat(timespec="seconds")
+    if almacen.remoto():
+        if almacen.leer(f"cuenta:{correo}") is not None:
+            raise ErrorCuenta(409, "Ya existe una cuenta con ese correo. Ingresa con tu contraseña.", "correo")
+        cuenta = {"id": almacen.incrementar("cuentas:ultimo_id"), "correo": correo, "nombre": nombre, "rol": rol,
+                  "hash": h, "creado": creado}
+        if not almacen.escribir_json(f"cuenta:{correo}", cuenta, solo_si_no_existe=True):
+            raise ErrorCuenta(409, "Ya existe una cuenta con ese correo. Ingresa con tu contraseña.", "correo")
+        almacen.escribir(f"cuenta-id:{cuenta['id']}", correo)
+        return dict(cuenta)
     if persistencia.activa():
         try:
             with _candado, _conectar() as con:
@@ -185,6 +196,9 @@ def _guardar_nueva(correo: str, nombre: str, rol: str, h: str) -> dict:
 
 
 def por_id(cuenta_id: int) -> dict | None:
+    if almacen.remoto():
+        correo = almacen.leer(f"cuenta-id:{int(cuenta_id)}")
+        return almacen.leer_json(f"cuenta:{correo}") if correo else None
     if persistencia.activa():
         if not persistencia.ruta_db().exists():
             return None
@@ -250,6 +264,9 @@ def borrar_todo() -> None:
     with _candado:
         _memoria.clear()
         _fallidos.clear()
+    if almacen.remoto():
+        almacen.borrar(*almacen.claves("cuenta:"), *almacen.claves("cuenta-id:"), "cuentas:ultimo_id")
+        return
     if persistencia.activa() and persistencia.ruta_db().exists():
         with _candado, _conectar() as con:
             con.execute("DELETE FROM cuentas")

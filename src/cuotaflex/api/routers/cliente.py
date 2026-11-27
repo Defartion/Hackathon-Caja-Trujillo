@@ -118,6 +118,11 @@ def demo_seed(producto: Literal["estacional", "aplazamiento"] = "estacional"):
         productoPreferido=producto,
     ))
     loan_id = prestamo["loanId"]
+    # Fase 4: llave fija por número para los préstamos de demo, así su código sobrevive a un reinicio
+    # (al volver a sembrar se recrean con el mismo número) y el jurado no lo ve cambiar.
+    from ... import llaves
+
+    llaves.preparar_prestamo(api.DB["loans"][loan_id], uid=f"demo-{loan_id}")
     with _bloqueo:
         api.comando_prestamo(loan_id, "approve")
         api.comando_prestamo(loan_id, "disburse")

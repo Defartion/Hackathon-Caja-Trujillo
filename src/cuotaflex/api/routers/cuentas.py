@@ -36,7 +36,12 @@ class Ingreso(BaseModel):
 
 
 def _sesion(cuenta: dict) -> dict:
-    token = auth.emitir_token(cuenta["rol"], extra={"id": cuenta["id"], "nombre": cuenta["nombre"]})
+    extra = {"id": cuenta["id"], "nombre": cuenta["nombre"]}
+    if cuenta["rol"] == "cliente":  # fase 4: si la cuenta ya vinculó su préstamo, la sesión solo ve ese préstamo
+        from ... import llaves
+
+        extra.update(llaves.vinculo_cuenta(cuenta["id"]))
+    token = auth.emitir_token(cuenta["rol"], extra=extra)
     return {"token": token, "rol": cuenta["rol"], "expira_en_s": auth.DURACION_S, "usuario": cuenta}
 
 
@@ -78,4 +83,10 @@ def yo(authorization: str | None = Header(None)):
         perfil.update(metodo="cuenta", id=datos["id"], nombre=datos.get("nombre"))
         if cuenta:
             perfil.update(nombre=cuenta["nombre"], correo=cuenta["correo"], creado=cuenta["creado"])
+    elif datos.get("usuario"):  # fase 4: usuario + PIN personal
+        perfil.update(metodo="personal", nombre=datos.get("nombre"), usuario=datos["usuario"])
+    elif datos.get("prestamo") is not None:  # fase 4: código del préstamo
+        perfil.update(metodo="codigo", nombre=datos.get("nombre"))
+    if datos.get("prestamo") is not None:
+        perfil["prestamo"] = datos["prestamo"]
     return perfil
