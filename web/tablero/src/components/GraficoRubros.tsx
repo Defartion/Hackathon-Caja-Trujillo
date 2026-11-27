@@ -25,7 +25,7 @@ function Tip({ active, payload }: { active?: boolean; payload?: { payload: Fila 
         <span className="muestra fija" /> Fija: {pct1(f.fija)}
       </div>
       <div className="tt-fila">
-        <span className="muestra flex" /> CuotaFlex: {pct1(f.flex)}
+        <span className="muestra flex" /> Thinku: {pct1(f.flex)}
       </div>
       <div>
         Diferencia: {d > 0 ? '+' : d < 0 ? '−' : ''}
@@ -71,7 +71,7 @@ export default function GraficoRubros({ resumen }: { resumen: Resumen }) {
         <Tooltip content={<Tip />} cursor={{ fill: '#EEF1F5' }} />
         <Legend verticalAlign="top" height={28} iconType="square" iconSize={10} />
         <Bar dataKey="fija" name="Fija" fill={COLOR_FIJA} maxBarSize={24} radius={[4, 4, 0, 0]} isAnimationActive={false} />
-        <Bar dataKey="flex" name="CuotaFlex" fill={COLOR_FLEX} maxBarSize={24} radius={[4, 4, 0, 0]} isAnimationActive={false} />
+        <Bar dataKey="flex" name="Thinku" fill={COLOR_FLEX} maxBarSize={24} radius={[4, 4, 0, 0]} isAnimationActive={false} />
       </BarChart>
     </ResponsiveContainer>
   );
@@ -82,7 +82,7 @@ export default function GraficoRubros({ resumen }: { resumen: Resumen }) {
         <tr>
           <th>Rubro</th>
           <th className="num">Fija</th>
-          <th className="num">CuotaFlex</th>
+          <th className="num">Thinku</th>
           <th className="num">Diferencia</th>
         </tr>
       </thead>

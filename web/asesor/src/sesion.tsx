@@ -150,7 +150,7 @@ const ROTULO: Record<Rol, string> = { asesor: "Asesor de negocios", cliente: "Cl
 const LEMA: Record<Rol, string> = {
   asesor: "Evalúa solicitudes y arma planes de cuotas que siguen la temporada de cada negocio.",
   cliente: "Consulta tu próxima cuota y tu cronograma cuando quieras, desde el celular.",
-  supervisor: "Compara la cuota fija con CuotaFlex en miles de escenarios, con El Niño incluido.",
+  supervisor: "Compara la cuota fija con Thinku en miles de escenarios, con El Niño incluido.",
 };
 const CABECERA: Record<Modo, string> = {
   ingresar: "Ingresa a tu cuenta",

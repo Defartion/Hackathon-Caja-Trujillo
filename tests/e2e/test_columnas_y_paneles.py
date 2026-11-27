@@ -1,4 +1,4 @@
-"""Lote 3 en el navegador: columnas de la bandeja y menús plegables.
+"""Lote 3 en el navegador: columnas de la bandeja, menús plegables y el nombre Thinku.
 
 Ejecutar: pytest tests/e2e/test_columnas_y_paneles.py
 """
@@ -28,6 +28,7 @@ def test_asesor_elige_las_columnas_de_la_bandeja(demo, explorador, comprobar):
     pagina = contexto.new_page()
     pagina.goto(demo.apps["asesor"])
     comprobar(pagina.get_by_role("cell", name="E001", exact=True)).to_be_visible(timeout=25_000)
+    comprobar(pagina).to_have_title("Thinku · Asesor")
     cabecera = pagina.locator(".tabla-bandeja thead th")
     tabla = pagina.locator(".tabla-bandeja")
     comprobar(cabecera).to_have_text(POR_DEFECTO)
@@ -90,6 +91,7 @@ def test_supervisor_pliega_el_menu_y_los_controles(demo, explorador, comprobar):
     pagina = contexto.new_page()
     pagina.goto(demo.apps["tablero"])
     comprobar(pagina.locator(".cab-corrida")).to_be_visible(timeout=120_000)
+    comprobar(pagina).to_have_title("Thinku · Tablero de simulación")
     base = pagina.get_by_role("button", name="Base", exact=True)
     comprobar(base).to_be_visible()
 

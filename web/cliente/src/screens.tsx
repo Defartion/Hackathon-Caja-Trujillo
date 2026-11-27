@@ -160,7 +160,7 @@ export function Inicio({
     <>
       <div className="welcome">
         <h1>{nombre ? `Hola, ${nombre}` : 'Hola, qué gusto verte'}</h1>
-        <p>{nombreProducto[prestamo.producto] ?? 'Tu crédito CuotaFlex'}</p>
+        <p>{nombreProducto[prestamo.producto] ?? 'Tu crédito Thinku'}</p>
       </div>
       {alerta && (
         <section className="alert-card" aria-label="Alerta El Niño">
@@ -616,7 +616,7 @@ export function PerfilCliente({
         <span className="profile-head__avatar" aria-hidden="true">{nombre ? iniciales(nombre) : '•'}</span>
         <div>
           <h1>{nombre ?? 'Mi perfil'}</h1>
-          <p>{!sesion ? 'Modo demo, sin iniciar sesión' : metodo === 'cuenta' ? 'Cliente con cuenta CuotaFlex' : 'Entraste con el PIN de cliente'}</p>
+          <p>{!sesion ? 'Modo demo, sin iniciar sesión' : metodo === 'cuenta' ? 'Cliente con cuenta Thinku' : 'Entraste con el PIN de cliente'}</p>
         </div>
       </div>
 

@@ -27,7 +27,7 @@ function Icono({ nombre }: { nombre: string }) {
 const MOSTRAR_CREDITO_VIGENTE = false;
 
 const OPCIONES: { id: Vista; texto: string; ayuda: string }[] = [
-  { id: 'simular', texto: 'Simular cartera', ayuda: 'Cuota fija vs. CuotaFlex' },
+  { id: 'simular', texto: 'Simular cartera', ayuda: 'Cuota fija vs. Thinku' },
   ...(MOSTRAR_CREDITO_VIGENTE ? [{ id: 'alerta' as Vista, texto: 'Alerta El Niño', ayuda: 'Estado y alivio de cuotas' }] : []),
   { id: 'avisos', texto: 'Avisos a clientes', ayuda: 'Recordatorios de pago' },
 ];

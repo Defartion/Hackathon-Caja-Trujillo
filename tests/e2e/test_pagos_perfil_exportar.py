@@ -140,7 +140,7 @@ def test_cliente_descarga_su_cronograma_en_los_cinco_formatos(demo, explorador, 
     comprobar(pagina.get_by_role("menu")).to_be_hidden()
 
     pdf = _descargar(pagina, "Descargar", "PDF", tmp_path)
-    assert pdf.name.startswith(f"cuotaflex-cronograma-credito-{loan_id}-") and pdf.suffix == ".pdf"
+    assert pdf.name.startswith(f"thinku-cronograma-credito-{loan_id}-") and pdf.suffix == ".pdf"
     contenido = pdf.read_bytes()
     assert contenido.startswith(b"%PDF-1.4") and contenido.rstrip().endswith(b"%%EOF")
     texto = "\n".join(p.extract_text() for p in PdfReader(pdf).pages)
@@ -227,5 +227,5 @@ def test_tablero_exporta_los_resultados_de_la_corrida(demo, explorador, comproba
     titulos = [t["titulo"] for t in datos["tablas"]]
     assert titulos == ["Por estrategia", "Por rubro", "Productos asignados", "VPN por crédito", "Créditos simulados"]
     estrategias = {f["estrategia"]: f for f in datos["tablas"][0]["filas"]}
-    assert set(estrategias) == {"Cuota fija", "CuotaFlex"}
-    assert 0 <= estrategias["CuotaFlex"]["mora"] <= 1
+    assert set(estrategias) == {"Cuota fija", "Thinku"}
+    assert 0 <= estrategias["Thinku"]["mora"] <= 1

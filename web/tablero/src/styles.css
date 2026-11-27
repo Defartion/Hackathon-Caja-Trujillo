@@ -251,7 +251,7 @@ button { font-family: inherit; font-size: inherit; color: inherit; }
   padding: 0 4px;
 }
 
-/* ---------- KPIs: la cifra de CuotaFlex manda; la fija queda como referencia ---------- */
+/* ---------- KPIs: la cifra de Thinku manda; la fija queda como referencia ---------- */
 .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
 .kpi {
   background: var(--cf-superficie);

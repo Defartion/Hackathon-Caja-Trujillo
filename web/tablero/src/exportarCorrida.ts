@@ -14,16 +14,16 @@ export function documentoCorrida(c: Corrida): Documento {
   return {
     archivo: `simulacion-corrida-${c.num}`,
     titulo: `Simulación, corrida #${c.num}: ${c.escenario}`,
-    subtitulo: `${t.n_clientes} créditos por ${t.n_escenarios} escenarios, ${c.replanificar ? 'modo completo' : 'solo cronograma'}. Cuota fija frente a CuotaFlex.`,
+    subtitulo: `${t.n_clientes} créditos por ${t.n_escenarios} escenarios, ${c.replanificar ? 'modo completo' : 'solo cronograma'}. Cuota fija frente a Thinku.`,
     resumen: [
       { etiqueta: 'Mora >30 días, cuota fija', valor: pct(f.mora30_pct), tipo: 'porcentaje' },
-      { etiqueta: 'Mora >30 días, CuotaFlex', valor: pct(x.mora30_pct), tipo: 'porcentaje' },
+      { etiqueta: 'Mora >30 días, Thinku', valor: pct(x.mora30_pct), tipo: 'porcentaje' },
       { etiqueta: 'Cambio relativo en mora', valor: pct(resumen.delta.mora30_relativa_pct), tipo: 'porcentaje' },
       { etiqueta: 'Default, cuota fija', valor: pct(f.default_pct), tipo: 'porcentaje' },
-      { etiqueta: 'Default, CuotaFlex', valor: pct(x.default_pct), tipo: 'porcentaje' },
+      { etiqueta: 'Default, Thinku', valor: pct(x.default_pct), tipo: 'porcentaje' },
       { etiqueta: 'Cambio relativo en default', valor: pct(resumen.delta.default_relativo_pct), tipo: 'porcentaje' },
       { etiqueta: 'Margen neto, cuota fija', valor: f.margen_neto_total, tipo: 'moneda' },
-      { etiqueta: 'Margen neto, CuotaFlex', valor: x.margen_neto_total, tipo: 'moneda' },
+      { etiqueta: 'Margen neto, Thinku', valor: x.margen_neto_total, tipo: 'moneda' },
       { etiqueta: 'Diferencia de margen neto', valor: resumen.delta.margen_neto_dif, tipo: 'moneda' },
       { etiqueta: 'Duración (s)', valor: c.resp.duracion_s, tipo: 'decimal' },
     ],
@@ -40,7 +40,7 @@ export function documentoCorrida(c: Corrida): Documento {
         ],
         filas: [
           ['Cuota fija', f],
-          ['CuotaFlex', x],
+          ['Thinku', x],
         ].map(([nombre, e]) => {
           const est = e as typeof f;
           return {
@@ -58,9 +58,9 @@ export function documentoCorrida(c: Corrida): Documento {
         columnas: [
           { clave: 'rubro', titulo: 'Rubro' },
           { clave: 'moraFija', titulo: 'Mora fija', tipo: 'porcentaje' },
-          { clave: 'moraFlex', titulo: 'Mora CuotaFlex', tipo: 'porcentaje' },
+          { clave: 'moraFlex', titulo: 'Mora Thinku', tipo: 'porcentaje' },
           { clave: 'vpnFija', titulo: 'VPN fija', tipo: 'moneda' },
-          { clave: 'vpnFlex', titulo: 'VPN CuotaFlex', tipo: 'moneda' },
+          { clave: 'vpnFlex', titulo: 'VPN Thinku', tipo: 'moneda' },
         ],
         filas: Object.entries(resumen.por_rubro).map(([id, r]) => ({
           rubro: infoRubro(id).nombre,
@@ -84,7 +84,7 @@ export function documentoCorrida(c: Corrida): Documento {
           { clave: 'desde', titulo: 'VPN desde', tipo: 'moneda' },
           { clave: 'hasta', titulo: 'VPN hasta', tipo: 'moneda' },
           { clave: 'fija', titulo: 'Créditos, fija', tipo: 'entero' },
-          { clave: 'flex', titulo: 'Créditos, CuotaFlex', tipo: 'entero' },
+          { clave: 'flex', titulo: 'Créditos, Thinku', tipo: 'entero' },
         ],
         filas: h.fija.map((n, i) => ({ desde: h.bordes[i], hasta: h.bordes[i + 1], fija: n, flex: h.cuotaflex[i] })),
       },
@@ -95,7 +95,7 @@ export function documentoCorrida(c: Corrida): Documento {
           { clave: 'rubro', titulo: 'Rubro' },
           { clave: 'producto', titulo: 'Producto' },
           { clave: 'mora_fija', titulo: 'Mora con cuota fija', tipo: 'porcentaje' },
-          { clave: 'mora_flex', titulo: 'Mora con CuotaFlex', tipo: 'porcentaje' },
+          { clave: 'mora_flex', titulo: 'Mora con Thinku', tipo: 'porcentaje' },
         ],
         filas: dispersion.map((d) => ({
           ...d,

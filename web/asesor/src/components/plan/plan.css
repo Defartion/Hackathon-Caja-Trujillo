@@ -210,7 +210,6 @@
 .pl-comite .pl-sub { color: var(--cf-gris-600); font-size: 12px; margin: -4px 0 8px; }
 .pl-membrete { display: flex; gap: 12px; align-items: center; justify-content: space-between; border-bottom: 3px solid var(--cf-rojo); padding-bottom: 10px; }
 .pl-membrete .marca { font-weight: 780; font-size: 17px; letter-spacing: -.02em; }
-.pl-membrete .marca span { color: var(--cf-rojo); }
 .pl-membrete .doc { color: var(--cf-gris-600); font-size: 12px; text-align: right; }
 .pl-ficha { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px 16px; }
 .pl-ficha .k { font-size: 11px; color: var(--cf-gris-600); }

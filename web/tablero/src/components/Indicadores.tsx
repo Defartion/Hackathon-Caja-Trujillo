@@ -34,7 +34,7 @@ function Tarjeta({ etiqueta, fija, flex, delta, sub }: TarjetaProps) {
         </span>
         <span className="kpi-par kpi-flex">
           <span className="muestra flex" aria-hidden="true" />
-          <span className="nombre">CuotaFlex</span>
+          <span className="nombre">Thinku</span>
           <span>{flex}</span>
         </span>
       </div>

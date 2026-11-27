@@ -134,7 +134,7 @@ export default function ChatAgente({ cliente, deshabilitado = false }: { cliente
   }
 
   return (
-    <aside className="chat-agente" aria-label="Agente de CuotaFlex">
+    <aside className="chat-agente" aria-label="Agente de Thinku">
       <style>{estilos}</style>
       <details>
         <summary>Pregúntale al agente</summary>

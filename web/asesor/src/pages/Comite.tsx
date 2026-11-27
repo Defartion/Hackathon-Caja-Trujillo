@@ -155,7 +155,7 @@ export default function Comite() {
         <header className="rejilla" style={{ gap: 12 }}>
           <div className="pl-membrete">
             <div className="marca">
-              Cuota<span>Flex</span> · Expediente para el comité de créditos
+              Thinku · Expediente para el comité de créditos
             </div>
             <div className="doc">
               Elaborado el {fmtFechaHora(exp.creado).slice(0, 10)}
@@ -280,7 +280,7 @@ export default function Comite() {
           {explicacion === undefined && <div className="pl-reservado">Consultando al agente…</div>}
           {explicacion === null && (
             <div className="pl-reservado" data-testid="explicacion-reservada">
-              Espacio reservado para la explicación del agente de CuotaFlex ({RUTA_EXPLICACION}, lote D). Cuando esté disponible, aquí va
+              Espacio reservado para la explicación del agente de Thinku ({RUTA_EXPLICACION}, lote D). Cuando esté disponible, aquí va
               un resumen con cifras verificadas del ciclo, el plan y el estrés.
             </div>
           )}
@@ -315,7 +315,7 @@ export default function Comite() {
         </Seccion>
 
         <footer className="pl-pie">
-          CuotaFlex · Cajathón 2026 (NEG-01) · Expediente {exp.id} · {exp.modo === "mock" ? "datos de ejemplo del contrato" : "ciclo y plan calculados por la API"}
+          Thinku · Cajathón 2026 (NEG-01) · Expediente {exp.id} · {exp.modo === "mock" ? "datos de ejemplo del contrato" : "ciclo y plan calculados por la API"}
           {calculado ? " · caso de demostración calculado al abrir" : ""} · generado el {fmtFechaHora(exp.creado)}. Solo datos sintéticos: no
           se conecta a la Caja.
         </footer>

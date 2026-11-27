@@ -1,4 +1,4 @@
-/* CuotaFlex · sistema de diseño compartido (copia idéntica en web/asesor, web/cliente y web/tablero).
+/* Thinku · sistema de diseño compartido (copia idéntica en web/asesor, web/cliente y web/tablero).
    Una prueba (tests/test_web_tema.py) verifica que las tres copias sigan iguales.
    Rojo Caja Trujillo para la marca y la acción principal; tinta azul pizarra para el texto;
    Archivo (Omnibus-Type) con su eje de ancho: las cifras grandes van condensadas.
@@ -122,7 +122,7 @@
   --cf-sombra-3: 0 28px 56px -16px rgb(0 0 0 / 72%), 0 4px 12px rgb(0 0 0 / 40%);
   --cf-anillo: 0 0 0 3px rgb(90 166 242 / 35%);
 
-  /* Validada con validate_palette.js contra #151C29: ΔE 19.3 entre CuotaFlex y la cuota fija. */
+  /* Validada con validate_palette.js contra #151C29: ΔE 19.3 entre Thinku y la cuota fija. */
   --cf-graf-flex: #55A3F0;
   --cf-graf-fija: #626E83;
   --cf-graf-rejilla: #263043;
@@ -210,9 +210,7 @@ button, a, input, select, textarea, summary { -webkit-tap-highlight-color: trans
 .cf-marca { display: inline-flex; align-items: center; gap: 10px; color: var(--cf-tinta); text-decoration: none; }
 .cf-marca__simbolo { flex: none; display: block; }
 .cf-marca__nombre { font-size: 19px; font-weight: 760; letter-spacing: -.02em; line-height: 1; }
-.cf-marca__flex { color: var(--cf-rojo-texto); }
 .cf-marca--invertida { color: #fff; }
-.cf-marca--invertida .cf-marca__flex { color: #FFD3DA; }
 
 /* ---------- Ritmo de cuotas: barras que siguen la temporada frente a una cuota fija ---------- */
 .cf-ritmo { margin: 0; display: grid; gap: 14px; }
@@ -252,7 +250,7 @@ button, a, input, select, textarea, summary { -webkit-tap-highlight-color: trans
 .cf-ritmo__leyenda span { display: inline-flex; align-items: center; gap: 8px; }
 .cf-ritmo__leyenda i { display: inline-block; width: 18px; flex: none; }
 .cf-ritmo__leyenda i.linea { border-top: 2px dashed currentColor; }
-.cf-ritmo__leyenda i.barra { height: 12px; border-radius: 3px 3px 0 0; background: currentColor; }
+.cf-ritmo__leyenda i.muestra-barra { height: 12px; border-radius: 3px 3px 0 0; background: currentColor; }
 @keyframes cf-crece { from { transform: scaleY(.03); } }
 
 /* ---------- Acceso: ingresar, crear cuenta o PIN ---------- */

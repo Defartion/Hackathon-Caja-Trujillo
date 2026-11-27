@@ -31,7 +31,7 @@ export default function GraficoCuotas({ fija, flex, capacidad, mesInicio }: Prop
             <Cell key={i} fill={excede(f.fija, f.capacidad) ? "#B7791F" : "#8792A6"} />
           ))}
         </Bar>
-        <Bar dataKey="flex" name="Cuota CuotaFlex" fill="#0B5CAD">
+        <Bar dataKey="flex" name="Cuota Thinku" fill="#0B5CAD">
           {filas.map((f, i) => (
             <Cell key={i} fill={excede(f.flex, f.capacidad) ? "#B7791F" : "#0B5CAD"} />
           ))}

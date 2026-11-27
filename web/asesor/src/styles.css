@@ -214,9 +214,7 @@ a.btn { text-decoration: none; color: var(--cf-tinta); }
 }
 .lateral-plegar:hover { background: rgb(255 255 255 / 8%); color: #fff; }
 .lateral .cf-marca, .barra-movil .cf-marca { color: #fff; }
-.lateral .cf-marca__flex { color: #FF8597; }
 .barra-movil .cf-marca { color: var(--cf-tinta); }
-.barra-movil .cf-marca__flex { color: var(--cf-rojo); }
 .lateral .rol { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #E3E8F0; background: rgb(255 255 255 / 8%); padding: 4px 10px 4px 8px; border-radius: 999px; }
 .lateral .rol::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #FF8597; }
 .lateral nav { flex: 1; overflow-y: auto; padding: 8px 12px; }

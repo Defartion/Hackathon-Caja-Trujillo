@@ -52,7 +52,7 @@ function Tip({ active, payload }: { active?: boolean; payload?: { payload: Pt }[
         <span className="muestra fija" /> Mora fija: {decimal1(p.x)}%
       </div>
       <div className="tt-fila">
-        <span className="muestra flex" /> Mora CuotaFlex: {decimal1(p.y)}%
+        <span className="muestra flex" /> Mora Thinku: {decimal1(p.y)}%
       </div>
     </div>
   );
@@ -151,7 +151,7 @@ export default function GraficoDispersion({ datos }: { datos: PuntoDispersion[] 
               tickLine={false}
               width={62}
               tickFormatter={(v: number) => `${v}%`}
-              label={{ value: 'Mora con CuotaFlex', angle: -90, position: 'insideLeft', offset: 2, fontSize: 12, fill: COLOR_TEXTO_EJE, style: { textAnchor: 'middle' } }}
+              label={{ value: 'Mora con Thinku', angle: -90, position: 'insideLeft', offset: 2, fontSize: 12, fill: COLOR_TEXTO_EJE, style: { textAnchor: 'middle' } }}
             />
             <Tooltip content={<Tip />} cursor={false} />
             <ReferenceLine
@@ -194,7 +194,7 @@ export default function GraficoDispersion({ datos }: { datos: PuntoDispersion[] 
           <th className="num">% igual</th>
           <th className="num">% empeora</th>
           <th className="num">Mora media fija</th>
-          <th className="num">Mora media CuotaFlex</th>
+          <th className="num">Mora media Thinku</th>
         </tr>
       </thead>
       <tbody>
@@ -217,8 +217,8 @@ export default function GraficoDispersion({ datos }: { datos: PuntoDispersion[] 
 
   return (
     <TarjetaGrafico
-      titulo="Mora por cliente: fija vs. CuotaFlex"
-      subtitulo="Cada punto es un cliente; por debajo de la diagonal, CuotaFlex mejora su mora"
+      titulo="Mora por cliente: fija vs. Thinku"
+      subtitulo="Cada punto es un cliente; por debajo de la diagonal, Thinku mejora su mora"
       extra={resumen}
       grafico={grafico}
       tabla={tabla}

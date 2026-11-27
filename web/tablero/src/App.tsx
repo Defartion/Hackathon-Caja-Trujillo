@@ -192,7 +192,7 @@ export default function App() {
         <div className="cab-sep" aria-hidden="true" />
         <div>
           <div className="titulo-tablero">Tablero de simulación</div>
-          <div className="subtitulo-tablero">Cuota fija vs. CuotaFlex en una cartera sintética de La Libertad</div>
+          <div className="subtitulo-tablero">Cuota fija vs. Thinku en una cartera sintética de La Libertad</div>
         </div>
         <div className={`estado-api ${estadoError ? 'error' : ''}`} role="status">
           {estado}
@@ -289,7 +289,7 @@ export default function App() {
               ) : (
                 <div className="vacio">
                   <h2>Elige un escenario o pulsa Simular</h2>
-                  <p>Compara la cuota fija con CuotaFlex sobre una cartera sintética.</p>
+                  <p>Compara la cuota fija con Thinku sobre una cartera sintética.</p>
                   <button
                     type="button"
                     className="btn-primario"
