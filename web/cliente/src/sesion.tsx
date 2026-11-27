@@ -59,6 +59,10 @@ function instalarFetch() {
 export interface Usuario {
   rol: Rol;
   nombre: string | null;
+  /** Fase 4: préstamo al que está atada la sesión del cliente (código del préstamo o cuenta vinculada). */
+  prestamo: number | null;
+  /** Fase 4: usuario personal del asesor o supervisor. */
+  usuario: string | null;
 }
 
 export function usuarioSesion(rol: Rol): Usuario | null {
@@ -67,7 +71,12 @@ export function usuarioSesion(rol: Rol): Usuario | null {
     if (!token) return null;
     const cuerpo = token.split(".")[0].replace(/-/g, "+").replace(/_/g, "/");
     const datos = JSON.parse(atob(cuerpo + "=".repeat((4 - (cuerpo.length % 4)) % 4)));
-    return { rol, nombre: typeof datos.nombre === "string" && datos.nombre.trim() ? datos.nombre : null };
+    return {
+      rol,
+      nombre: typeof datos.nombre === "string" && datos.nombre.trim() ? datos.nombre : null,
+      prestamo: typeof datos.prestamo === "number" ? datos.prestamo : null,
+      usuario: typeof datos.usuario === "string" ? datos.usuario : null,
+    };
   } catch {
     return null;
   }
@@ -77,7 +86,9 @@ export function usuarioSesion(rol: Rol): Usuario | null {
 export interface Perfil {
   sesion: boolean;
   rol?: Rol;
-  metodo?: "cuenta" | "pin";
+  metodo?: "cuenta" | "pin" | "personal" | "codigo";
+  usuario?: string | null;
+  prestamo?: number | null;
   nombre?: string | null;
   correo?: string | null;
   creado?: string | null;
@@ -102,6 +113,18 @@ export function iniciales(nombre: string | null): string {
   return ((partes[0]?.[0] ?? "") + (partes.length > 1 ? partes[partes.length - 1][0] : "")).toUpperCase();
 }
 
+/** Fase 4: una cuenta de cliente (correo) se liga a su préstamo con el código que dio el asesor. */
+export async function vincularPrestamo(prestamo: number, codigo: string): Promise<void> {
+  const r = await fetch(`${API}/auth/vincular`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prestamo, codigo }),
+  });
+  const datos = await r.json().catch(() => null);
+  if (!r.ok) throw new Error(typeof datos?.detail === "string" ? datos.detail : `Error ${r.status}. Intenta de nuevo.`);
+  guardarToken(datos.token);
+}
+
 export function cerrarSesion(rol: Rol) {
   try {
     sessionStorage.removeItem(`${PREFIJO}${rol}`);
@@ -117,15 +140,17 @@ export function ConSesion({ rol, titulo, children }: { rol: Rol; titulo: string;
   CLAVE = `${PREFIJO}${rol}`;
   const [estado, setEstado] = useState<Estado>("cargando");
   const [regla, setRegla] = useState<Regla>("no");
+  const [pinGeneral, setPinGeneral] = useState(true);
   useEffect(() => {
     instalarFetch();
     let vivo = true;
     fetch(`${API}/auth/config`)
       .then((r) => (r.ok ? r.json() : { auth: false }))
       .catch(() => ({ auth: false })) // sin API: la app muestra su propio mensaje de error
-      .then((c: { auth?: boolean; registro?: Partial<Record<Rol, Regla>> }) => {
+      .then((c: { auth?: boolean; registro?: Partial<Record<Rol, Regla>>; pin_general?: boolean }) => {
         if (!vivo) return;
         setRegla(c.registro?.[rol] ?? "no");
+        setPinGeneral(c.pin_general !== false);
         setEstado(c.auth && !leerToken() ? "login" : "listo");
       });
     const expirar = () => setEstado("login");
@@ -136,14 +161,16 @@ export function ConSesion({ rol, titulo, children }: { rol: Rol; titulo: string;
     };
   }, [rol]);
   if (estado === "cargando") return null;
-  if (estado === "login") return <Acceso rol={rol} titulo={titulo} regla={regla} alEntrar={() => setEstado("listo")} />;
+  if (estado === "login")
+    return <Acceso rol={rol} titulo={titulo} regla={regla} pinGeneral={pinGeneral} alEntrar={() => setEstado("listo")} />;
   return <>{children}</>;
 }
 
 // ------------------------------------------------------------------ pantalla de acceso
 
-type Modo = "ingresar" | "crear" | "pin";
-type Campo = "nombre" | "correo" | "contrasena" | "codigo" | "pin";
+// "llave" (fase 4): el cliente entra con número de préstamo + código; asesor y supervisor, con usuario + PIN personal.
+type Modo = "llave" | "ingresar" | "crear" | "pin";
+type Campo = "ident" | "nombre" | "correo" | "contrasena" | "codigo" | "pin";
 type Errores = Partial<Record<Campo, string>>;
 
 const ROTULO: Record<Rol, string> = { asesor: "Asesor de negocios", cliente: "Cliente", supervisor: "Supervisor" };
@@ -153,10 +180,12 @@ const LEMA: Record<Rol, string> = {
   supervisor: "Compara la cuota fija con Thinku en miles de escenarios, con El Niño incluido.",
 };
 const CABECERA: Record<Modo, string> = {
+  llave: "Ingresa con tu usuario",
   ingresar: "Ingresa a tu cuenta",
   crear: "Crea tu cuenta",
-  pin: "Entra con el PIN",
+  pin: "Entra con el PIN general",
 };
+const cabecera = (modo: Modo, rol: Rol) => (modo === "llave" && rol === "cliente" ? "Entra con tu código" : CABECERA[modo]);
 const RE_CORREO = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 const NIVELES = ["", "Débil", "Aceptable", "Buena", "Fuerte"];
 
@@ -170,8 +199,18 @@ function nivelClave(c: string): number {
   return Math.max(1, n);
 }
 
-function validar(modo: Modo, v: Record<Campo, string>, pideCodigo: boolean): Errores {
+function validar(modo: Modo, v: Record<Campo, string>, pideCodigo: boolean, rol: Rol): Errores {
   const e: Errores = {};
+  if (modo === "llave") {
+    if (rol === "cliente") {
+      if (!/^\d+$/.test(v.ident.trim()) || Number(v.ident) < 1) e.ident = "Escribe el número de tu préstamo.";
+      if (!/^\d{6}$/.test(v.pin)) e.pin = "El código tiene 6 dígitos.";
+    } else {
+      if (!v.ident.trim()) e.ident = "Escribe tu usuario.";
+      if (!/^\d{6}$/.test(v.pin)) e.pin = "El PIN personal tiene 6 dígitos.";
+    }
+    return e;
+  }
   if (modo === "pin") {
     if (!v.pin.trim()) e.pin = "Escribe el PIN.";
     return e;
@@ -216,9 +255,11 @@ class ErrorAcceso extends Error {
   }
 }
 
-function Acceso({ rol, titulo, regla, alEntrar }: { rol: Rol; titulo: string; regla: Regla; alEntrar: () => void }) {
-  const [modo, setModo] = useState<Modo>(regla === "no" ? "pin" : "ingresar");
-  const [v, setV] = useState<Record<Campo, string>>({ nombre: "", correo: "", contrasena: "", codigo: "", pin: "" });
+function Acceso({
+  rol, titulo, regla, pinGeneral, alEntrar,
+}: { rol: Rol; titulo: string; regla: Regla; pinGeneral: boolean; alEntrar: () => void }) {
+  const [modo, setModo] = useState<Modo>("llave");
+  const [v, setV] = useState<Record<Campo, string>>({ ident: "", nombre: "", correo: "", contrasena: "", codigo: "", pin: "" });
   const [errores, setErrores] = useState<Errores>({});
   const [intento, setIntento] = useState(false);
   const [general, setGeneral] = useState<string | null>(null);
@@ -228,6 +269,7 @@ function Acceso({ rol, titulo, regla, alEntrar }: { rol: Rol; titulo: string; re
   const [focoPin, setFocoPin] = useState(false);
   const pideCodigo = modo === "crear" && regla === "codigo";
   const refs = {
+    ident: useRef<HTMLInputElement>(null),
     nombre: useRef<HTMLInputElement>(null),
     correo: useRef<HTMLInputElement>(null),
     contrasena: useRef<HTMLInputElement>(null),
@@ -240,7 +282,8 @@ function Acceso({ rol, titulo, regla, alEntrar }: { rol: Rol; titulo: string; re
   // Al cambiar de modo, el foco va al primer dato (salvo si se navega entre pestañas con las flechas).
   // Al abrir, solo en equipos con mouse: en el celular abriría el teclado encima de la pantalla.
   useEffect(() => {
-    const primero = modo === "crear" ? refs.nombre : modo === "pin" ? refs.pin : refs.correo;
+    const primero =
+      modo === "llave" ? refs.ident : modo === "crear" ? refs.nombre : modo === "pin" ? refs.pin : refs.correo;
     if (focoEnPestanas.current) focoEnPestanas.current = false;
     else if (!primerCambio.current || window.matchMedia("(pointer: fine)").matches) primero.current?.focus();
     primerCambio.current = false;
@@ -257,7 +300,7 @@ function Acceso({ rol, titulo, regla, alEntrar }: { rol: Rol; titulo: string; re
   const escribir = (campo: Campo, valor: string) => {
     const nuevo = { ...v, [campo]: valor };
     setV(nuevo);
-    if (intento) setErrores(validar(modo, nuevo, pideCodigo)); // el error se va apenas se corrige
+    if (intento) setErrores(validar(modo, nuevo, pideCodigo, rol)); // el error se va apenas se corrige
   };
 
   async function entrar(e: FormEvent) {
@@ -265,7 +308,7 @@ function Acceso({ rol, titulo, regla, alEntrar }: { rol: Rol; titulo: string; re
     if (ocupado) return;
     setIntento(true);
     setGeneral(null);
-    const encontrados = validar(modo, v, pideCodigo);
+    const encontrados = validar(modo, v, pideCodigo, rol);
     setErrores(encontrados);
     const primero = (Object.keys(refs) as Campo[]).find((c) => encontrados[c]);
     if (primero) {
@@ -275,7 +318,11 @@ function Acceso({ rol, titulo, regla, alEntrar }: { rol: Rol; titulo: string; re
     setOcupado(true);
     try {
       const datos =
-        modo === "pin"
+        modo === "llave"
+          ? rol === "cliente"
+            ? await enviar("/auth/cliente", { prestamo: Number(v.ident.trim()), codigo: v.pin })
+            : await enviar("/auth/personal", { usuario: v.ident.trim(), pin: v.pin, rol })
+          : modo === "pin"
           ? await enviar("/auth/login", { rol, pin: v.pin.trim() })
           : modo === "ingresar"
             ? await enviar("/auth/ingresar", { correo: v.correo.trim(), contrasena: v.contrasena, rol })
@@ -290,8 +337,8 @@ function Acceso({ rol, titulo, regla, alEntrar }: { rol: Rol; titulo: string; re
       alEntrar();
     } catch (err) {
       const fallo = err instanceof ErrorAcceso ? err : new ErrorAcceso(0, "Algo salió mal. Intenta de nuevo.");
-      if (fallo.estado === 401 && modo === "pin") {
-        setErrores({ pin: "PIN incorrecto. Revísalo e intenta de nuevo." });
+      if (fallo.estado === 401 && (modo === "pin" || modo === "llave")) {
+        setErrores({ pin: modo === "pin" ? "PIN incorrecto. Revísalo e intenta de nuevo." : fallo.message });
         setV((x) => ({ ...x, pin: "" }));
         refs.pin.current?.focus();
       } else if (fallo.campo && fallo.campo in refs) {
@@ -324,14 +371,19 @@ function Acceso({ rol, titulo, regla, alEntrar }: { rol: Rol; titulo: string; re
   });
 
   const nivel = nivelClave(v.contrasena);
-  const casillas = Math.max(4, v.pin.length);
+  const casillas = modo === "llave" ? 6 : Math.max(4, v.pin.length);
   const textoBoton = ocupado
-    ? { ingresar: "Ingresando…", crear: "Creando tu cuenta…", pin: "Entrando…" }[modo]
-    : { ingresar: "Ingresar", crear: "Crear cuenta", pin: "Entrar" }[modo];
+    ? { llave: "Entrando…", ingresar: "Ingresando…", crear: "Creando tu cuenta…", pin: "Entrando…" }[modo]
+    : { llave: "Entrar", ingresar: "Ingresar", crear: "Crear cuenta", pin: "Entrar" }[modo];
+  const cuentas = modo === "ingresar" || modo === "crear";
 
   const subtitulo =
-    modo === "pin"
-      ? `Acceso rápido con el PIN de ${rol} que comparte tu equipo.`
+    modo === "llave"
+      ? rol === "cliente"
+        ? "Usa el número de tu préstamo y el código de 6 dígitos que te envió tu asesor."
+        : "Usa el usuario y el PIN personal que te dio tu supervisor."
+      : modo === "pin"
+      ? `PIN general de demostración: lo comparte todo el equipo de ${rol}.`
       : modo === "crear"
         ? regla === "codigo"
           ? `Para una cuenta de ${rol} necesitas el código de autorización de tu equipo.`
@@ -371,11 +423,11 @@ function Acceso({ rol, titulo, regla, alEntrar }: { rol: Rol; titulo: string; re
         >
           <span className="acc-rol">{ROTULO[rol]}</span>
           <div className="acc-cab">
-            <h2>{CABECERA[modo]}</h2>
+            <h2>{cabecera(modo, rol)}</h2>
             <p>{subtitulo}</p>
           </div>
 
-          {modo !== "pin" && regla !== "no" && (
+          {cuentas && regla !== "no" && (
             <div className="acc-pestanas" role="tablist" aria-label="Elige cómo entrar" data-activa={modo === "crear" ? 1 : 0}>
               <span className="acc-pestanas__indicador" aria-hidden="true" />
               {(["ingresar", "crear"] as const).map((m) => (
@@ -399,8 +451,8 @@ function Acceso({ rol, titulo, regla, alEntrar }: { rol: Rol; titulo: string; re
           <form
             id="acc-formulario"
             className="acc-form"
-            role={modo !== "pin" && regla !== "no" ? "tabpanel" : undefined}
-            aria-labelledby={modo !== "pin" && regla !== "no" ? `acc-tab-${modo}` : undefined}
+            role={cuentas && regla !== "no" ? "tabpanel" : undefined}
+            aria-labelledby={cuentas && regla !== "no" ? `acc-tab-${modo}` : undefined}
             onSubmit={entrar}
             noValidate
           >
@@ -418,7 +470,29 @@ function Acceso({ rol, titulo, regla, alEntrar }: { rol: Rol; titulo: string; re
               </div>
             )}
 
-            {modo !== "pin" && (
+            {modo === "llave" && (
+              <div className="acc-campo">
+                <label htmlFor="acc-ident">{rol === "cliente" ? "Número de préstamo" : "Usuario"}</label>
+                <input
+                  {...props("ident", "acc-ident-ayuda")}
+                  type="text"
+                  inputMode={rol === "cliente" ? "numeric" : "text"}
+                  autoComplete={rol === "cliente" ? "off" : "username"}
+                  autoCapitalize="none"
+                  spellCheck={false}
+                  placeholder={rol === "cliente" ? "Ej.: 12…" : "Ej.: ana.torres…"}
+                />
+                {errores.ident ? (
+                  ayudaError("ident")
+                ) : (
+                  <span className="acc-ayuda" id="acc-ident-ayuda">
+                    {rol === "cliente" ? "Está en el mensaje que te envió tu asesor." : "Te lo da tu supervisor."}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {cuentas && (
               <div className="acc-campo">
                 <label htmlFor="acc-correo">Correo</label>
                 <input
@@ -434,7 +508,7 @@ function Acceso({ rol, titulo, regla, alEntrar }: { rol: Rol; titulo: string; re
               </div>
             )}
 
-            {modo !== "pin" && (
+            {cuentas && (
               <div className="acc-campo">
                 <label htmlFor="acc-contrasena">Contraseña</label>
                 <div className="acc-clave">
@@ -490,9 +564,11 @@ function Acceso({ rol, titulo, regla, alEntrar }: { rol: Rol; titulo: string; re
               </div>
             )}
 
-            {modo === "pin" && (
+            {(modo === "pin" || modo === "llave") && (
               <div className="acc-campo">
-                <label htmlFor="acc-pin">PIN de {rol}</label>
+                <label htmlFor="acc-pin">
+                  {modo === "pin" ? `PIN general de ${rol}` : rol === "cliente" ? "Código de acceso" : "PIN personal"}
+                </label>
                 <div className="acc-pin" data-error={errores.pin ? true : undefined}>
                   <input
                     {...props("pin")}
@@ -500,8 +576,8 @@ function Acceso({ rol, titulo, regla, alEntrar }: { rol: Rol; titulo: string; re
                     type="password"
                     inputMode="numeric"
                     autoComplete="off"
-                    maxLength={12}
-                    onChange={(e) => escribir("pin", e.target.value.replace(/\s/g, ""))}
+                    maxLength={modo === "llave" ? 6 : 12}
+                    onChange={(e) => escribir("pin", e.target.value.replace(modo === "llave" ? /\D/g : /\s/g, ""))}
                     onFocus={() => setFocoPin(true)}
                     onBlur={() => setFocoPin(false)}
                   />
@@ -525,17 +601,27 @@ function Acceso({ rol, titulo, regla, alEntrar }: { rol: Rol; titulo: string; re
             </button>
           </form>
 
-          {modo === "pin" ? (
+          {(modo !== "llave" || regla !== "no" || pinGeneral) && <div className="acc-o">o</div>}
+          {modo !== "llave" ? (
+            <button type="button" className="acc-boton acc-boton--sec" onClick={() => cambiarModo("llave")}>
+              {rol === "cliente" ? "Entrar con mi código" : "Entrar con mi usuario y PIN"}
+            </button>
+          ) : (
+            regla !== "no" && (
+              <button type="button" className="acc-boton acc-boton--sec" onClick={() => cambiarModo("ingresar")}>
+                Ingresar con correo y contraseña
+              </button>
+            )
+          )}
+          {modo === "pin" && regla !== "no" && (
             <button type="button" className="acc-enlace" onClick={() => cambiarModo("ingresar")}>
               Ingresar con correo y contraseña
             </button>
-          ) : (
-            <>
-              <div className="acc-o">o</div>
-              <button type="button" className="acc-boton acc-boton--sec" onClick={() => cambiarModo("pin")}>
-                Entrar con el PIN de {rol}
-              </button>
-            </>
+          )}
+          {modo !== "pin" && pinGeneral && (
+            <button type="button" className="acc-enlace" onClick={() => cambiarModo("pin")}>
+              Entrar con el PIN general de {rol} (demo)
+            </button>
           )}
           <p className="acc-nota">Demo con datos 100% sintéticos.</p>
         </div>
