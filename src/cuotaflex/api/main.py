@@ -70,9 +70,13 @@ async def _persistir(request: Request, call_next):
 
 @app.middleware("http")
 async def _autorizar(request: Request, call_next):
-    """Fase 3: con CUOTAFLEX_AUTH=1 cada prefijo exige un rol (ver routers/auth.py)."""
+    """Fase 3: con CUOTAFLEX_AUTH=1 cada prefijo exige un rol (ver routers/auth.py).
+    Fase 4: antes de nada se recarga la instantánea si otra instancia la cambió en Upstash, y las llaves
+    personales (código del préstamo, usuario + PIN) se revisan en cuotaflex/llaves.py."""
     from .routers import auth
 
+    if persistencia.desactualizada():
+        cargar_instantanea()
     if not auth.activa() or request.method == "OPTIONS":
         return await call_next(request)
     ruta = request.url.path
