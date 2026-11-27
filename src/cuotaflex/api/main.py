@@ -87,11 +87,17 @@ async def _autorizar(request: Request, call_next):
     if roles == set():
         return await call_next(request)
     encabezado = request.headers.get("authorization", "")
-    rol = auth.verificar_token(encabezado[7:]) if encabezado.lower().startswith("bearer ") else None
-    if rol is None:
-        return JSONResponse({"detail": "Inicia sesión con el PIN de tu rol."}, status_code=401)
+    datos = auth.datos_token(encabezado[7:]) if encabezado.lower().startswith("bearer ") else None
+    if datos is None:
+        return JSONResponse({"detail": "Inicia sesión con tu llave o el PIN de tu rol."}, status_code=401)
+    rol = datos["rol"]
     if roles is not None and rol not in roles:
         return JSONResponse({"detail": f"El rol {rol} no tiene acceso a esta sección."}, status_code=403)
+    from .. import llaves
+
+    problema = llaves.revisar(datos, ruta, request.method)
+    if problema:
+        return JSONResponse({"detail": problema[1]}, status_code=problema[0])
     return await call_next(request)
 agente = AgenteAsesor(metodo_pronostico="perfil")
 
@@ -168,6 +174,9 @@ def crear_prestamo(p: PrestamoIn):
                         "tea": prop["tea"], "producto": prop["producto"], "propuesta": prop,
                         "cuotas": [f["cuota"] for f in prop["cronograma"]],
                         "aplazamientosRestantes": prop["aplazamientos_disponibles"], "pagos": []}
+    from .. import llaves
+
+    llaves.preparar_prestamo(DB["loans"][lid])  # fase 4: llave del cliente (código de 6 dígitos)
     return {"loanId": lid, "resourceId": lid, "producto": prop["producto"], "explicacion": prop["explicacion"]}
 
 

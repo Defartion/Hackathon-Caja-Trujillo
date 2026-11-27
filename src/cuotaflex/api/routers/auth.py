@@ -33,6 +33,7 @@ REGLAS: list[tuple[str, set[str] | None, set[str]]] = [
     ("/auth", None, set()),                                   # público
     ("/docs", None, set()), ("/openapi.json", None, set()), ("/redoc", None, set()),
     ("/admin", None, {"supervisor"}),
+    ("/equipo", None, {"supervisor"}),                        # fase 4: llaves personales del equipo
     ("/simulacion", None, {"supervisor"}),
     ("/alertas", None, {"supervisor"}),
     ("/core", None, {"supervisor"}),
@@ -103,11 +104,20 @@ class Login(BaseModel):
 @router.get("/config")
 def config():
     # registro: qué necesita cada rol para crear cuenta ('libre', 'codigo' o 'no'); ver cuotaflex/cuentas.py
-    return {"auth": activa(), "roles": list(ROLES), "registro": cuentas.politica_registro()}
+    from ... import almacen, llaves
+
+    # llaves (fase 4): el cliente entra con número de préstamo + código; asesor y supervisor, con usuario + PIN.
+    return {"auth": activa(), "roles": list(ROLES), "registro": cuentas.politica_registro(),
+            "llaves": {"cliente": "codigo", "equipo": "usuario_pin"}, "pin_general": llaves.pin_general_activo(),
+            "almacen": almacen.estado()}
 
 
 @router.post("/login")
 def login(datos: Login):
+    from ... import llaves
+
+    if not llaves.pin_general_activo():
+        raise HTTPException(403, "El PIN general está desactivado. Entra con tu llave personal.")
     if not hmac.compare_digest(datos.pin, _pin(datos.rol)):
         raise HTTPException(401, "PIN incorrecto")
     return {"token": emitir_token(datos.rol), "rol": datos.rol, "expira_en_s": DURACION_S}
