@@ -124,6 +124,9 @@ export const api = {
   comando: (id: number, command: "approve" | "disburse") =>
     post<{ status: { value: string } }>(`${BASE}/loans/${id}?command=${command}`),
   prestamos: () => pedir<PrestamoListado[]>("/motor/prestamos"),
+  /** Fase 4: código de 6 dígitos con el que el cliente entra a ver su préstamo. */
+  llave: (id: number) => pedir<LlaveCliente>(`/motor/prestamos/${id}/llave`),
+  regenerarLlave: (id: number) => post<LlaveCliente>(`/motor/prestamos/${id}/llave/regenerar`),
   detallePrestamo: (id: number) => pedir<DetallePrestamo>(`/motor/prestamos/${id}`),
 };
 
@@ -225,4 +228,12 @@ export interface Prestamo {
       principalLoanBalanceOutstanding: number;
     }[];
   };
+}
+
+export interface LlaveCliente {
+  prestamo: number;
+  codigo: string;
+  version: number;
+  estado: string;
+  cliente: string | null;
 }

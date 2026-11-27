@@ -540,3 +540,13 @@ tr.pd-proxima .etiqueta { background: var(--cf-superficie); }
   /* En el teléfono la tabla muestra solo código, rubro y monto: elegir columnas no aplica. */
   .bandeja-herramientas .selector-columnas { display: none; }
 }
+
+/* --- Fase 4: código de acceso del cliente --- */
+.codigo-cliente { border: 1px solid var(--cf-gris-200); border-radius: 10px; padding: 14px 16px; background: var(--cf-fondo); }
+.codigo-cliente__cab { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; justify-content: space-between; }
+.codigo-cliente__valor { display: flex; align-items: center; gap: 10px; }
+.codigo-cliente__digitos { font-size: 26px; font-weight: 800; letter-spacing: 3px; font-variant-numeric: tabular-nums; min-width: 9ch; }
+.confirmar-linea { display: inline-flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 13px; color: var(--cf-gris-600); }
+.btn-peligro { background: var(--cf-rojo); border-color: var(--cf-rojo); color: #fff; }
+.btn-peligro:hover:not(:disabled) { background: var(--cf-rojo-osc); border-color: var(--cf-rojo-osc); }
+.sr-solo { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
